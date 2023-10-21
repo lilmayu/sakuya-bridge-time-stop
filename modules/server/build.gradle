@@ -1,19 +1,46 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "io.sentry.jvm.gradle" version "3.12.0"
 }
 
 group = 'dev.mayuna'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // Commons
+    implementation project(":modules:commons")
 }
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveBaseName = '../../../../artifacts/sakuya-bridge-server'
+
+    manifest {
+        attributes 'Main-Class': 'dev.mayuna.sakuyabridge.server.Main'
+    }
+
+    exclude "**/Log4j2Plugins.dat"
+}
+
+tasks.named("build") {
+    dependsOn("shadowJar")
+}
+
+// Sentry
+
+sentry {
+    includeSourceContext = true
+
+
+    org = 'mayunas-organisation'
+    projectName = 'sakuya-bridge-server'
+    authToken = project.properties['sentry_user_auth_token']
 }
