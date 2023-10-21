@@ -64,7 +64,7 @@ allprojects {
 }
 
 tasks.register('buildAll') {
-    dependsOn 'modules:commons:build'
-    dependsOn 'modules:server:build'
-    dependsOn 'modules:client:build'
+    dependsOn 'commons:build'
+    dependsOn 'server:build'
+    dependsOn 'client:build'
 }

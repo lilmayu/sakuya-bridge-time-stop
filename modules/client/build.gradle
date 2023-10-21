@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     // Commons
-    implementation project(":modules:commons")
+    implementation project(":commons")
 
     // FLatlaf UI
     implementation 'com.formdev:flatlaf:3.2'

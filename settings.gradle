@@ -1,8 +1,8 @@
 rootProject.name = 'sakuya-bridge-time-stop'
-include 'modules:server'
-findProject(':modules:server')?.name = 'server'
-include 'modules:client'
-findProject(':modules:client')?.name = 'client'
-include 'modules:commons'
-findProject(':modules:commons')?.name = 'commons'
+include 'server'
+include 'client'
+include 'commons'
+project(':server').projectDir = file("modules/server")
+project(':client').projectDir = file("modules/client")
+project(':commons').projectDir = file("modules/commons")
 
