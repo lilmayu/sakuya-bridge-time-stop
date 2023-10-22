@@ -2,8 +2,9 @@ package dev.mayuna.sakuyabridge.commons.networking.tcp.base.serialization;
 
 import com.esotericsoftware.kryo.Kryo;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegment;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacketSegment;
 
 import java.util.UUID;
 
@@ -53,5 +54,8 @@ public class TimeStopSerialization {
     private static void registerTimeStopClasses(Kryo kryo) {
         kryo.register(TimeStopPacket.class);
         kryo.register(TimeStopPacketSegment.class);
+
+        // Packets
+        kryo.register(Packets.ProtocolVersionExchange.class);
     }
 }

@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators;
 
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacketSegment;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators;
+package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop;
 
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
 import lombok.Getter;

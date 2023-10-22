@@ -1,11 +1,17 @@
 package dev.mayuna.sakuyabridge.commons.networking.tcp.base;
 
 import com.esotericsoftware.kryonet.Connection;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListener;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListenerManager;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslatorManager;
+import lombok.NonNull;
+
+import java.util.function.Consumer;
 
 public class TimeStopConnection extends Connection {
 
+    private final TimeStopListenerManager listenerManager;
     private final TimeStopTranslatorManager translatorManager;
 
     /**
@@ -13,9 +19,10 @@ public class TimeStopConnection extends Connection {
      *
      * @param translatorManager Translator manager
      */
-    public TimeStopConnection(TimeStopTranslatorManager translatorManager) {
+    public TimeStopConnection(TimeStopListenerManager listenerManager, TimeStopTranslatorManager translatorManager) {
         super();
 
+        this.listenerManager = listenerManager;
         this.translatorManager = translatorManager;
     }
 
