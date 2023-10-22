@@ -1,5 +1,6 @@
 package dev.mayuna.sakuyabridge.commons.logging;
 
+import dev.mayuna.sakuyabridge.commons.jacoco.Generated;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,17 +13,17 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
- * Extended Logger interface with convenience methods for
- * the FLOW, SUCCESS and MDEBUG custom log levels.
+ * Extended Logger interface with convenience methods for the FLOW, SUCCESS and MDEBUG custom log levels.
  * <p>Compatible with Log4j 2.6 or higher.</p>
  */
+@Generated
 public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
 
-    private static final long serialVersionUID = 12093312991200L;
-    private static final String FQCN = SakuyaBridgeLogger.class.getName();
     public static final Level FLOW = Level.forName("FLOW", 480); // 550
     public static final Level SUCCESS = Level.forName("SUCCESS", 420);
     public static final Level MDEBUG = Level.forName("MDEBUG", 450);
+    private static final long serialVersionUID = 12093312991200L;
+    private static final String FQCN = SakuyaBridgeLogger.class.getName();
     private final ExtendedLoggerWrapper logger;
 
     private SakuyaBridgeLogger(final Logger logger) {
@@ -41,11 +42,9 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Returns a custom Logger using the fully qualified name of the Class as
-     * the Logger name.
+     * Returns a custom Logger using the fully qualified name of the Class as the Logger name.
      *
-     * @param loggerName The Class whose name should be used as the Logger name.
-     *                   If null it will default to the calling class.
+     * @param loggerName The Class whose name should be used as the Logger name. If null it will default to the calling class.
      *
      * @return The custom Logger.
      */
@@ -55,14 +54,11 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Returns a custom Logger using the fully qualified name of the Class as
-     * the Logger name.
+     * Returns a custom Logger using the fully qualified name of the Class as the Logger name.
      *
-     * @param loggerName     The Class whose name should be used as the Logger name.
-     *                       If null it will default to the calling class.
-     * @param messageFactory The message factory is used only when creating a
-     *                       logger, subsequent use does not change the logger but will log
-     *                       a warning if mismatched.
+     * @param loggerName     The Class whose name should be used as the Logger name. If null it will default to the calling class.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning
+     *                       if mismatched.
      *
      * @return The custom Logger.
      */
@@ -72,12 +68,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Returns a custom Logger using the fully qualified class name of the value
-     * as the Logger name.
+     * Returns a custom Logger using the fully qualified class name of the value as the Logger name.
      *
-     * @param value The value whose class name should be used as the Logger
-     *              name. If null the name of the calling class will be used as
-     *              the logger name.
+     * @param value The value whose class name should be used as the Logger name. If null the name of the calling class will be used as the logger
+     *              name.
      *
      * @return The custom Logger.
      */
@@ -87,15 +81,12 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Returns a custom Logger using the fully qualified class name of the value
-     * as the Logger name.
+     * Returns a custom Logger using the fully qualified class name of the value as the Logger name.
      *
-     * @param value          The value whose class name should be used as the Logger
-     *                       name. If null the name of the calling class will be used as
-     *                       the logger name.
-     * @param messageFactory The message factory is used only when creating a
-     *                       logger, subsequent use does not change the logger but will log
-     *                       a warning if mismatched.
+     * @param value          The value whose class name should be used as the Logger name. If null the name of the calling class will be used as the
+     *                       logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning
+     *                       if mismatched.
      *
      * @return The custom Logger.
      */
@@ -107,8 +98,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     /**
      * Returns a custom Logger with the specified name.
      *
-     * @param name The logger name. If null the name of the calling class will
-     *             be used.
+     * @param name The logger name. If null the name of the calling class will be used.
      *
      * @return The custom Logger.
      */
@@ -120,11 +110,9 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     /**
      * Returns a custom Logger with the specified name.
      *
-     * @param name           The logger name. If null the name of the calling class will
-     *                       be used.
-     * @param messageFactory The message factory is used only when creating a
-     *                       logger, subsequent use does not change the logger but will log
-     *                       a warning if mismatched.
+     * @param name           The logger name. If null the name of the calling class will be used.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning
+     *                       if mismatched.
      *
      * @return The custom Logger.
      */
@@ -177,8 +165,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -189,8 +176,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the CharSequence to log.
@@ -421,8 +407,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -461,8 +446,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -483,8 +467,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a CharSequence at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a CharSequence at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the CharSequence to log.
      * @param t       the exception to log, including its stack trace.
@@ -702,8 +685,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code FLOW} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code FLOW} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -715,8 +697,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     /**
      * Logs a message which is only to be constructed if the logging level is the {@code FLOW}level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -725,11 +706,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code FLOW}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * Logs a message (only to be constructed if the logging level is the {@code FLOW} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           the exception to log, including its stack trace.
      *
      * @since Log4j-2.4
@@ -739,12 +719,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code FLOW} level with the specified Marker.
+     * Logs a message which is only to be constructed if the logging level is the {@code FLOW} level with the specified Marker.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -753,8 +731,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is the
-     * {@code FLOW} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code FLOW} level.
      *
      * @param marker         the marker data specific to this log statement
      * @param message        the message to log; the format depends on the message factory.
@@ -767,13 +744,12 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code FLOW}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code FLOW} level) with the specified Marker and including the stack trace
+     * of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           A Throwable or null.
      *
      * @since Log4j-2.4
@@ -783,8 +759,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is
-     * the {@code FLOW} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code FLOW} level.
      *
      * @param message        the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
@@ -796,9 +771,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code FLOW} level with the specified Marker. The {@code MessageSupplier} may or may
-     * not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code FLOW} level with the specified Marker. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker      the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -810,8 +784,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code FLOW}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code FLOW} level) with the specified Marker and including the stack trace
+     * of the {@link Throwable}
      * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the
      * {@link MessageFactory} to construct the {@code Message}.
      *
@@ -826,9 +800,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code FLOW} level. The {@code MessageSupplier} may or may not use the
-     * {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code FLOW} level. The {@code MessageSupplier} may or may not use
+     * the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      *
@@ -839,9 +812,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code FLOW}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * Logs a message (only to be constructed if the logging level is the {@code FLOW} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -897,8 +869,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -909,8 +880,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the CharSequence to log.
@@ -1141,8 +1111,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -1181,8 +1150,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -1203,8 +1171,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a CharSequence at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a CharSequence at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the CharSequence to log.
      * @param t       the exception to log, including its stack trace.
@@ -1422,8 +1389,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code SUCCESS} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code SUCCESS} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -1435,8 +1401,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     /**
      * Logs a message which is only to be constructed if the logging level is the {@code SUCCESS}level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -1445,11 +1410,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           the exception to log, including its stack trace.
      *
      * @since Log4j-2.4
@@ -1459,12 +1423,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code SUCCESS} level with the specified Marker.
+     * Logs a message which is only to be constructed if the logging level is the {@code SUCCESS} level with the specified Marker.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -1473,8 +1435,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is the
-     * {@code SUCCESS} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code SUCCESS} level.
      *
      * @param marker         the marker data specific to this log statement
      * @param message        the message to log; the format depends on the message factory.
@@ -1487,13 +1448,12 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS} level) with the specified Marker and including the stack
+     * trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           A Throwable or null.
      *
      * @since Log4j-2.4
@@ -1503,8 +1463,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is
-     * the {@code SUCCESS} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code SUCCESS} level.
      *
      * @param message        the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
@@ -1516,9 +1475,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code SUCCESS} level with the specified Marker. The {@code MessageSupplier} may or may
-     * not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code SUCCESS} level with the specified Marker. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker      the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1530,8 +1488,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS} level) with the specified Marker and including the stack
+     * trace of the {@link Throwable}
      * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the
      * {@link MessageFactory} to construct the {@code Message}.
      *
@@ -1546,9 +1504,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code SUCCESS} level. The {@code MessageSupplier} may or may not use the
-     * {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code SUCCESS} level. The {@code MessageSupplier} may or may not
+     * use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      *
@@ -1559,9 +1516,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * Logs a message (only to be constructed if the logging level is the {@code SUCCESS} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1617,8 +1573,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -1629,8 +1584,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the CharSequence to log.
@@ -1861,8 +1815,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param marker  the marker data specific to this log statement
      * @param message the message to log.
@@ -1901,8 +1854,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -1923,8 +1875,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a CharSequence at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a CharSequence at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the CharSequence to log.
      * @param t       the exception to log, including its stack trace.
@@ -2142,8 +2093,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message at the {@code MDEBUG} level including the stack trace of
-     * the {@link Throwable} {@code t} passed as parameter.
+     * Logs a message at the {@code MDEBUG} level including the stack trace of the {@link Throwable} {@code t} passed as parameter.
      *
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
@@ -2155,8 +2105,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     /**
      * Logs a message which is only to be constructed if the logging level is the {@code MDEBUG}level.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -2165,11 +2114,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
      *
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           the exception to log, including its stack trace.
      *
      * @since Log4j-2.4
@@ -2179,12 +2127,10 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code MDEBUG} level with the specified Marker.
+     * Logs a message which is only to be constructed if the logging level is the {@code MDEBUG} level with the specified Marker.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      *
      * @since Log4j-2.4
      */
@@ -2193,8 +2139,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is the
-     * {@code MDEBUG} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code MDEBUG} level.
      *
      * @param marker         the marker data specific to this log statement
      * @param message        the message to log; the format depends on the message factory.
@@ -2207,13 +2152,12 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG} level) with the specified Marker and including the stack
+     * trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
      * @param marker      the marker data specific to this log statement
-     * @param msgSupplier A function, which when called, produces the desired log message;
-     *                    the format depends on the message factory.
+     * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param t           A Throwable or null.
      *
      * @since Log4j-2.4
@@ -2223,8 +2167,7 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message with parameters which are only to be constructed if the logging level is
-     * the {@code MDEBUG} level.
+     * Logs a message with parameters which are only to be constructed if the logging level is the {@code MDEBUG} level.
      *
      * @param message        the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
@@ -2236,9 +2179,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code MDEBUG} level with the specified Marker. The {@code MessageSupplier} may or may
-     * not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code MDEBUG} level with the specified Marker. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker      the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -2250,8 +2192,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG}
-     * level) with the specified Marker and including the stack trace of the {@link Throwable}
+     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG} level) with the specified Marker and including the stack
+     * trace of the {@link Throwable}
      * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the
      * {@link MessageFactory} to construct the {@code Message}.
      *
@@ -2266,9 +2208,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the
-     * {@code MDEBUG} level. The {@code MessageSupplier} may or may not use the
-     * {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@code MDEBUG} level. The {@code MessageSupplier} may or may not use
+     * the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      *
@@ -2279,9 +2220,8 @@ public final class SakuyaBridgeLogger extends ExtendedLoggerWrapper {
     }
 
     /**
-     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG}
-     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * Logs a message (only to be constructed if the logging level is the {@code MDEBUG} level) including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
      * {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.

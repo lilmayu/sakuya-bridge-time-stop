@@ -21,6 +21,7 @@ test {
 allprojects {
 
     apply plugin: 'java'
+    apply plugin: 'jacoco'
 
     repositories {
         mavenCentral()
@@ -60,6 +61,16 @@ allprojects {
         // JUnit
         testImplementation platform('org.junit:junit-bom:5.9.1')
         testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+
+    tasks.jacocoTestReport {
+        reports {
+            csv.required = true
+        }
+    }
+
+    test {
+        finalizedBy jacocoTestReport
     }
 }
 
