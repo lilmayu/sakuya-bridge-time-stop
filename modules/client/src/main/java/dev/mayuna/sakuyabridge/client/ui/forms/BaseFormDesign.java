@@ -18,8 +18,8 @@ public abstract class BaseFormDesign extends JFrame {
 
     public BaseFormDesign(Component parent) {
         super();
-        loadData();
         prepareComponents();
+        loadData();
         prepare(parent);
         registerListeners();
     }
@@ -107,8 +107,16 @@ public abstract class BaseFormDesign extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Called before disposing the form
+     */
+    public void onFormClose() {
+        // Empty
+    }
+
     @Override
     public void dispose() {
+        onFormClose();
         super.dispose();
 
         synchronized (closeMutex) {

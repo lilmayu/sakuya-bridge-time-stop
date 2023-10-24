@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
 
@@ -21,6 +22,10 @@ public class TimeStopPacketTranslator extends TimeStopTranslator {
 
     @Override
     public Object translate(Context context, Object object) {
+        if (object instanceof FrameworkMessage) {
+            return object;
+        }
+
         // TimeStopPacket => Object
         if (object instanceof TimeStopPacket timeStopPacket && context.getWay() == Context.Way.INBOUND) {
             Kryo kryo = context.getConnection().getEndPoint().getKryo();

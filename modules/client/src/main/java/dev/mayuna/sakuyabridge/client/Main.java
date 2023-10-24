@@ -4,14 +4,16 @@ import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.logging.LoggerFormLogAppender;
 import dev.mayuna.sakuyabridge.client.ui.forms.connect.ConnectForm;
-import dev.mayuna.sakuyabridge.client.ui.forms.logging.LoggingForm;
-import dev.mayuna.sakuyabridge.client.ui.loading.LoadingDialogForm;
 import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.IOException;
 
 public class Main {
 
@@ -71,11 +73,34 @@ public class Main {
 
     private static void openConnectForm() {
         ConnectForm connectForm = new ConnectForm(null);
-        connectForm.setOnConnectToServer(ip -> processConnectToIp(connectForm, ip));
         connectForm.openForm();
     }
 
-    private static void processConnectToIp(ConnectForm connectForm, String ip) {
+    /**
+     * Creates a connection to the server
+     *
+     * @param ip   IP
+     * @param port Port
+     *
+     * @return Whether the connection was successful
+     */
+    public static boolean createConnection(String ip, int port) {
+        LOGGER.mdebug("Setting up TimeStopClient...");
+        client = new TimeStopClient(configs.getEndpointConfig());
 
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+
+        LOGGER.mdebug("Starting TimeStopClient...");
+        client.start();
+
+        try {
+            client.connect(10000, ip, port);
+        } catch (IOException e) {
+            LOGGER.error("Failed to connect to server with IP " + ip + " and port " + port, e);
+            return false;
+        }
+
+        return true;
     }
 }

@@ -7,8 +7,21 @@ public class LoadingDialogForm extends LoadingDialogFormDesign {
     private Component parentComponent;
     private String progressInfoText;
 
-    public LoadingDialogForm() {
+    public LoadingDialogForm(String progressInfoText) {
         super(null);
+        setProgressInfo(progressInfoText);
+    }
+
+    // Static methods for specific loading dialogs
+
+    public static LoadingDialogForm createConnecting() {
+        return new LoadingDialogForm("Connecting...");
+    }
+
+    // ===========================================
+
+    @Override
+    protected void loadData() {
     }
 
     /**
@@ -91,7 +104,12 @@ public class LoadingDialogForm extends LoadingDialogFormDesign {
      * @param progressInfo The text
      */
     public void appendProgressInfo(String progressInfo) {
-        this.progressInfo.setText(this.progressInfoText + progressInfo);
+        if (progressInfo == null) {
+            this.progressInfo.setText(this.progressInfoText);
+            return;
+        }
+
+        this.progressInfo.setText(this.progressInfoText + " " + progressInfo);
     }
 
     /**

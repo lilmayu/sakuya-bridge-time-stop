@@ -12,6 +12,7 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
 
     protected JTextField txt_serverAddress;
     protected JButton btn_exit;
+    protected JButton btn_offline;
     protected JButton btn_connect;
 
     public ConnectFormDesign(Component parent) {
@@ -27,7 +28,7 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
         this.setLayout(MigLayoutUtils.createGrow());
 
         prepareTitle();
-        prepareServerAddress();
+        prepareConnectSettings();
         prepareButtons();
         prepareMenu();
 
@@ -39,14 +40,18 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
     protected void prepareComponents() {
         txt_serverAddress = new JTextField();
         btn_exit = new JButton("Exit");
-        btn_connect = new JButton("Connect");
+        btn_offline = new JButton("Offline");
+        btn_connect = new JButton("  Connect  ");
     }
 
     @Override
     protected void registerListeners() {
         registerClickListener(btn_exit, e -> System.exit(0));
+        registerClickListener(btn_offline, this::onOfflineClick);
         registerClickListener(btn_connect, this::onConnectClick);
     }
+
+    protected abstract void onOfflineClick(MouseEvent mouseEvent);
 
     protected abstract void onConnectClick(MouseEvent mouseEvent);
 
@@ -62,17 +67,23 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
         this.add(new JSeparator(), "growx, wrap");
     }
 
-    private void prepareServerAddress() {
+    private void prepareConnectSettings() {
+        JPanel settingsPanel = new JPanel(MigLayoutUtils.createGrow());
+        settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+
         JLabel serverAddressLabel = new JLabel("Server address");
-        this.add(serverAddressLabel, "wrap");
-        this.add(txt_serverAddress, "growx, wrap");
+        settingsPanel.add(serverAddressLabel, "wrap");
+        settingsPanel.add(txt_serverAddress, "growx, wrap");
+
+        this.add(settingsPanel, "growx, wrap");
     }
 
     private void prepareButtons() {
-        JPanel buttons = new JPanel(MigLayoutUtils.createNoInsets("[shrink][grow][shrink]"));
+        JPanel buttons = new JPanel(MigLayoutUtils.createNoInsets("[shrink][grow][shrink][shrink]"));
 
         buttons.add(btn_exit);
         buttons.add(new JLabel(), "growx");
+        buttons.add(btn_offline);
         buttons.add(btn_connect);
 
         this.add(buttons, "growx, wrap");

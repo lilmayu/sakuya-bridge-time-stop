@@ -16,10 +16,6 @@ public abstract class LoadingDialogFormDesign extends BaseFormDesign {
     }
 
     @Override
-    protected void loadData() {
-    }
-
-    @Override
     protected void prepare(Component parent) {
         this.setTitle("Loading...");
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

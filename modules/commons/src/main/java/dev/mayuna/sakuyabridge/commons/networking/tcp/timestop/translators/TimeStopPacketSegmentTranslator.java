@@ -1,5 +1,6 @@
 package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators;
 
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacketSegment;
@@ -24,6 +25,10 @@ public class TimeStopPacketSegmentTranslator extends TimeStopTranslator {
 
     @Override
     public Object translate(Context context, Object object) {
+        if (object instanceof FrameworkMessage) {
+            return object;
+        }
+
         switch (context.getWay()) {
             case OUTBOUND -> {
                 if (object instanceof TimeStopPacket timeStopPacket) {

@@ -44,3 +44,4 @@ bin/
 .idea/
 artifacts/
 gradle.properties
+client-config.json
