@@ -1,8 +1,11 @@
 package dev.mayuna.sakuyabridge.client;
 
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.logging.LoggerFormLogAppender;
+import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
 import dev.mayuna.sakuyabridge.client.ui.forms.connect.ConnectForm;
 import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
@@ -13,6 +16,7 @@ import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeS
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class Main {
@@ -27,6 +31,7 @@ public class Main {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
+        prepareExitHook();
         loadGson();
         prepareUserInterface();
 
@@ -52,18 +57,51 @@ public class Main {
         openConnectForm();
     }
 
+    /**
+     * Called when the program is exiting
+     */
+    private static void exit() {
+        LOGGER.info("Stopping Sakuya Bridge...");
+
+        if (client != null) {
+            LOGGER.info("Stopping client...");
+            client.stop();
+        }
+
+        LOGGER.info("Saving configuration...");
+        configs.save(gson);
+
+        LOGGER.info("Bye o/");
+    }
+
+    /**
+     * Prepares the exit hook
+     */
+    private static void prepareExitHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
+    }
+
+    /**
+     * Loads Gson
+     */
     private static void loadGson() {
         LOGGER.info("Loading Gson...");
 
         gson = new Gson();
     }
 
+    /**
+     * Loads the configuration
+     */
     private static void loadConfiguration() {
         LOGGER.info("Loading configuration...");
         configs = ClientConfigs.load(gson);
         LOGGER.info("Loaded configuration");
     }
 
+    /**
+     * Prepares the user interface
+     */
     private static void prepareUserInterface() {
         LOGGER.info("Setuping FlatDarkPurpleIJTheme...");
         FlatDarkPurpleIJTheme.setup();
@@ -71,6 +109,9 @@ public class Main {
         Log4jUtils.addAppender(new LoggerFormLogAppender(SakuyaBridgeLogger.MDEBUG));
     }
 
+    /**
+     * Opens the connect form
+     */
     private static void openConnectForm() {
         ConnectForm connectForm = new ConnectForm(null);
         connectForm.openForm();
@@ -85,22 +126,57 @@ public class Main {
      * @return Whether the connection was successful
      */
     public static boolean createConnection(String ip, int port) {
+        if (client != null) {
+            LOGGER.warn("Client is already connected to a server! Stopping it...");
+            client.stop();
+        }
+
         LOGGER.mdebug("Setting up TimeStopClient...");
         client = new TimeStopClient(configs.getEndpointConfig());
 
         client.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
         client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
 
+        // Disconnect listener
+        client.addListener(new Listener() {
+            @Override
+            public void disconnected(Connection connection) {
+                onDisconnect();
+            }
+        });
+
         LOGGER.mdebug("Starting TimeStopClient...");
         client.start();
 
         try {
-            client.connect(10000, ip, port);
+            client.connect(configs.getServerConnectConfig().getTimeoutMillis(), ip, port);
         } catch (IOException e) {
             LOGGER.error("Failed to connect to server with IP " + ip + " and port " + port, e);
             return false;
         }
 
         return true;
+    }
+
+    private static void onDisconnect() {
+        LOGGER.info("Disconnected from server!");
+
+        InfoMessages.ConnectToServer.CONNECTION_LOST.showError();
+
+        // Stops the client
+        if (client != null) {
+            client.stop();
+            client = null;
+        }
+
+        // Closes all windows
+        Window[] windows = Window.getWindows();
+
+        for (Window window : windows) {
+            window.dispose();
+        }
+
+        // Opens the connect form
+        openConnectForm();
     }
 }

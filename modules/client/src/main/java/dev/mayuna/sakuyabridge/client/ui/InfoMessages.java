@@ -13,6 +13,7 @@ public class InfoMessages {
         public final static Message UNKNOWN_HOST = new Message("Unknown host (check server address)");
         public static final Message INVALID_PORT = new Message("Invalid port (0 < port < 65535)");
         public static final Message CONNECTION_FAILED = new Message("Connection failed (check logs for details)");
+        public static final Message CONNECTION_LOST = new Message("Connection lost (check logs for details)");
     }
 
     /**

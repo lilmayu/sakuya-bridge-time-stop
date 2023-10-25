@@ -16,7 +16,23 @@ public class ClientConfigs {
     private LoggerConfig loggerConfig = new LoggerConfig();
     private ServerConnectConfig serverConnectConfig = new ServerConnectConfig();
 
+    /**
+     * Loads the configuration from the config file
+     *
+     * @param gson Gson instance
+     *
+     * @return the configuration
+     */
     public static ClientConfigs load(Gson gson) {
         return ApplicationConfigLoader.loadFrom(gson, Constants.CONFIG_FILE_NAME, ClientConfigs.class, false);
+    }
+
+    /**
+     * Saves the configuration to the config file
+     *
+     * @param gson Gson instance
+     */
+    public void save(Gson gson) {
+        ApplicationConfigLoader.saveTo(gson, Constants.CONFIG_FILE_NAME, this);
     }
 }
