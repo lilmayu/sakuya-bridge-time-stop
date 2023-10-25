@@ -1,15 +1,21 @@
 package dev.mayuna.sakuyabridge.client.ui.forms.logging;
 
 import dev.mayuna.sakuyabridge.client.ui.forms.BaseFormDesign;
+import dev.mayuna.sakuyabridge.client.ui.utils.MigLayoutUtils;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 
 public abstract class LoggingFormDesign extends BaseFormDesign {
 
     protected JTextArea txtarea_logs;
+    protected JCheckBox chckbox_wrapLines;
+    protected JSlider slider_fontSize;
     private JButton btn_exit;
 
     public LoggingFormDesign() {
@@ -37,18 +43,51 @@ public abstract class LoggingFormDesign extends BaseFormDesign {
     protected void prepareComponents() {
         txtarea_logs = new JTextArea();
         btn_exit = new JButton("Exit");
+        chckbox_wrapLines = new JCheckBox("Wrap lines");
+        slider_fontSize = new JSlider();
     }
 
     @Override
     protected void registerListeners() {
         registerClickListener(btn_exit, e -> this.setVisible(false));
+        registerCheckBoxCheckedListener(chckbox_wrapLines, this::onCheckBoxWrapLinesChecked);
+        slider_fontSize.addChangeListener(this::onSliderFontSizeChanged);
     }
 
+    protected abstract void onCheckBoxWrapLinesChecked(ActionEvent actionEvent);
+
+    protected abstract void onSliderFontSizeChanged(ChangeEvent changeEvent);
+
     private void prepareTitle() {
+        JPanel northPanel = new JPanel(MigLayoutUtils.create("[shrink][grow][shrink]"));
+
+        JPanel titlePanel = new JPanel(new BorderLayout());
+
         JLabel title = new JLabel("Logging Window");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 20.0f));
         title.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        this.add(title, BorderLayout.NORTH);
+        titlePanel.add(title);
+
+        northPanel.add(titlePanel);
+
+        northPanel.add(new JLabel()); // Spacer
+
+        northPanel.add(chckbox_wrapLines, "growy");
+
+        JSeparator separator = new JSeparator();
+        separator.setOrientation(SwingConstants.VERTICAL);
+        northPanel.add(separator, "growy");
+
+        northPanel.add(new JLabel("Font size: "), "growy");
+
+        slider_fontSize.setMajorTickSpacing(4);
+        slider_fontSize.setPaintLabels(true);
+        slider_fontSize.setMinimum(4);
+        slider_fontSize.setMaximum(24);
+
+        northPanel.add(slider_fontSize);
+
+        this.add(northPanel, BorderLayout.NORTH);
     }
 
     private void prepareLogsComponents() {
