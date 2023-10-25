@@ -25,5 +25,56 @@ public class Packets {
         public ProtocolVersionExchange(int protocolVersion) {
             this.protocolVersion = protocolVersion;
         }
+
+        /**
+         * Creates a new protocol version exchange message
+         *
+         * @param protocolVersion The protocol version
+         *
+         * @return The message
+         */
+        public static ProtocolVersionExchange create(int protocolVersion) {
+            return new ProtocolVersionExchange(protocolVersion);
+        }
+    }
+
+    /**
+     * Asymmetric key exchange
+     */
+    @Getter
+    public static class AsymmetricKeyExchange {
+
+        private byte[] publicKey;
+
+        public AsymmetricKeyExchange() {
+        }
+
+        public AsymmetricKeyExchange(byte[] publicKey) {
+            this.publicKey = publicKey;
+        }
+
+        public static AsymmetricKeyExchange create(byte[] publicKey) {
+            return new AsymmetricKeyExchange(publicKey);
+        }
+    }
+
+    /**
+     * Symmetric key exchange
+     */
+    @Getter
+    public static class SymmetricKeyExchange {
+
+        private byte[] encryptedSymmetricKey;
+
+        public SymmetricKeyExchange() {
+        }
+
+        public SymmetricKeyExchange(byte[] encryptedSymmetricKey) {
+            this.encryptedSymmetricKey = encryptedSymmetricKey;
+        }
+
+        public static SymmetricKeyExchange create(byte[] encryptedSymmetricKey) {
+            return new SymmetricKeyExchange(encryptedSymmetricKey);
+        }
     }
 }

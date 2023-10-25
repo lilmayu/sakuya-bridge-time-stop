@@ -9,6 +9,7 @@ import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
 import dev.mayuna.sakuyabridge.client.ui.forms.connect.ConnectForm;
 import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
@@ -27,6 +28,7 @@ public class Main {
     private static @Getter @Setter ClientConfigs configs;
 
     private static @Getter @Setter TimeStopClient client;
+    private static @Getter @Setter EncryptionManager encryptionManager;
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -97,6 +99,9 @@ public class Main {
         LOGGER.info("Loading configuration...");
         configs = ClientConfigs.load(gson);
         LOGGER.info("Loaded configuration");
+
+        LOGGER.info("Loading encryption manager...");
+        encryptionManager = new EncryptionManager(configs.getEncryptionConfig());
     }
 
     /**

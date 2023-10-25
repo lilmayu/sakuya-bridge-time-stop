@@ -5,14 +5,19 @@ import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopList
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListenerManager;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslatorManager;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
+import java.security.Key;
 import java.util.function.Consumer;
 
 public class TimeStopConnection extends Connection {
 
     private final TimeStopListenerManager listenerManager;
     private final TimeStopTranslatorManager translatorManager;
+
+    private @Getter @Setter Key publicKey;
 
     /**
      * Creates a new connection with the given translator manager

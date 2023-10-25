@@ -2,10 +2,13 @@ package dev.mayuna.sakuyabridge.client.ui.forms.connect;
 
 import dev.mayuna.sakuyabridge.client.Main;
 import dev.mayuna.sakuyabridge.client.configs.ServerConnectConfig;
+import dev.mayuna.sakuyabridge.client.networking.NetworkTask;
 import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
 import dev.mayuna.sakuyabridge.client.ui.loading.LoadingDialogForm;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -37,6 +40,7 @@ public class ConnectForm extends ConnectFormDesign {
             loadingDialog.unblockAndClose();
 
             if (!success) {
+                // TODO: Stop client if connected
                 return;
             }
         });
@@ -114,6 +118,64 @@ public class ConnectForm extends ConnectFormDesign {
         }
 
         // Exchange version protocol
+        loadingDialog.setProgressInfo("Exchanging data...");
+        loadingDialog.appendProgressInfo("Protocol version");
+
+        Packets.ProtocolVersionExchange serverProtocolVersion;
+
+        try {
+            serverProtocolVersion = new NetworkTask.ExchangeProtocolVersion().runSync(NetworkConstants.COMMUNICATION_PROTOCOL_VERSION);
+        } catch (Exception exception) {
+            LOGGER.error("Failed to exchange protocol version", exception);
+            InfoMessages.ConnectToServer.PROTOCOL_VERSION_EXCHANGE_FAILED.showError(loadingDialog);
+            return false;
+        }
+
+        if (serverProtocolVersion.getProtocolVersion() != NetworkConstants.COMMUNICATION_PROTOCOL_VERSION) {
+            LOGGER.warn("Server protocol version is " + serverProtocolVersion.getProtocolVersion() + " but client protocol version is " + NetworkConstants.COMMUNICATION_PROTOCOL_VERSION);
+
+            if (InfoMessages.ConnectToServer.PROTOCOL_VERSION_MISMATCH_QUESTION.showQuestion(JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return false;
+            }
+
+            LOGGER.warn("Ignoring protocol version mismatch");
+        }
+
+        // Generate RSA Key pair
+        loadingDialog.appendProgressInfo("Encrypting...");
+
+        try {
+            LOGGER.mdebug("Generating asymmetric key pair... (" + EncryptionManager.ASYMMETRIC_KEY_TYPE + ")");
+            Main.getEncryptionManager().generateAsymmetricKeyPair();
+            LOGGER.mdebug("Generated asymmetric key pair (" + EncryptionManager.ASYMMETRIC_KEY_TYPE + ")");
+        } catch (Exception exception) {
+            LOGGER.error("Failed to generate asymmetric key pair", exception);
+            InfoMessages.ConnectToServer.FAILED_TO_GENERATE_ASYMMETRIC_KEY.showError(loadingDialog);
+            return false;
+        }
+
+        // Exchange asymmetric key
+        Packets.SymmetricKeyExchange encryptedSymmetricKey;
+
+        try {
+            encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getEncryptionManager().getAsymmetricPublicKey());
+        } catch (Exception exception) {
+            LOGGER.error("Failed to exchange asymmetric key for encrypted symmetric key", exception);
+            InfoMessages.ConnectToServer.FAILED_TO_EXCHANGE_ASYMMETRIC_KEY.showError(loadingDialog);
+            return false;
+        }
+
+        // Decrypt symmetric key
+        try {
+            byte[] decryptedSymmetricKey = Main.getEncryptionManager().decryptUsingAsymmetricKey(encryptedSymmetricKey.getEncryptedSymmetricKey());
+            Main.getEncryptionManager().setSymmetricKeyFromBytes(decryptedSymmetricKey);
+        } catch (Exception exception) {
+            LOGGER.error("Failed to decrypt symmetric key", exception);
+            InfoMessages.ConnectToServer.FAILED_TO_DECRYPT_SYMMETRIC_KEY.showError(loadingDialog);
+            return false;
+        }
+
+        LOGGER.mdebug("Symmetric key was exchanged successfully");
 
         return true;
     }

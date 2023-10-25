@@ -14,6 +14,11 @@ public class InfoMessages {
         public static final Message INVALID_PORT = new Message("Invalid port (0 < port < 65535)");
         public static final Message CONNECTION_FAILED = new Message("Connection failed (check logs for details)");
         public static final Message CONNECTION_LOST = new Message("Connection lost (check logs for details)");
+        public static final Message PROTOCOL_VERSION_EXCHANGE_FAILED = new Message("Protocol version exchange failed");
+        public static final Message PROTOCOL_VERSION_MISMATCH_QUESTION = new Message("Server protocol version is %s but client protocol version is %s.\n\nThis can lead to communication errors.\n\nContinue?");
+        public static final Message FAILED_TO_GENERATE_ASYMMETRIC_KEY = new Message("Failed to generate asymmetric encryption key");
+        public static final Message FAILED_TO_EXCHANGE_ASYMMETRIC_KEY = new Message("Failed to exchange asymmetric encryption key for encrypted symmetric key");
+        public static final Message FAILED_TO_DECRYPT_SYMMETRIC_KEY = new Message("Failed to decrypt symmetric encryption key");
     }
 
     /**
@@ -21,7 +26,7 @@ public class InfoMessages {
      */
     public static class Message {
 
-        private final String message;
+        private String message;
 
         /**
          * Creates message with a message
@@ -33,7 +38,17 @@ public class InfoMessages {
         }
 
         /**
+         * Formats the message with the given values
+         *
+         * @param values Values
+         */
+        public void withValues(Object... values) {
+            message = String.format(message, values);
+        }
+
+        /**
          * Shows the message as an error
+         *
          * @param parentComponent Parent component
          */
         public void showError(Component parentComponent) {
@@ -49,6 +64,7 @@ public class InfoMessages {
 
         /**
          * Shows the message as a warning
+         *
          * @param parentComponent Parent component
          */
         public void showWarning(Component parentComponent) {
@@ -64,6 +80,7 @@ public class InfoMessages {
 
         /**
          * Shows the message as an info
+         *
          * @param parentComponent Parent component
          */
         public void showInfo(Component parentComponent) {
@@ -75,6 +92,34 @@ public class InfoMessages {
          */
         public void showInfo() {
             showInfo(null);
+        }
+
+        /**
+         * Shows the message as a question
+         *
+         * @param optionType an int designating the options available on the dialog:
+         *                  <code>YES_NO_OPTION</code>,
+         *                  <code>YES_NO_CANCEL_OPTION</code>,
+         *                  or <code>OK_CANCEL_OPTION</code>
+         *
+         * @return The answer
+         */
+        public int showQuestion(Component parentComponent, int optionType) {
+            return JOptionPane.showConfirmDialog(parentComponent, message, "Question", optionType);
+        }
+
+        /**
+         * Shows the message as a question
+         *
+         * @param optionType an int designating the options available on the dialog:
+         *                  <code>YES_NO_OPTION</code>,
+         *                  <code>YES_NO_CANCEL_OPTION</code>,
+         *                  or <code>OK_CANCEL_OPTION</code>
+         *
+         * @return The answer
+         */
+        public int showQuestion(int optionType) {
+            return showQuestion(null, optionType);
         }
     }
 }
