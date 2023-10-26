@@ -1,6 +1,7 @@
 package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class contains all messages that are used in the TimeStop protocol
@@ -12,10 +13,44 @@ public class Packets {
     }
 
     /**
+     * Error message
+     */
+    @Getter
+    @Setter
+    public static abstract class BasePacket {
+
+        private String errorMessage;
+
+        public BasePacket() {
+        }
+
+        /**
+         * Sets the error message
+         *
+         * @param errorMessage The error message
+         *
+         * @return Itself
+         */
+        public BasePacket withError(String errorMessage) {
+            this.errorMessage = errorMessage;
+            return this;
+        }
+
+        /**
+         * Checks if the packet has an error
+         *
+         * @return If the packet has an error
+         */
+        public boolean hasError() {
+            return errorMessage != null;
+        }
+    }
+
+    /**
      * Protocol version exchange
      */
     @Getter
-    public static class ProtocolVersionExchange {
+    public static class ProtocolVersionExchange extends BasePacket {
 
         private int protocolVersion;
 
@@ -42,7 +77,7 @@ public class Packets {
      * Asymmetric key exchange
      */
     @Getter
-    public static class AsymmetricKeyExchange {
+    public static class AsymmetricKeyExchange extends BasePacket {
 
         private byte[] publicKey;
 
@@ -62,7 +97,7 @@ public class Packets {
      * Symmetric key exchange
      */
     @Getter
-    public static class SymmetricKeyExchange {
+    public static class SymmetricKeyExchange extends BasePacket {
 
         private byte[] encryptedSymmetricKey;
 

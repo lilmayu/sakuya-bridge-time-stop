@@ -30,7 +30,8 @@ public class AsymmetricKeyExchangeListener extends TimeStopListener<Packets.Asym
             LOGGER.error("Failed to load public key that was sent by " + context.getConnection()
                                                                                 .getRemoteAddressTCP()
                                                                                 .toString(), exception);
-            return; // TODO: Error message to client
+            connection.sendTCP(new Packets.SymmetricKeyExchange().withError("Failed to load public key"));
+            return;
         }
 
         byte[] encryptedSymmetricKey;
@@ -39,7 +40,8 @@ public class AsymmetricKeyExchangeListener extends TimeStopListener<Packets.Asym
             encryptedSymmetricKey = EncryptionManager.encryptDataUsingKey(Main.getEncryptionManager().getSymmetricKey(), connection.getPublicKey());
         } catch (Exception e) {
             LOGGER.error("Failed to encrypt symmetric key", e);
-            return; // TODO: Error message to client
+            connection.sendTCP(new Packets.SymmetricKeyExchange().withError("Failed to encrypt symmetric key"));
+            return;
         }
 
         Packets.SymmetricKeyExchange symmetricKeyExchange = new Packets.SymmetricKeyExchange(encryptedSymmetricKey);

@@ -30,6 +30,8 @@ public class Main {
     private static @Getter @Setter TimeStopClient client;
     private static @Getter @Setter EncryptionManager encryptionManager;
 
+    private static boolean ignoreClientDisconnects = false;
+
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
@@ -133,7 +135,7 @@ public class Main {
     public static boolean createConnection(String ip, int port) {
         if (client != null) {
             LOGGER.warn("Client is already connected to a server! Stopping it...");
-            client.stop();
+            stopConnection();
         }
 
         LOGGER.mdebug("Setting up TimeStopClient...");
@@ -163,8 +165,25 @@ public class Main {
         return true;
     }
 
+    /**
+     * Stops the connection
+     */
+    public static void stopConnection() {
+        if (client != null) {
+            LOGGER.info("Stopping client...");
+
+            ignoreClientDisconnects = true;
+            client.stop();
+            ignoreClientDisconnects = false;
+        }
+    }
+
     private static void onDisconnect() {
         LOGGER.info("Disconnected from server!");
+
+        if (ignoreClientDisconnects) {
+            return;
+        }
 
         InfoMessages.ConnectToServer.CONNECTION_LOST.showError();
 

@@ -1,6 +1,7 @@
 package dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener;
 
 import com.esotericsoftware.kryonet.Connection;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
 import lombok.Getter;
 import lombok.NonNull;
 

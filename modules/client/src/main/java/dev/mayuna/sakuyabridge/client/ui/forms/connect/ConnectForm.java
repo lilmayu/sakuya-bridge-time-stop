@@ -40,7 +40,7 @@ public class ConnectForm extends ConnectFormDesign {
             loadingDialog.unblockAndClose();
 
             if (!success) {
-                // TODO: Stop client if connected
+                Main.stopConnection();
                 return;
             }
         });
@@ -161,6 +161,12 @@ public class ConnectForm extends ConnectFormDesign {
             encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getEncryptionManager().getAsymmetricPublicKey());
         } catch (Exception exception) {
             LOGGER.error("Failed to exchange asymmetric key for encrypted symmetric key", exception);
+            InfoMessages.ConnectToServer.FAILED_TO_EXCHANGE_ASYMMETRIC_KEY.showError(loadingDialog);
+            return false;
+        }
+
+        if (encryptedSymmetricKey.hasError()) {
+            LOGGER.error("Failed to exchange asymmetric key for encrypted symmetric key: " + encryptedSymmetricKey.getErrorMessage());
             InfoMessages.ConnectToServer.FAILED_TO_EXCHANGE_ASYMMETRIC_KEY.showError(loadingDialog);
             return false;
         }
