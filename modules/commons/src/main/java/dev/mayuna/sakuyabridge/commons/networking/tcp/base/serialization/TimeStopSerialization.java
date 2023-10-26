@@ -41,6 +41,7 @@ public class TimeStopSerialization {
     private static void registerJavaClasses(Kryo kryo) {
         // Basic
         kryo.register(byte[].class);
+        kryo.register(boolean.class);
 
         // Serializers
         kryo.register(UUID.class, new UUIDSerializer());

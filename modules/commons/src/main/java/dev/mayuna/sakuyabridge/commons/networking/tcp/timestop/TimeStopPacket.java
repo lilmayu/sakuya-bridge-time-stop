@@ -5,13 +5,14 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Getter
+@Getter @Setter
 public class TimeStopPacket {
 
     private UUID uuid;
     private byte[] data;
-    private @Setter boolean requireResponse;
-    private @Setter UUID responseToUuid;
+    private boolean requireResponse;
+    private UUID responseToUuid;
+    private boolean encrypted;
 
     public TimeStopPacket() {
         uuid = UUID.randomUUID();

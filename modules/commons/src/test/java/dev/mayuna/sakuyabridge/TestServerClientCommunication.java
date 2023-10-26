@@ -1,17 +1,21 @@
 package dev.mayuna.sakuyabridge;
 
+import dev.mayuna.sakuyabridge.commons.config.EncryptionConfig;
+import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.EndpointConfig;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopServer;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListener;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketEncryptionTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -340,6 +344,51 @@ public class TestServerClientCommunication {
 
         server.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
         client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+
+        server.getListenerManager().registerListener(new TimeStopListener<>(byte[].class, 0) {
+            @Override
+            public void process(@NonNull Context context, @NonNull byte[] message) {
+                assertArrayEquals(bytesToSend, message);
+
+                synchronized (received) {
+                    received.set(true);
+                    received.notifyAll();
+                }
+            }
+        });
+
+        client.sendTCP(bytesToSend);
+
+        synchronized (received) {
+            assertDoesNotThrow(() -> {
+                synchronized (received) {
+                    received.wait(1000);
+                }
+            });
+
+            assertEquals(true, received.get());
+        }
+    }
+
+    @Test
+    public void testTimeStopPacketEncryptionTranslation() throws NoSuchAlgorithmException {
+        byte[] bytesToSend = new byte[1000];
+        AtomicReference<Boolean> received = new AtomicReference<>(false);
+
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
+
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+
+        EncryptionManager encryptionManager = new EncryptionManager(new EncryptionConfig());
+        encryptionManager.generateSymmetricKey();
+
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Decrypt(encryptionManager, context -> true));
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Encrypt(encryptionManager, context -> true));
+
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Decrypt(encryptionManager, context -> true));
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Encrypt(encryptionManager, context -> true));
 
         server.getListenerManager().registerListener(new TimeStopListener<>(byte[].class, 0) {
             @Override

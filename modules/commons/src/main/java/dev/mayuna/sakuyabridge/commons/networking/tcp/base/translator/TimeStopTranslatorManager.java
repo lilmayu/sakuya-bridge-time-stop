@@ -50,6 +50,7 @@ public class TimeStopTranslatorManager {
     public Object process(TimeStopTranslator.Context context, Object object) {
         synchronized (translators) {
             for (TimeStopTranslator translator : translators) {
+                // TODO: Catch errors and close connections
                 object = translator.translate(context, object);
 
                 if (context.isReset()) {

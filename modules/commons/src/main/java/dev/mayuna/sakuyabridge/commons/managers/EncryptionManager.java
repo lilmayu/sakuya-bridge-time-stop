@@ -155,6 +155,24 @@ public class EncryptionManager {
     }
 
     /**
+     * Checks if the asymmetric key pair has been generated/loaded
+     *
+     * @return If the asymmetric key pair has been generated/loaded
+     */
+    public boolean hasAsymmetricKeyPair() {
+        return asymetricKeyPair != null;
+    }
+
+    /**
+     * Checks if the symmetric key has been generated/loaded
+     *
+     * @return If the symmetric key has been generated/loaded
+     */
+    public boolean hasSymmetricKey() {
+        return symmetricKey != null;
+    }
+
+    /**
      * Saves the asymmetric key pair to the given file name
      *
      * @param fileNameWithoutExtension The file name without extension (will be .pub and .key)
