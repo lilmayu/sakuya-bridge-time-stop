@@ -1,10 +1,12 @@
 package dev.mayuna.sakuyabridge.client;
 
+import com.esotericsoftware.minlog.Log;
 import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.logging.LoggerFormLogAppender;
 import dev.mayuna.sakuyabridge.client.networking.tcp.WrappedTimeStopClient;
 import dev.mayuna.sakuyabridge.client.ui.forms.connect.ConnectForm;
+import dev.mayuna.sakuyabridge.commons.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
@@ -28,6 +30,7 @@ public class Main {
         prepareExitHook();
         loadGson();
         prepareUserInterface();
+        prepareKryoLogging();
 
         LOGGER.info("Sakuya Bridge: Time Stop - Client");
         LOGGER.info("========================");
@@ -101,6 +104,13 @@ public class Main {
         FlatDarkPurpleIJTheme.setup();
 
         Log4jUtils.addAppender(new LoggerFormLogAppender(SakuyaBridgeLogger.MDEBUG));
+    }
+
+    /**
+     * Prepares Kryo logging
+     */
+    private static void prepareKryoLogging() {
+        Log.setLogger(new KryoLogger(SakuyaBridgeLogger.create("Kryo")));
     }
 
     /**

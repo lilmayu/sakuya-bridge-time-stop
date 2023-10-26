@@ -1,7 +1,9 @@
 package dev.mayuna.sakuyabridge.server;
 
+import com.esotericsoftware.minlog.Log;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.commons.config.ApplicationConfigLoader;
+import dev.mayuna.sakuyabridge.commons.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
@@ -39,11 +41,19 @@ public class Main {
 
         long start = System.currentTimeMillis();
 
+        prepareKryoLogging();
         loadGson();
         loadConfiguration();
         startServer();
 
         LOGGER.info("Started server in " + (System.currentTimeMillis() - start) + "ms");
+    }
+
+    /**
+     * Prepares Kryo logging
+     */
+    private static void prepareKryoLogging() {
+        Log.setLogger(new KryoLogger(SakuyaBridgeLogger.create("Kryo")));
     }
 
     private static void loadGson() {
