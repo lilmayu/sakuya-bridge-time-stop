@@ -118,6 +118,7 @@ public class ConnectForm extends ConnectFormDesign {
         }
 
         // Exchange version protocol
+        loadingDialog.setIndeterminate();
         loadingDialog.setProgressInfo("Exchanging data...");
         loadingDialog.appendProgressInfo("Protocol version");
 
@@ -182,6 +183,26 @@ public class ConnectForm extends ConnectFormDesign {
         }
 
         LOGGER.mdebug("Symmetric key was exchanged successfully");
+
+        // Enable encrypted communication
+        Packets.EncryptedCommunicationRequest encryptedCommunicationRequest;
+
+        try {
+            encryptedCommunicationRequest = new NetworkTask.EncryptedCommunicationRequest().runSync();
+        } catch (Exception exception) {
+            LOGGER.error("Failed to enable encrypted communication", exception);
+            InfoMessages.ConnectToServer.FAILED_TO_ENABLE_ENCRYPTED_COMMUNICATION.showError(loadingDialog);
+            return false;
+        }
+
+        if (encryptedCommunicationRequest.hasError()) {
+            LOGGER.error("Failed to enable encrypted communication: " + encryptedCommunicationRequest.getErrorMessage());
+            InfoMessages.ConnectToServer.FAILED_TO_ENABLE_ENCRYPTED_COMMUNICATION.showError(loadingDialog);
+            return false;
+        }
+
+        LOGGER.info("Encrypted communication was enabled successfully");
+        Main.getClient().setEncryptDataSentOverNetwork(true);
 
         return true;
     }

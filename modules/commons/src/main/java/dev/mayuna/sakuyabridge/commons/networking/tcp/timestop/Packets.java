@@ -112,4 +112,14 @@ public class Packets {
             return new SymmetricKeyExchange(encryptedSymmetricKey);
         }
     }
+
+    /**
+     * Enables encrypted communication
+     */
+    @Getter
+    public static class EncryptedCommunicationRequest extends BasePacket {
+
+        public EncryptedCommunicationRequest() {
+        }
+    }
 }

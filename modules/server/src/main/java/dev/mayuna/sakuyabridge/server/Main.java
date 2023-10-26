@@ -7,12 +7,15 @@ import dev.mayuna.sakuyabridge.commons.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopConnection;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopServer;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListenerManager;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.serialization.TimeStopSerialization;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketEncryptionTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
 import dev.mayuna.sakuyabridge.server.listeners.AsymmetricKeyExchangeListener;
+import dev.mayuna.sakuyabridge.server.listeners.EncryptedCommunicationRequestListener;
 import dev.mayuna.sakuyabridge.server.listeners.ProtocolVersionExchangeListener;
 import lombok.Getter;
 import lombok.Setter;
@@ -95,11 +98,14 @@ public class Main {
         LOGGER.info("Registering server translators...");
         server.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
         server.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Encrypt(encryptionManager, context -> ((TimeStopConnection) context.getConnection()).isEncryptDataSentOverNetwork()));
+        server.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Decrypt(encryptionManager, context -> ((TimeStopConnection) context.getConnection()).isEncryptDataSentOverNetwork()));
 
         LOGGER.info("Registering server listeners...");
         TimeStopListenerManager listenerManager = server.getListenerManager();
         listenerManager.registerListener(new ProtocolVersionExchangeListener());
         listenerManager.registerListener(new AsymmetricKeyExchangeListener());
+        listenerManager.registerListener(new EncryptedCommunicationRequestListener());
 
         LOGGER.info("Starting TimeStop server...");
         server.start();

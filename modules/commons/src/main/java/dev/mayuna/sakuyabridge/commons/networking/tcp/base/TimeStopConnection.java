@@ -12,12 +12,14 @@ import lombok.Setter;
 import java.security.Key;
 import java.util.function.Consumer;
 
+@Getter @Setter
 public class TimeStopConnection extends Connection {
 
     private final TimeStopListenerManager listenerManager;
     private final TimeStopTranslatorManager translatorManager;
 
-    private @Getter @Setter Key publicKey;
+    private Key publicKey;
+    private boolean encryptDataSentOverNetwork = false;
 
     /**
      * Creates a new connection with the given translator manager

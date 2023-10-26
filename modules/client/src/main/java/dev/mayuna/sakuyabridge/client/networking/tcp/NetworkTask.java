@@ -72,4 +72,20 @@ public class NetworkTask {
             return sendPacket(Packets.AsymmetricKeyExchange.create(publicKey), Packets.SymmetricKeyExchange.class);
         }
     }
+
+    /**
+     * Enables encrypted communication
+     */
+    public static class EncryptedCommunicationRequest extends BaseEmptyNetworkTask<Packets.EncryptedCommunicationRequest> {
+
+        /**
+         * Enables encrypted communication
+         *
+         * @return CompletableFuture of {@link Packets.EncryptedCommunicationRequest}
+         */
+        @Override
+        public CompletableFuture<Packets.EncryptedCommunicationRequest> run() {
+            return sendPacket(new Packets.EncryptedCommunicationRequest(), Packets.EncryptedCommunicationRequest.class);
+        }
+    }
 }

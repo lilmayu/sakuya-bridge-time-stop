@@ -9,6 +9,7 @@ import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
+import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketEncryptionTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
 import lombok.Getter;
@@ -49,6 +50,8 @@ public class WrappedTimeStopClient extends TimeStopClient implements Listener {
 
         client.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
         client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Encrypt(client.encryptionManager, context -> client.encryptDataSentOverNetwork));
+        client.getTranslatorManager().registerTranslator(new TimeStopPacketEncryptionTranslator.Decrypt(client.encryptionManager, context -> client.encryptDataSentOverNetwork));
 
         // Self listener
         client.addListener(client);

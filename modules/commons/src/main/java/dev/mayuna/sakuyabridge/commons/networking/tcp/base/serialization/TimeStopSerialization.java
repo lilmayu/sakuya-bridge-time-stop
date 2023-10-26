@@ -61,5 +61,6 @@ public class TimeStopSerialization {
         kryo.register(Packets.ProtocolVersionExchange.class);
         kryo.register(Packets.AsymmetricKeyExchange.class);
         kryo.register(Packets.SymmetricKeyExchange.class);
+        kryo.register(Packets.EncryptedCommunicationRequest.class);
     }
 }

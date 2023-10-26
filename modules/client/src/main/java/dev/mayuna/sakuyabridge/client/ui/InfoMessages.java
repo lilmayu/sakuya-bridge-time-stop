@@ -19,6 +19,7 @@ public class InfoMessages {
         public static final Message FAILED_TO_GENERATE_ASYMMETRIC_KEY = new Message("Failed to generate asymmetric encryption key");
         public static final Message FAILED_TO_EXCHANGE_ASYMMETRIC_KEY = new Message("Failed to exchange asymmetric encryption key for encrypted symmetric key");
         public static final Message FAILED_TO_DECRYPT_SYMMETRIC_KEY = new Message("Failed to decrypt symmetric encryption key");
+        public static final Message FAILED_TO_ENABLE_ENCRYPTED_COMMUNICATION = new Message("Failed to enable encrypted communication");
     }
 
     /**
