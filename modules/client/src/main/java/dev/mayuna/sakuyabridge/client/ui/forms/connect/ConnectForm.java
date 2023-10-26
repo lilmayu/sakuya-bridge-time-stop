@@ -2,7 +2,7 @@ package dev.mayuna.sakuyabridge.client.ui.forms.connect;
 
 import dev.mayuna.sakuyabridge.client.Main;
 import dev.mayuna.sakuyabridge.client.configs.ServerConnectConfig;
-import dev.mayuna.sakuyabridge.client.networking.NetworkTask;
+import dev.mayuna.sakuyabridge.client.networking.tcp.NetworkTask;
 import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
 import dev.mayuna.sakuyabridge.client.ui.loading.LoadingDialogForm;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
@@ -146,7 +146,7 @@ public class ConnectForm extends ConnectFormDesign {
 
         try {
             LOGGER.mdebug("Generating asymmetric key pair... (" + EncryptionManager.ASYMMETRIC_KEY_TYPE + ")");
-            Main.getEncryptionManager().generateAsymmetricKeyPair();
+            Main.getClient().getEncryptionManager().generateAsymmetricKeyPair();
             LOGGER.mdebug("Generated asymmetric key pair (" + EncryptionManager.ASYMMETRIC_KEY_TYPE + ")");
         } catch (Exception exception) {
             LOGGER.error("Failed to generate asymmetric key pair", exception);
@@ -158,7 +158,7 @@ public class ConnectForm extends ConnectFormDesign {
         Packets.SymmetricKeyExchange encryptedSymmetricKey;
 
         try {
-            encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getEncryptionManager().getAsymmetricPublicKey());
+            encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getClient().getEncryptionManager().getAsymmetricPublicKey());
         } catch (Exception exception) {
             LOGGER.error("Failed to exchange asymmetric key for encrypted symmetric key", exception);
             InfoMessages.ConnectToServer.FAILED_TO_EXCHANGE_ASYMMETRIC_KEY.showError(loadingDialog);
@@ -173,8 +173,8 @@ public class ConnectForm extends ConnectFormDesign {
 
         // Decrypt symmetric key
         try {
-            byte[] decryptedSymmetricKey = Main.getEncryptionManager().decryptUsingAsymmetricKey(encryptedSymmetricKey.getEncryptedSymmetricKey());
-            Main.getEncryptionManager().setSymmetricKeyFromBytes(decryptedSymmetricKey);
+            byte[] decryptedSymmetricKey = Main.getClient().getEncryptionManager().decryptUsingAsymmetricKey(encryptedSymmetricKey.getEncryptedSymmetricKey());
+            Main.getClient().getEncryptionManager().setSymmetricKeyFromBytes(decryptedSymmetricKey);
         } catch (Exception exception) {
             LOGGER.error("Failed to decrypt symmetric key", exception);
             InfoMessages.ConnectToServer.FAILED_TO_DECRYPT_SYMMETRIC_KEY.showError(loadingDialog);

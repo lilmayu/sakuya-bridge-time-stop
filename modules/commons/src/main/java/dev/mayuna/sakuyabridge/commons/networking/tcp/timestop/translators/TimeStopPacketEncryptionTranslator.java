@@ -5,10 +5,7 @@ import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class TimeStopPacketEncryptionTranslator {
 

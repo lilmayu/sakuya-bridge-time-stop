@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.client.networking;
+package dev.mayuna.sakuyabridge.client.networking.tcp;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

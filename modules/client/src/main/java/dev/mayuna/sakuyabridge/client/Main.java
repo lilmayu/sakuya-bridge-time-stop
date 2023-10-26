@@ -1,23 +1,16 @@
 package dev.mayuna.sakuyabridge.client;
 
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.logging.LoggerFormLogAppender;
-import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
+import dev.mayuna.sakuyabridge.client.networking.tcp.WrappedTimeStopClient;
 import dev.mayuna.sakuyabridge.client.ui.forms.connect.ConnectForm;
 import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class Main {
@@ -27,10 +20,7 @@ public class Main {
     private static @Getter @Setter Gson gson;
     private static @Getter @Setter ClientConfigs configs;
 
-    private static @Getter @Setter TimeStopClient client;
-    private static @Getter @Setter EncryptionManager encryptionManager;
-
-    private static boolean ignoreClientDisconnects = false;
+    private static @Getter @Setter WrappedTimeStopClient client;
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -101,9 +91,6 @@ public class Main {
         LOGGER.info("Loading configuration...");
         configs = ClientConfigs.load(gson);
         LOGGER.info("Loaded configuration");
-
-        LOGGER.info("Loading encryption manager...");
-        encryptionManager = new EncryptionManager(configs.getEncryptionConfig());
     }
 
     /**
@@ -119,7 +106,7 @@ public class Main {
     /**
      * Opens the connect form
      */
-    private static void openConnectForm() {
+    public static void openConnectForm() {
         ConnectForm connectForm = new ConnectForm(null);
         connectForm.openForm();
     }
@@ -139,18 +126,7 @@ public class Main {
         }
 
         LOGGER.mdebug("Setting up TimeStopClient...");
-        client = new TimeStopClient(configs.getEndpointConfig());
-
-        client.getTranslatorManager().registerTranslator(new TimeStopPacketTranslator());
-        client.getTranslatorManager().registerTranslator(new TimeStopPacketSegmentTranslator(NetworkConstants.OBJECT_BUFFER_SIZE));
-
-        // Disconnect listener
-        client.addListener(new Listener() {
-            @Override
-            public void disconnected(Connection connection) {
-                onDisconnect();
-            }
-        });
+        client = WrappedTimeStopClient.createClient(configs);
 
         LOGGER.mdebug("Starting TimeStopClient...");
         client.start();
@@ -171,36 +147,7 @@ public class Main {
     public static void stopConnection() {
         if (client != null) {
             LOGGER.info("Stopping client...");
-
-            ignoreClientDisconnects = true;
-            client.stop();
-            ignoreClientDisconnects = false;
+            client.stopConnection();
         }
-    }
-
-    private static void onDisconnect() {
-        LOGGER.info("Disconnected from server!");
-
-        if (ignoreClientDisconnects) {
-            return;
-        }
-
-        InfoMessages.ConnectToServer.CONNECTION_LOST.showError();
-
-        // Stops the client
-        if (client != null) {
-            client.stop();
-            client = null;
-        }
-
-        // Closes all windows
-        Window[] windows = Window.getWindows();
-
-        for (Window window : windows) {
-            window.dispose();
-        }
-
-        // Opens the connect form
-        openConnectForm();
     }
 }
