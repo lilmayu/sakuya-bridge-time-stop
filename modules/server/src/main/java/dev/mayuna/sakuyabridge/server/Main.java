@@ -19,6 +19,7 @@ import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeS
 import dev.mayuna.sakuyabridge.server.config.ServerConfigs;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.AsymmetricKeyExchangeListener;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.EncryptedCommunicationRequestListener;
+import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.LoginMethodsRequestListener;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.ProtocolVersionExchangeListener;
 import dev.mayuna.sakuyabridge.server.users.UserManagers;
 import lombok.Getter;
@@ -156,6 +157,7 @@ public class Main {
         listenerManager.registerListener(new ProtocolVersionExchangeListener());
         listenerManager.registerListener(new AsymmetricKeyExchangeListener());
         listenerManager.registerListener(new EncryptedCommunicationRequestListener());
+        listenerManager.registerListener(new LoginMethodsRequestListener());
 
         LOGGER.info("Starting TimeStop server...");
         server.start();

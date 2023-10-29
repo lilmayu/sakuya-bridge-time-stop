@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.commons.networking.tcp.base.serialization;
 
 import com.esotericsoftware.kryo.Kryo;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.login.LoginMethod;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacket;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.TimeStopPacketSegment;
@@ -64,5 +65,9 @@ public class TimeStopSerialization {
         kryo.register(Packets.EncryptedCommunicationRequest.class);
         kryo.register(Packets.LoginMethodsRequest.class);
         kryo.register(Packets.LoginMethodsResponse.class);
+
+        // Objects
+        kryo.register(LoginMethod.class);
+        kryo.register(LoginMethod[].class);
     }
 }

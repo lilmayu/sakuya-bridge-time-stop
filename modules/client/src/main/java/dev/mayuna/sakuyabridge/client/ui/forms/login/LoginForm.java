@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.client.ui.forms.login;
 import dev.mayuna.sakuyabridge.client.Main;
 import dev.mayuna.sakuyabridge.client.networking.tcp.NetworkTask;
 import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
+import dev.mayuna.sakuyabridge.client.ui.forms.login.usernameandpassword.UsernameAndPasswordLoginForm;
 import dev.mayuna.sakuyabridge.client.ui.loading.LoadingDialogForm;
 import dev.mayuna.sakuyabridge.commons.login.LoginMethod;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
@@ -43,7 +44,15 @@ public class LoginForm extends LoginFormDesign {
 
     @Override
     protected void onUsernameAndPasswordClick(MouseEvent mouseEvent) {
-        // TODO
+        var form = new UsernameAndPasswordLoginForm(this);
+        form.openForm();
+
+        this.setEnabled(false);
+        CompletableFuture.runAsync(() -> {
+            form.waitUntilClosed();
+            this.setEnabled(true);
+            this.requestFocus();
+        });
     }
 
     @Override

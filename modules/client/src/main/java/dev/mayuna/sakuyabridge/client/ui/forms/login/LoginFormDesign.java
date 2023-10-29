@@ -24,7 +24,6 @@ public abstract class LoginFormDesign extends BaseFormDesign {
     protected void prepare(Component parent) {
         this.setTitle("Sakuya Bridge: Time Stop");
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.setLocationRelativeTo(parent);
         this.setResizable(false);
         this.setLayout(MigLayoutUtils.createGrow());
 
@@ -34,6 +33,7 @@ public abstract class LoginFormDesign extends BaseFormDesign {
         prepareMenu();
 
         this.pack();
+        this.setLocationRelativeTo(parent);
     }
 
     @Override

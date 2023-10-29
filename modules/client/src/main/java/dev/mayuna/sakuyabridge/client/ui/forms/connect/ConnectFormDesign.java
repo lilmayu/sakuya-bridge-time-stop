@@ -24,7 +24,6 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
     protected void prepare(Component parent) {
         this.setTitle("Sakuya Bridge: Time Stop");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(parent);
         this.setResizable(false);
         this.setLayout(MigLayoutUtils.createGrow());
 
@@ -35,6 +34,7 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
 
         this.pack();
         this.setSize(340, this.getHeight());
+        this.setLocationRelativeTo(parent);
     }
 
     @Override

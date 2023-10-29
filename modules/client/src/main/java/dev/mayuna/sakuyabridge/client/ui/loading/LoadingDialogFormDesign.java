@@ -19,7 +19,6 @@ public abstract class LoadingDialogFormDesign extends BaseFormDesign {
     protected void prepare(Component parent) {
         this.setTitle("Loading...");
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.setLocationRelativeTo(parent);
         this.setResizable(false);
 
         this.setLayout(MigLayoutUtils.createGrow());
@@ -30,6 +29,7 @@ public abstract class LoadingDialogFormDesign extends BaseFormDesign {
 
         this.pack();
         this.setSize(300, this.getHeight());
+        this.setLocationRelativeTo(parent);
     }
 
     @Override
