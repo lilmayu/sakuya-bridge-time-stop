@@ -2,6 +2,9 @@ package dev.mayuna.sakuyabridge.server;
 
 import com.esotericsoftware.minlog.Log;
 import com.google.gson.Gson;
+import dev.mayuna.pumpk1n.Pumpk1n;
+import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
+import dev.mayuna.pumpk1n.objects.DataHolder;
 import dev.mayuna.sakuyabridge.commons.config.ApplicationConfigLoader;
 import dev.mayuna.sakuyabridge.commons.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
@@ -13,11 +16,14 @@ import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopList
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketEncryptionTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketSegmentTranslator;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.translators.TimeStopPacketTranslator;
+import dev.mayuna.sakuyabridge.server.config.ServerConfigs;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.AsymmetricKeyExchangeListener;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.EncryptedCommunicationRequestListener;
 import dev.mayuna.sakuyabridge.server.networking.tcp.listeners.ProtocolVersionExchangeListener;
+import dev.mayuna.sakuyabridge.server.users.UserManagers;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.event.Level;
 
 public class Main {
 
@@ -28,6 +34,8 @@ public class Main {
     private static @Getter @Setter TimeStopServer server;
 
     private static @Getter @Setter EncryptionManager encryptionManager;
+    private static @Getter @Setter Pumpk1n pumpk1n;
+    private static @Getter @Setter UserManagers userManagers;
 
     public static void main(String[] args) {
         LOGGER.info("Sakuya Bridge: Time Stop - Server");
@@ -41,12 +49,41 @@ public class Main {
 
         long start = System.currentTimeMillis();
 
+        prepareExitHook();
         prepareKryoLogging();
         loadGson();
         loadConfiguration();
+        prepareStorage();
+        prepareManagers();
         startServer();
 
         LOGGER.info("Started server in " + (System.currentTimeMillis() - start) + "ms");
+    }
+
+    private static void exit() {
+        LOGGER.info("Stopping Sakuya Bridge...");
+
+        if (server != null) {
+            LOGGER.info("Stopping server...");
+            server.stop();
+        }
+
+        if (pumpk1n != null) {
+            LOGGER.info("Saving Pumpk1n's data...");
+            for (DataHolder dataHolder : pumpk1n.getDataHolderList()) {
+                dataHolder.save();
+            }
+        }
+
+        LOGGER.info("Stopped Sakuya Bridge");
+        LOGGER.success("o/");
+    }
+
+    /**
+     * Prepares the exit hook
+     */
+    private static void prepareExitHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
     }
 
     /**
@@ -78,6 +115,22 @@ public class Main {
             LOGGER.error("Failed to generate encryption keys", exception);
             System.exit(1);
         }
+    }
+
+    private static void prepareStorage() {
+        // Pumpk1n already logs
+        pumpk1n = new Pumpk1n(new FolderStorageHandler(configs.getStorageConfig().getDirectoryPath()));
+        pumpk1n.enableLogging(Level.INFO); // Maybe DEBUG
+        pumpk1n.prepareStorage();
+    }
+
+    private static void prepareManagers() {
+        LOGGER.info("Preparing managers...");
+        userManagers = new UserManagers();
+        userManagers.loadStoredUsers();
+
+        // TODO: Allowed authentication methods config -> init only those, which are enabled
+        userManagers.initUsernamePasswordUserManager();
     }
 
     private static void startServer() {

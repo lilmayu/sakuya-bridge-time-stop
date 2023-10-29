@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.server;
+package dev.mayuna.sakuyabridge.server.config;
 
 import dev.mayuna.sakuyabridge.commons.config.EncryptionConfig;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
@@ -11,6 +11,8 @@ import lombok.Setter;
 public class ServerConfigs {
 
     private int serverPort = NetworkConstants.DEFAULT_PORT;
+
     private EndpointConfig endpointConfig = new EndpointConfig();
     private EncryptionConfig encryptionConfig = new EncryptionConfig();
+    private StorageConfig storageConfig = new StorageConfig();
 }

@@ -14,6 +14,15 @@ repositories {
 dependencies {
     // Commons
     implementation project(":commons")
+
+    // Java Discord OAuth2 API
+    implementation 'dev.mayuna:java-discord-oauth2-api:1.0.0'
+
+    // Simple Java API Wrapper
+    implementation 'dev.mayuna:simple-java-api-wrapper:2.2'
+
+    // Pumpk1n
+    implementation 'dev.mayuna:pumpk1n:2.1.1-hotfix2'
 }
 
 test {

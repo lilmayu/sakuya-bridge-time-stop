@@ -3,7 +3,7 @@ package dev.mayuna.sakuyabridge.server.networking.tcp;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopConnection;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListenerManager;
 import dev.mayuna.sakuyabridge.commons.networking.tcp.base.translator.TimeStopTranslatorManager;
-import dev.mayuna.sakuyabridge.server.objects.users.User;
+import dev.mayuna.sakuyabridge.server.users.objects.User;
 import lombok.Getter;
 import lombok.Setter;
 
