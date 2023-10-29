@@ -88,4 +88,15 @@ public class NetworkTask {
             return sendPacket(new Packets.EncryptedCommunicationRequest(), Packets.EncryptedCommunicationRequest.class);
         }
     }
+
+    /**
+     * Fetches the login methods
+     */
+    public static class FetchLoginMethods extends BaseEmptyNetworkTask<Packets.LoginMethodsResponse> {
+
+        @Override
+        public CompletableFuture<Packets.LoginMethodsResponse> run() {
+            return sendPacket(new Packets.LoginMethodsRequest(), Packets.LoginMethodsResponse.class);
+        }
+    }
 }

@@ -60,10 +60,17 @@ public class WrappedTimeStopClient extends TimeStopClient implements Listener {
     }
 
     /**
-     * Stops the client
+     * Stops the client without Connection lost message
      */
-    public void stopConnection() {
+    public void stopConnectionSafe() {
         ignoreClientDisconnects = true;
+        this.stop();
+    }
+
+    /**
+     * Stops the client with Connection lost message
+     */
+    public void stopConnectionForcefully() {
         this.stop();
     }
 
@@ -75,7 +82,7 @@ public class WrappedTimeStopClient extends TimeStopClient implements Listener {
             return;
         }
 
-        InfoMessages.ConnectToServer.CONNECTION_LOST.showError();
+        InfoMessages.ConnectToServer.CONNECTION_CLOSED_OR_LOST.showError();
 
         // Stops the client
         this.stop();

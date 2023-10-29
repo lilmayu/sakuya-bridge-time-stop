@@ -1,7 +1,10 @@
 package dev.mayuna.sakuyabridge.commons.networking.tcp.timestop;
 
+import dev.mayuna.sakuyabridge.commons.login.LoginMethod;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 /**
  * This class contains all messages that are used in the TimeStop protocol
@@ -120,6 +123,39 @@ public class Packets {
     public static class EncryptedCommunicationRequest extends BasePacket {
 
         public EncryptedCommunicationRequest() {
+        }
+    }
+
+    /**
+     * Login methods request
+     */
+    public static class LoginMethodsRequest extends BasePacket {
+
+        public LoginMethodsRequest() {
+        }
+    }
+
+    /**
+     * Login methods response
+     */
+    public static class LoginMethodsResponse extends BasePacket {
+
+        private LoginMethod[] loginMethods;
+
+        public LoginMethodsResponse() {
+        }
+
+        public LoginMethodsResponse(LoginMethod[] loginMethods) {
+            this.loginMethods = loginMethods;
+        }
+
+        /**
+         * Returns the login methods
+         *
+         * @return Non-null login methods
+         */
+        public LoginMethod[] getLoginMethods() {
+            return Objects.requireNonNullElseGet(loginMethods, () -> new LoginMethod[0]);
         }
     }
 }

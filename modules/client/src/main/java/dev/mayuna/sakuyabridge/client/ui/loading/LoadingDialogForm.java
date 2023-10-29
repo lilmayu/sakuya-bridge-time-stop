@@ -18,6 +18,10 @@ public class LoadingDialogForm extends LoadingDialogFormDesign {
         return new LoadingDialogForm("Connecting...");
     }
 
+    public static LoadingDialogForm createFetchingLoginMethods() {
+        return new LoadingDialogForm("Fetching login methods...");
+    }
+
     // ===========================================
 
     @Override

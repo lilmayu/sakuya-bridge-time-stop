@@ -120,7 +120,7 @@ public class EncryptionManager {
      *
      * @return The public key
      */
-    public byte[] getAsymmetricPublicKey() {
+    public byte[] getAsymmetricPublicKeyBytes() {
         if (asymetricKeyPair == null) {
             throw new IllegalStateException("Asymmetric key pair has not been generated/loaded yet");
         }
@@ -133,7 +133,7 @@ public class EncryptionManager {
      *
      * @return The private key
      */
-    public byte[] getAsymmetricPrivateKey() {
+    public byte[] getAsymmetricPrivateKeyBytes() {
         if (asymetricKeyPair == null) {
             throw new IllegalStateException("Asymmetric key pair has not been generated/loaded yet");
         }
@@ -146,7 +146,7 @@ public class EncryptionManager {
      *
      * @return The symmetric key
      */
-    public byte[] getSymmetricKey() {
+    public byte[] getSymmetricKeyBytes() {
         if (symmetricKey == null) {
             throw new IllegalStateException("Symmetric key has not been generated/loaded yet");
         }
@@ -274,22 +274,17 @@ public class EncryptionManager {
      * @param fileNameWithoutExtension The file name without extension (will be .key)
      *
      * @throws IOException              If the file could not be read
-     * @throws NoSuchAlgorithmException If the algorithm is not supported
-     * @throws InvalidKeySpecException  If the key spec is invalid
      */
-    public void loadSymmetricKey(String fileNameWithoutExtension) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public void loadSymmetricKey(String fileNameWithoutExtension) throws IOException {
         File keyFile = new File(fileNameWithoutExtension + ".key");
 
         if (!keyFile.exists()) {
             throw new IOException("Key file at " + keyFile.getAbsolutePath() + " does not exist");
         }
 
-        KeyFactory keyFactory = KeyFactory.getInstance(SYMMETRIC_KEY_TYPE);
-
         // Load key
         byte[] keyBytes = Files.readAllBytes(keyFile.toPath());
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-        symmetricKey = keyFactory.generatePublic(keySpec);
+        symmetricKey = new SecretKeySpec(keyBytes, "AES");
     }
 
     /**

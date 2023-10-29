@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.server.listeners;
+package dev.mayuna.sakuyabridge.server.networking.tcp.listeners;
 
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;

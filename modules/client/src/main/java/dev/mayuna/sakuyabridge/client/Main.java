@@ -117,7 +117,7 @@ public class Main {
      * Opens the connect form
      */
     public static void openConnectForm() {
-        ConnectForm connectForm = new ConnectForm(null);
+        ConnectForm connectForm = new ConnectForm();
         connectForm.openForm();
     }
 
@@ -132,7 +132,7 @@ public class Main {
     public static boolean createConnection(String ip, int port) {
         if (client != null) {
             LOGGER.warn("Client is already connected to a server! Stopping it...");
-            stopConnection();
+            stopConnectionSafe();
         }
 
         LOGGER.mdebug("Setting up TimeStopClient...");
@@ -152,12 +152,24 @@ public class Main {
     }
 
     /**
-     * Stops the connection
+     * Stops the connection safely
      */
-    public static void stopConnection() {
+    public static void stopConnectionSafe() {
         if (client != null) {
-            LOGGER.info("Stopping client...");
-            client.stopConnection();
+            LOGGER.info("Stopping client safely...");
+            client.stopConnectionSafe();
+            client = null;
+        }
+    }
+
+    /**
+     * Stops the connection forcefully
+     */
+    public static void stopConnectionForcefully() {
+        if (client != null) {
+            LOGGER.info("Stopping client forcefully...");
+            client.stopConnectionForcefully();
+            client = null;
         }
     }
 }

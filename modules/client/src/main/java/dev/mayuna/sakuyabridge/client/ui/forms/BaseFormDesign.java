@@ -108,6 +108,13 @@ public abstract class BaseFormDesign extends JFrame {
     }
 
     /**
+     * Called after opening the form
+     */
+    public void onFormOpen() {
+        // Empty
+    }
+
+    /**
      * Called before disposing the form
      */
     public void onFormClose() {
@@ -121,6 +128,15 @@ public abstract class BaseFormDesign extends JFrame {
 
         synchronized (closeMutex) {
             closeMutex.notifyAll();
+        }
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+
+        if (b) {
+            onFormOpen();
         }
     }
 }

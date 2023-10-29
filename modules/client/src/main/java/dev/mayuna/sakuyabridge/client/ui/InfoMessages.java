@@ -8,18 +8,28 @@ import java.awt.*;
 @Generated
 public class InfoMessages {
 
+    public static class General {
+
+        public static final Message DISCONNECT_QUESTION = new Message("Are you sure you want to disconnect from server?");
+    }
+
     public static class ConnectToServer {
 
         public final static Message UNKNOWN_HOST = new Message("Unknown host (check server address)");
         public static final Message INVALID_PORT = new Message("Invalid port (0 < port < 65535)");
         public static final Message CONNECTION_FAILED = new Message("Connection failed (check logs for details)");
-        public static final Message CONNECTION_LOST = new Message("Connection lost (check logs for details)");
+        public static final Message CONNECTION_CLOSED_OR_LOST = new Message("Connection closed/lost");
         public static final Message PROTOCOL_VERSION_EXCHANGE_FAILED = new Message("Protocol version exchange failed");
         public static final Message PROTOCOL_VERSION_MISMATCH_QUESTION = new Message("Server protocol version is %s but client protocol version is %s.\n\nThis can lead to communication errors.\n\nContinue?");
         public static final Message FAILED_TO_GENERATE_ASYMMETRIC_KEY = new Message("Failed to generate asymmetric encryption key");
         public static final Message FAILED_TO_EXCHANGE_ASYMMETRIC_KEY = new Message("Failed to exchange asymmetric encryption key for encrypted symmetric key");
         public static final Message FAILED_TO_DECRYPT_SYMMETRIC_KEY = new Message("Failed to decrypt symmetric encryption key");
         public static final Message FAILED_TO_ENABLE_ENCRYPTED_COMMUNICATION = new Message("Failed to enable encrypted communication");
+    }
+
+    public static class LoginMethods {
+
+        public static final Message FAILED_TO_FETCH_LOGIN_METHODS = new Message("Failed to fetch login methods");
     }
 
     /**

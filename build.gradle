@@ -22,6 +22,7 @@ allprojects {
 
     apply plugin: 'java'
     apply plugin: 'jacoco'
+    apply plugin: 'jacoco-report-aggregation'
 
     repositories {
         mavenCentral()

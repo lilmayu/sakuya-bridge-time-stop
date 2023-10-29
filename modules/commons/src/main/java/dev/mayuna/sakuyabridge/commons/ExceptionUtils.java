@@ -1,5 +1,8 @@
 package dev.mayuna.sakuyabridge.commons;
 
+import dev.mayuna.sakuyabridge.commons.jacoco.Generated;
+
+@Generated
 public class ExceptionUtils {
 
     /**

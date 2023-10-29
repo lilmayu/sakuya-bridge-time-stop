@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.server.listeners;
+package dev.mayuna.sakuyabridge.server.networking.tcp.listeners;
 
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
@@ -37,7 +37,7 @@ public class AsymmetricKeyExchangeListener extends TimeStopListener<Packets.Asym
         byte[] encryptedSymmetricKey;
 
         try {
-            encryptedSymmetricKey = EncryptionManager.encryptDataUsingKey(Main.getEncryptionManager().getSymmetricKey(), connection.getPublicKey());
+            encryptedSymmetricKey = EncryptionManager.encryptDataUsingKey(Main.getEncryptionManager().getSymmetricKeyBytes(), connection.getPublicKey());
         } catch (Exception e) {
             LOGGER.error("Failed to encrypt symmetric key", e);
             connection.sendTCP(new Packets.SymmetricKeyExchange().withError("Failed to encrypt symmetric key"));

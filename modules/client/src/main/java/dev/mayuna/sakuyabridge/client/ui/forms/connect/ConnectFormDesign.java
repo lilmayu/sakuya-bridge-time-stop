@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.client.ui.forms.connect;
 
 import dev.mayuna.sakuyabridge.client.ui.forms.BaseFormDesign;
 import dev.mayuna.sakuyabridge.client.ui.forms.logging.LoggingForm;
+import dev.mayuna.sakuyabridge.client.ui.utils.MenuUtils;
 import dev.mayuna.sakuyabridge.client.ui.utils.MigLayoutUtils;
 
 import javax.swing.*;
@@ -92,16 +93,11 @@ public abstract class ConnectFormDesign extends BaseFormDesign {
     private void prepareMenu() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu menu = new JMenu("Menu");
+        JMenu menu = new JMenu("File");
         menuBar.add(menu);
 
-        JMenuItem logging = new JMenuItem("Logging Window");
-        logging.addActionListener(e -> LoggingForm.getInstance().openForm());
-        menu.add(logging);
-
-        JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(e -> System.exit(0));
-        menu.add(exit);
+        MenuUtils.addLoggingWindowToMenu(menu);
+        MenuUtils.addExitToMenu(menu);
 
         this.setJMenuBar(menuBar);
     }

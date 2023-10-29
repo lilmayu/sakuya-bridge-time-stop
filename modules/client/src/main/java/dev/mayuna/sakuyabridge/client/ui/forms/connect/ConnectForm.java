@@ -4,6 +4,7 @@ import dev.mayuna.sakuyabridge.client.Main;
 import dev.mayuna.sakuyabridge.client.configs.ServerConnectConfig;
 import dev.mayuna.sakuyabridge.client.networking.tcp.NetworkTask;
 import dev.mayuna.sakuyabridge.client.ui.InfoMessages;
+import dev.mayuna.sakuyabridge.client.ui.forms.login.LoginForm;
 import dev.mayuna.sakuyabridge.client.ui.loading.LoadingDialogForm;
 import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
@@ -20,8 +21,8 @@ public class ConnectForm extends ConnectFormDesign {
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(ConnectForm.class);
 
-    public ConnectForm(JComponent parent) {
-        super(parent);
+    public ConnectForm() {
+        super(null);
     }
 
     @Override
@@ -40,9 +41,15 @@ public class ConnectForm extends ConnectFormDesign {
             loadingDialog.unblockAndClose();
 
             if (!success) {
-                Main.stopConnection();
+                Main.stopConnectionSafe();
                 return;
             }
+
+            // Close connect form
+            this.dispose();
+
+            // Open login form
+            new LoginForm().openForm();
         });
     }
 
@@ -159,7 +166,7 @@ public class ConnectForm extends ConnectFormDesign {
         Packets.SymmetricKeyExchange encryptedSymmetricKey;
 
         try {
-            encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getClient().getEncryptionManager().getAsymmetricPublicKey());
+            encryptedSymmetricKey = new NetworkTask.ExchangeAsymmetricKey().runSync(Main.getClient().getEncryptionManager().getAsymmetricPublicKeyBytes());
         } catch (Exception exception) {
             LOGGER.error("Failed to exchange asymmetric key for encrypted symmetric key", exception);
             InfoMessages.ConnectToServer.FAILED_TO_EXCHANGE_ASYMMETRIC_KEY.showError(loadingDialog);

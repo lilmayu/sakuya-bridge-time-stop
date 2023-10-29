@@ -24,6 +24,7 @@ public class TimeStopConnection extends Connection {
     /**
      * Creates a new connection with the given translator manager
      *
+     * @param listenerManager listener manager
      * @param translatorManager Translator manager
      */
     public TimeStopConnection(TimeStopListenerManager listenerManager, TimeStopTranslatorManager translatorManager) {

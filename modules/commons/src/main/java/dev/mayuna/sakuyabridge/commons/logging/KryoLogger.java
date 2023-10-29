@@ -1,7 +1,9 @@
 package dev.mayuna.sakuyabridge.commons.logging;
 
 import com.esotericsoftware.minlog.Log;
+import dev.mayuna.sakuyabridge.commons.jacoco.Generated;
 
+@Generated
 public class KryoLogger extends Log.Logger {
 
     private final SakuyaBridgeLogger logger;
