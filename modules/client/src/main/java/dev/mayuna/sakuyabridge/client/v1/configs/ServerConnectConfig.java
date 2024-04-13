@@ -1,6 +1,6 @@
 package dev.mayuna.sakuyabridge.client.v1.configs;
 
-import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
+import dev.mayuna.sakuyabridge.commons.v1.networking.NetworkConstants;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,8 +1,8 @@
 package dev.mayuna.sakuyabridge.client.v1.tcp;
 
 import dev.mayuna.sakuyabridge.client.v1.Main;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.timestop.Packets;
 
 import java.util.concurrent.CompletableFuture;
 

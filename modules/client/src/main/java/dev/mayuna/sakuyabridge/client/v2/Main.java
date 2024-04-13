@@ -1,12 +1,12 @@
 package dev.mayuna.sakuyabridge.client.v2;
 
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
-import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.SakuyaBridgeGraphicalInterface;
-import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.SakuyaBridgeInterface;
+import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
+import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.UserInterface;
 
 public class Main {
 
-    private static final SakuyaBridgeInterface sakuyaBridgeInterface = SakuyaBridgeGraphicalInterface.INSTANCE;
+    private static final UserInterface USER_INTERFACE = GraphicalUserInterface.INSTANCE;
 
     /**
      * Main method
@@ -17,11 +17,8 @@ public class Main {
         // Hooking the shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
 
-        // Boot the SakuyaBridge
-        SakuyaBridge.INSTANCE.boot();
-
         // TODO: Ability to change interface using args
-        sakuyaBridgeInterface.start();
+        USER_INTERFACE.start();
     }
 
     /**
@@ -32,6 +29,6 @@ public class Main {
         SakuyaBridge.INSTANCE.reset();
 
         // Stop the interface
-        sakuyaBridgeInterface.stop();
+        USER_INTERFACE.stop();
     }
 }

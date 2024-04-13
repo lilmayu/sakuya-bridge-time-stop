@@ -1,6 +1,6 @@
 package dev.mayuna.sakuyabridge.client.v1.ui;
 
-import dev.mayuna.sakuyabridge.commons.jacoco.Generated;
+import dev.mayuna.sakuyabridge.commons.v2.jacoco.Generated;
 
 import javax.swing.*;
 import java.awt.*;

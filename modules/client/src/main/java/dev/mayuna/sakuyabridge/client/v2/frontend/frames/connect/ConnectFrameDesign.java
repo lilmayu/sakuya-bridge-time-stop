@@ -66,13 +66,19 @@ public abstract class ConnectFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     @Override
     protected void registerListeners() {
+        CinnamonRoll.onClick(buttonConnect, this::clickConnect);
         CinnamonRoll.onClick(buttonExit, e -> System.exit(0));
         CinnamonRoll.onClick(labelAuthor, e -> DesktopUtils.openUrl(MiscConstants.MAYUNA_WEBSITE_URL));
         CinnamonRoll.onClick(labelVersion, e -> DesktopUtils.openUrl(MiscConstants.GITHUB_RELEASE_URL));
     }
 
+    protected abstract void clickConnect(MouseEvent mouseEvent);
+
     protected abstract void openLoggingFrame(MouseEvent mouseEvent);
 
+    /**
+     * Prepare the title of the frame.
+     */
     private void prepareTitle() {
         JLabel mainTitle = new JLabel($getTranslation(Lang.Frames.Connect.LABEL_TITLE));
         DesignUtils.deriveFontWith(mainTitle, Font.BOLD, 24);
@@ -89,6 +95,9 @@ public abstract class ConnectFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.add(new JSeparator(), "growx, wrap");
     }
 
+    /**
+     * Prepare the server connect panel.
+     */
     private void prepareServerConnect() {
         JPanel serverConnectPanel = new JPanel();
         serverConnectPanel.setLayout(new MigLayout("insets 0 n n n", "[shrink][grow][shrink][shrink]")); // top insets 0
@@ -107,6 +116,9 @@ public abstract class ConnectFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.add(serverConnectPanel, "growx, wrap");
     }
 
+    /**
+     * Prepare the footer of the frame.
+     */
     private void prepareFooter() {
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(MigLayoutUtils.createNoInsets("[grow][shrink]"));

@@ -3,8 +3,8 @@ package dev.mayuna.sakuyabridge;
 import dev.mayuna.pumpk1n.Pumpk1n;
 import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
 import dev.mayuna.pumpk1n.objects.DataHolder;
-import dev.mayuna.sakuyabridge.server.Main;
-import dev.mayuna.sakuyabridge.server.users.UserManagers;
+import dev.mayuna.sakuyabridge.server.v1.Main;
+import dev.mayuna.sakuyabridge.server.v1.users.UserManagers;
 import org.junit.jupiter.api.*;
 
 import java.io.File;

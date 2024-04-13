@@ -3,9 +3,9 @@ package dev.mayuna.sakuyabridge.client.v1;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.v1.configs.LoggerConfig;
 import dev.mayuna.sakuyabridge.client.v1.configs.ServerConnectConfig;
-import dev.mayuna.sakuyabridge.commons.config.ApplicationConfigLoader;
-import dev.mayuna.sakuyabridge.commons.config.EncryptionConfig;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.EndpointConfig;
+import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
+import dev.mayuna.sakuyabridge.commons.v1.config.EncryptionConfig;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.base.EndpointConfig;
 import lombok.Getter;
 import lombok.Setter;
 

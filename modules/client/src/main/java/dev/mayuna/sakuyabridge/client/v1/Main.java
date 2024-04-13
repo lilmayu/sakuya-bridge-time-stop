@@ -6,10 +6,10 @@ import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.client.v1.logging.LoggerFormLogAppender;
 import dev.mayuna.sakuyabridge.client.v1.tcp.WrappedTimeStopClient;
 import dev.mayuna.sakuyabridge.client.v1.ui.forms.connect.ConnectForm;
-import dev.mayuna.sakuyabridge.commons.logging.KryoLogger;
-import dev.mayuna.sakuyabridge.commons.logging.Log4jUtils;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
+import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
+import dev.mayuna.sakuyabridge.commons.v2.logging.Log4jUtils;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v1.networking.NetworkConstants;
 import lombok.Getter;
 import lombok.Setter;
 

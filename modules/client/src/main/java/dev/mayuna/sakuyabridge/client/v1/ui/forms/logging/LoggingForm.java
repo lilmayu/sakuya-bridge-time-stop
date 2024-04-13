@@ -2,7 +2,7 @@ package dev.mayuna.sakuyabridge.client.v1.ui.forms.logging;
 
 import dev.mayuna.sakuyabridge.client.v1.Main;
 import dev.mayuna.sakuyabridge.client.v1.configs.LoggerConfig;
-import dev.mayuna.sakuyabridge.commons.ExceptionUtils;
+import dev.mayuna.sakuyabridge.commons.v2.ExceptionUtils;
 import org.apache.logging.log4j.core.LogEvent;
 
 import javax.swing.event.ChangeEvent;

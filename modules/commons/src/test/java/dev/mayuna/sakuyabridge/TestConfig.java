@@ -1,8 +1,8 @@
 package dev.mayuna.sakuyabridge;
 
 import com.google.gson.Gson;
-import dev.mayuna.sakuyabridge.commons.config.ApplicationConfigLoader;
-import dev.mayuna.sakuyabridge.commons.config.ConfigException;
+import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
+import dev.mayuna.sakuyabridge.commons.v2.config.ConfigException;
 import dev.mayuna.sakuyabridge.objects.TestConfigObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

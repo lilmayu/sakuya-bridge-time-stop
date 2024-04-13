@@ -1,12 +1,11 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.frames.main.panels;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import dev.mayuna.sakuyabridge.client.v1.ui.utils.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.frontend.TabbedPanel;
-import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.SakuyaBridgeGraphicalInterface;
+import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
 import dev.mayuna.sakuyabridge.client.v2.frontend.util.FlatLafThemeUtils;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +35,7 @@ public class SettingsTabbedPanel extends TabbedPanel {
         for (int i = 0; i < themeComboBox.getItemCount(); i++) {
             UIManager.LookAndFeelInfo lookAndFeelInfo = themeComboBox.getItemAt(i);
 
-            if (lookAndFeelInfo.getClassName().equals(SakuyaBridgeGraphicalInterface.INSTANCE.getSettings().getLookAndFeelClass())) {
+            if (lookAndFeelInfo.getClassName().equals(GraphicalUserInterface.INSTANCE.getSettings().getLookAndFeelClass())) {
                 themeComboBox.setSelectedIndex(i);
                 break;
             }
@@ -89,7 +88,7 @@ public class SettingsTabbedPanel extends TabbedPanel {
             }
 
             // Set the look and feel
-            var settings = SakuyaBridgeGraphicalInterface.INSTANCE.getSettings();
+            var settings = GraphicalUserInterface.INSTANCE.getSettings();
             settings.setLookAndFeelClass(selectedTheme.getClassName());
             settings.save();
 

@@ -1,8 +1,7 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.lang;
 
-import dev.mayuna.sakuyabridge.client.v2.frontend.util.StringUtils;
 import dev.mayuna.sakuyabridge.client.v2.util.ResourcesUtils;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

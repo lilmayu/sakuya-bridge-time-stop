@@ -5,9 +5,9 @@ import dev.mayuna.sakuyabridge.client.v1.tcp.NetworkTask;
 import dev.mayuna.sakuyabridge.client.v1.ui.InfoMessages;
 import dev.mayuna.sakuyabridge.client.v1.ui.forms.login.usernameandpassword.UsernameAndPasswordLoginForm;
 import dev.mayuna.sakuyabridge.client.v1.ui.loading.LoadingDialogForm;
-import dev.mayuna.sakuyabridge.commons.login.LoginMethod;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
+import dev.mayuna.sakuyabridge.commons.v1.login.LoginMethod;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.timestop.Packets;
 
 import java.awt.event.MouseEvent;
 import java.util.Arrays;

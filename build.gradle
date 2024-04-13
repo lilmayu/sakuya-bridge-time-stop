@@ -36,6 +36,9 @@ allprojects {
         // Kryo
         implementation 'com.esotericsoftware:kryo:5.5.0'
 
+        // Personal
+        implementation 'dev.mayuna:time-stop-protocol:0.1.0'
+
         // GSON
         implementation 'com.google.code.gson:gson:2.10'
 

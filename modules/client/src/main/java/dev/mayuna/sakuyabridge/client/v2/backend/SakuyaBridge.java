@@ -1,7 +1,7 @@
 package dev.mayuna.sakuyabridge.client.v2.backend;
 
-import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
-import dev.mayuna.sakuyabridge.commons.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.client.v2.backend.networking.Client;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import lombok.Getter;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,16 +15,29 @@ public final class SakuyaBridge {
     public static final SakuyaBridge INSTANCE = new SakuyaBridge();
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridge.class);
 
+    private ClientConfig config;
+    private Client client;
+
     private SakuyaBridge() {
     }
 
     /**
      * Starts the backend
      */
-    public void boot() {
+    public boolean boot() {
         LOGGER.info("Booting SakuyaBridge");
-
         reset();
+
+        config = ClientConfig.load();
+        client = new Client(config);
+        client.start();
+
+        if (!client.isSuccessfullyPrepared()) {
+            LOGGER.error("Failed to prepare client");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -32,6 +45,11 @@ public final class SakuyaBridge {
      */
     public void reset() {
         LOGGER.info("Resetting SakuyaBridge");
+
+        if (client != null) {
+            LOGGER.info("Stopping client");
+            client.stop();
+        }
     }
 
     /**
@@ -43,8 +61,32 @@ public final class SakuyaBridge {
      */
     public CompletableFuture<Boolean> connectToServer(String host) {
         // todo: return SakuyaBridgeServerInfo object, which will hold the server name, motd, login methods, etc.
+        var future = new CompletableFuture<Boolean>();
 
         LOGGER.info("Connecting to server: " + host);
-        return CompletableFuture.completedFuture(true);
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                client.connect(5000, host, 28077);
+            } catch (Exception exception) {
+                LOGGER.error("Failed to connect to server: " + host, exception);
+                future.complete(false);
+                return;
+            }
+
+            var connectionEncrypted = client.getConnectionSuccessful().join();
+
+            if (!connectionEncrypted) {
+                LOGGER.error("Failed to encrypt connection to server: " + host);
+                future.complete(false);
+                return;
+            }
+
+            // TODO: Request ServerInfo
+            LOGGER.success("Connected to server: " + host);
+            future.complete(true);
+        });
+
+        return future;
     }
 }

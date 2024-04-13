@@ -1,11 +1,11 @@
 package dev.mayuna.sakuyabridge;
 
-import dev.mayuna.sakuyabridge.commons.networking.NetworkConstants;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.EndpointConfig;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopClient;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.TimeStopServer;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.base.listener.TimeStopListener;
-import dev.mayuna.sakuyabridge.commons.networking.tcp.timestop.Packets;
+import dev.mayuna.sakuyabridge.commons.v1.networking.NetworkConstants;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.base.EndpointConfig;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.base.TimeStopClient;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.base.TimeStopServer;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.base.listener.TimeStopListener;
+import dev.mayuna.sakuyabridge.commons.v1.networking.tcp.timestop.Packets;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;

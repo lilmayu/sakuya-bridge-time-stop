@@ -1,7 +1,7 @@
 package dev.mayuna.sakuyabridge.encryption;
 
-import dev.mayuna.sakuyabridge.commons.config.EncryptionConfig;
-import dev.mayuna.sakuyabridge.commons.managers.EncryptionManager;
+import dev.mayuna.sakuyabridge.commons.v1.config.EncryptionConfig;
+import dev.mayuna.sakuyabridge.commons.v1.managers.EncryptionManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
