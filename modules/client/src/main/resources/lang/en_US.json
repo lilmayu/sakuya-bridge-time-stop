@@ -1,0 +1,25 @@
+{
+  "id": "en_US",
+  "name": "English",
+  "author": "Mayuna",
+  "version": "default",
+  "translations": {
+    "general.title": "Sakuya Bridge: Time Stop",
+    "general.theme.dark": "[Dark]",
+    "general.theme.light": "[Light]",
+    "frames.connect.button.exit": "Exit",
+    "frames.connect.button.connect": "  Connect  ",
+    "frames.connect.button.offline": "Offline",
+    "frames.connect.label.author": "Made by {0}",
+    "frames.connect.label.version": "{0} ({1})",
+    "frames.connect.tooltip.website": "Visit my website",
+    "frames.connect.tooltip.releases": "Show releases on GitHub",
+    "frames.connect.label.title": "Sakuya Bridge",
+    "frames.connect.label.subtitle": "- Time Stop -",
+    "frames.connect.label.description": "<html><center>A fancy bridge to cross between</center>the realm of local networks and the Internet.</html>",
+    "frames.connect.label.server_address": "Server Address",
+    "frames.connect.placeholder.server_address": "Host / IP",
+    "frames.main.title.confirm_close": "Confirm Close",
+    "frames.main.text.confirm_close": "Do you really want to close Sakuya Bridge? (⊙﹏⊙✿)"
+  }
+}

@@ -45,3 +45,6 @@ bin/
 artifacts/
 gradle.properties
 client-config.json
+server-config.json
+graphical_frontend.json
+logs/

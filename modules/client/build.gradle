@@ -15,9 +15,13 @@ dependencies {
     // Commons
     implementation project(":commons")
 
+    // Personal
+    implementation 'dev.mayuna:cinnamonroll:0.0.2'
+
     // FLatlaf UI
-    implementation 'com.formdev:flatlaf:3.2'
-    implementation 'com.formdev:flatlaf-intellij-themes:3.2'
+    implementation 'com.formdev:flatlaf:3.4.1'
+    implementation 'com.formdev:flatlaf-intellij-themes:3.4.1'
+    implementation 'com.formdev:flatlaf-extras:3.4.1'
 
     // Miglayout
     implementation 'com.miglayout:miglayout-swing:11.1'
@@ -31,7 +35,7 @@ shadowJar {
     archiveBaseName = '../../../../artifacts/sakuya-bridge-client'
 
     manifest {
-        attributes 'Main-Class': 'dev.mayuna.sakuyabridge.client.Main'
+        attributes 'Main-Class': 'dev.mayuna.sakuyabridge.client.v2.Main'
     }
 
     exclude "**/Log4j2Plugins.dat"
