@@ -7,10 +7,15 @@ import dev.mayuna.sakuyabridge.commons.v2.jacoco.Generated;
  * Kryo logger wrapper
  */
 @Generated
-public class KryoLogger extends Log.Logger {
+public final class KryoLogger extends Log.Logger {
 
     private final SakuyaBridgeLogger logger;
 
+    /**
+     * Creates a new Kryo logger
+     *
+     * @param logger The logger to log to
+     */
     public KryoLogger(SakuyaBridgeLogger logger) {
         this.logger = logger;
     }

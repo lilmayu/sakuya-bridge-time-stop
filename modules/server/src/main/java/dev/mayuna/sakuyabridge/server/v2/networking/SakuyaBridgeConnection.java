@@ -3,7 +3,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
-import dev.mayuna.sakuyabridge.server.v2.objects.users.User;
+import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import dev.mayuna.timestop.networking.base.TimeStopConnection;
 import dev.mayuna.timestop.networking.base.listener.TimeStopListenerManager;
@@ -22,6 +22,7 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
 
     private final long bornTimeMillis = System.currentTimeMillis();
 
+    private int clientVersion = -1;
     private User user;
 
     /**
@@ -60,5 +61,18 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
         }
 
         return super.sendTCP(object);
+    }
+
+    @Override
+    public String toString() {
+        // 8f4e4b9e-4f7b-4f6b-8f4e-4f7b4f6b8f4e[mayuna](ID){VERSION}@localhost:28748
+
+        String remoteAddress = "[Unknown address]";
+
+        if (getRemoteAddressTCP() != null) {
+            remoteAddress = getRemoteAddressTCP().toString();
+        }
+
+        return (user == null ? "Unauthenticated" : user.getUuid() + "[" + user.getUsername() + "]") + "(" + getID() + "){" + clientVersion + "}@" + remoteAddress;
     }
 }

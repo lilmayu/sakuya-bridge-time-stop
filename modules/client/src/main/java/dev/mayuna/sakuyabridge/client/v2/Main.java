@@ -17,6 +17,8 @@ public class Main {
         // Hooking the shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
 
+        SakuyaBridge.INSTANCE.boot();
+
         // TODO: Ability to change interface using args
         USER_INTERFACE.start();
     }

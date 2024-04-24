@@ -9,6 +9,11 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/content/repositories/releases" }
+    // libs folder
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -16,7 +21,7 @@ dependencies {
     implementation project(":commons")
 
     // Personal
-    implementation 'dev.mayuna:cinnamonroll:0.0.2'
+    implementation 'dev.mayuna:cinnamonroll:0.0.10'
 
     // FLatlaf UI
     implementation 'com.formdev:flatlaf:3.4.1'

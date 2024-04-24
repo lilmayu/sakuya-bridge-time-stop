@@ -14,6 +14,6 @@ public class FlatLafThemeUtils {
      * @return The name with prefix
      */
     public static String getNameWithPrefix(FlatAllIJThemes.FlatIJLookAndFeelInfo lookAndFeelInfo) {
-        return (lookAndFeelInfo.isDark() ? LanguageManager.INSTANCE.getTranslation(Lang.General.THEME_DARK) : LanguageManager.INSTANCE.getTranslation(Lang.General.THEME_LIGHT)) + " " + lookAndFeelInfo.getName();
+        return (lookAndFeelInfo.isDark() ? LanguageManager.INSTANCE.getTranslation(Lang.General.TEXT_THEME_DARK) : LanguageManager.INSTANCE.getTranslation(Lang.General.TEXT_THEME_LIGHT)) + " " + lookAndFeelInfo.getName();
     }
 }

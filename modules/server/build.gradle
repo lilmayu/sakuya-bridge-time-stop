@@ -22,7 +22,7 @@ dependencies {
     implementation 'dev.mayuna:simple-java-api-wrapper:2.2'
 
     // Pumpk1n
-    implementation 'dev.mayuna:pumpk1n:2.1.1-hotfix2'
+    implementation 'dev.mayuna:pumpk1n:2.2'
 }
 
 test {
@@ -33,7 +33,7 @@ shadowJar {
     archiveBaseName = '../../../../artifacts/sakuya-bridge-server'
 
     manifest {
-        attributes 'Main-Class': 'dev.mayuna.sakuyabridge.server.Main'
+        attributes 'Main-Class': 'dev.mayuna.sakuyabridge.server.v2.Main'
     }
 
     exclude "**/Log4j2Plugins.dat"

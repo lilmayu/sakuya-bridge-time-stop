@@ -6,8 +6,14 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 
+/**
+ * Log4j utilities
+ */
 @Generated
-public class Log4jUtils {
+public final class Log4jUtils {
+
+    private Log4jUtils() {
+    }
 
     /**
      * Adds appender to root logger

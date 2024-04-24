@@ -1,18 +1,18 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.frames.main;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main;
 
+import dev.mayuna.cinnamonroll.CinnamonRoll;
+import dev.mayuna.cinnamonroll.CinnamonRollFlatLaf;
+import dev.mayuna.cinnamonroll.TabType;
+import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.frontend.TabbedPanel;
-import dev.mayuna.sakuyabridge.client.v2.frontend.frames.BaseSakuyaBridgeFrameDesign;
-import dev.mayuna.sakuyabridge.client.v2.frontend.frames.main.panels.ServerBrowserTabbedPanel;
-import dev.mayuna.sakuyabridge.client.v2.frontend.frames.main.panels.SettingsTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.GameBrowserTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.SettingsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
-import dev.mayuna.sakuyabridge.client.v2.frontend.util.DesignUtils;
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
@@ -24,9 +24,8 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     @Override
     protected void prepareFrame(Component parentComponent) {
-        this.setTitle($getTranslation(Lang.General.TITLE));
+        this.setTitle($getTranslation(Lang.General.TEXT_TITLE));
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        //this.setResizable(false);
         this.setLayout(new BorderLayout());
 
         prepareHeader();
@@ -45,9 +44,9 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
     protected void prepareComponents() {
         this.tabbedPane = new JTabbedPane();
         this.tabbedPane.setTabPlacement(JTabbedPane.LEFT);
-        DesignUtils.setTabType(tabbedPane, DesignUtils.TabType.CARD);
-        DesignUtils.showTabSeparator(tabbedPane, true);
-        DesignUtils.showBorder(tabbedPane, true);
+        CinnamonRollFlatLaf.setTabType(tabbedPane, TabType.CARD);
+        CinnamonRollFlatLaf.showTabSeparator(tabbedPane, true);
+        CinnamonRollFlatLaf.showBorder(tabbedPane, true);
         TabbedPanel.configureTabbedPane(tabbedPane);
     }
 
@@ -57,7 +56,7 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     @Override
     public void windowClosing(WindowEvent event) {
-        var result = JOptionPane.showConfirmDialog(this, $getTranslation(Lang.Frames.Main.TEXT_CONFIRM_CLOSE), $getTranslation(Lang.Frames.Main.TITLE_CONFIRM_CLOSE), JOptionPane.YES_NO_OPTION);
+        var result = JOptionPane.showConfirmDialog(this, $getTranslation(Lang.Frames.Main.TEXT_CONFIRM_CLOSE), $getTranslation(Lang.Frames.Main.TEXT_TITLE_CONFIRM_CLOSE), JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.NO_OPTION) {
             return;
@@ -69,8 +68,8 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
     private void prepareHeader() {
         JPanel headerPanel = new JPanel(MigLayoutUtils.createGrow());
 
-        JLabel labelTitle = new JLabel($getTranslation(Lang.General.TITLE));
-        DesignUtils.deriveFontWith(labelTitle, Font.BOLD, 24);
+        JLabel labelTitle = new JLabel($getTranslation(Lang.General.TEXT_TITLE));
+        CinnamonRoll.deriveFontWith(labelTitle, Font.BOLD, 24);
         headerPanel.add(labelTitle, "gapleft 10, wrap");
 
         headerPanel.add(new JSeparator(), "growx");
@@ -82,8 +81,8 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         JPanel tabPanel = new JPanel(new BorderLayout());
         tabPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
 
-        tabbedPane.addTab("Server Browser", new ServerBrowserTabbedPanel());
-        tabbedPane.addTab("Host server", new JPanel());
+        tabbedPane.addTab("Game Browser", new GameBrowserTabbedPanel());
+        tabbedPane.addTab("Host Game", new JPanel());
         tabbedPane.addTab("Chat room", new JPanel());
         tabbedPane.addTab("Account", new JPanel());
         tabbedPane.addTab("Settings", new SettingsTabbedPanel());

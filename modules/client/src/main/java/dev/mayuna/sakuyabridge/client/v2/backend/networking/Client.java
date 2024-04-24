@@ -7,10 +7,15 @@ import com.esotericsoftware.minlog.Log;
 import dev.mayuna.sakuyabridge.client.v2.backend.ClientConfig;
 import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.networking.NetworkRegistration;
 import dev.mayuna.timestop.managers.EncryptionManager;
 import dev.mayuna.timestop.networking.base.TimeStopClient;
-import dev.mayuna.timestop.networking.extension.CryptoKeyExchange;
+import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketCompressor;
+import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketEncryptionTranslator;
+import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketSegmentTranslator;
+import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketTranslator;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +35,7 @@ public final class Client extends TimeStopClient implements Listener {
     private final ClientConfig config;
     private final EncryptionManager encryptionManager;
 
+    private @Setter boolean encryptTraffic = false;
     private boolean successfullyPrepared = true;
 
     /**
@@ -49,7 +55,9 @@ public final class Client extends TimeStopClient implements Listener {
     public void start() {
         LOGGER.info("Starting client");
 
+        NetworkRegistration.register(getKryo());
         prepareEncryptionManager();
+        registerTranslators();
         registerListeners();
 
         super.start();
@@ -71,6 +79,22 @@ public final class Client extends TimeStopClient implements Listener {
     }
 
     /**
+     * Registers the translators
+     */
+    private void registerTranslators() {
+        LOGGER.info("Registering translators");
+
+        var translatorManager = getTranslatorManager();
+
+        translatorManager.registerTranslator(new TimeStopPacketTranslator());
+        translatorManager.registerTranslator(new TimeStopPacketSegmentTranslator(32000));
+        translatorManager.registerTranslator(new TimeStopPacketEncryptionTranslator.Decrypt((context) -> encryptTraffic ? encryptionManager.getSymmetricKey() : null));
+        translatorManager.registerTranslator(new TimeStopPacketEncryptionTranslator.Encrypt((context) -> encryptTraffic ? encryptionManager.getSymmetricKey() : null));
+        translatorManager.registerTranslator(new TimeStopPacketCompressor.Compress());
+        translatorManager.registerTranslator(new TimeStopPacketCompressor.Decompress());
+    }
+
+    /**
      * Registers the listeners
      */
     private void registerListeners() {
@@ -81,20 +105,6 @@ public final class Client extends TimeStopClient implements Listener {
 
     @Override
     public void connected(Connection connection) {
-        LOGGER.info("Connected to server");
-        LOGGER.info("Encrypting the connection...");
-
-        new CryptoKeyExchange.ClientTask(encryptionManager).runAsync(this).whenCompleteAsync((success, throwable) -> {
-            if (throwable != null) {
-                LOGGER.error("Failed to encrypt the connection", throwable);
-                connection.close();
-                connectionSuccessful.complete(false);
-                return;
-            }
-
-            LOGGER.info("Connection encrypted");
-            connectionSuccessful.complete(true);
-        });
     }
 
     @Override

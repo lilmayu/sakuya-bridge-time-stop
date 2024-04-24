@@ -15,6 +15,8 @@ public class Main {
     }
 
     private static void exit() {
+        Thread.currentThread().setName("Shutdown");
+
         // Stop the SakuyaBridge
         SakuyaBridge.INSTANCE.stop();
     }

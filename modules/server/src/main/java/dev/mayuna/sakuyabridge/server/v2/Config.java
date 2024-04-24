@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.server.v2;
 
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
+import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.timestop.config.EncryptionConfig;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public final class Config {
     private static final Gson GSON = new Gson();
 
     private Server server = new Server();
+    private ServerInfo serverInfo = new ServerInfo();
 
     /**
      * Loads the configuration from the config file

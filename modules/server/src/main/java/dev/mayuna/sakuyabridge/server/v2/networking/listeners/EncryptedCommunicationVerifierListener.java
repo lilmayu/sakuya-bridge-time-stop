@@ -51,7 +51,7 @@ public class EncryptedCommunicationVerifierListener implements Listener {
 
         var sakuyaBridgeConnection = (SakuyaBridgeConnection) connection;
 
-        if (!sakuyaBridgeConnection.hasEncryptedConnection()) {
+        if (sakuyaBridgeConnection.isConnected() && !sakuyaBridgeConnection.hasEncryptedConnection()) {
             LOGGER.warn("Connection " + connection + " did not complete encryption in time - closing connection");
             connection.close();
         }

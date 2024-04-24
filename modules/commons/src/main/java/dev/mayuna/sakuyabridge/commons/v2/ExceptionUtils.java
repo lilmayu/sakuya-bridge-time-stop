@@ -2,8 +2,11 @@ package dev.mayuna.sakuyabridge.commons.v2;
 
 import dev.mayuna.sakuyabridge.commons.v2.jacoco.Generated;
 
+/**
+ * Exception utilities
+ */
 @Generated
-public class ExceptionUtils {
+public final class ExceptionUtils {
 
     /**
      * Dumps exception to string
@@ -12,8 +15,8 @@ public class ExceptionUtils {
      *
      * @return String
      */
-    public static String dumpException(Throwable throwable) {
-        return appendThrowable("", throwable);
+    public static StringBuilder dumpException(Throwable throwable) {
+        return appendThrowable(new StringBuilder(), throwable);
     }
 
     /**
@@ -24,15 +27,15 @@ public class ExceptionUtils {
      *
      * @return String
      */
-    private static String appendThrowable(String text, Throwable throwable) {
-        text += "\n" + throwable.toString();
+    private static StringBuilder appendThrowable(StringBuilder text, Throwable throwable) {
+        text.append("\n").append(throwable.toString());
         for (StackTraceElement element : throwable.getStackTrace()) {
-            text += "\n\tat " + element.toString();
+            text.append("\n\tat ").append(element.toString());
         }
 
         // Append cause stacktrace
         if (throwable.getCause() != null) {
-            return appendThrowable(text + "\n-> Caused by: ", throwable.getCause());
+            return appendThrowable(text.append("\n-> Caused by: "), throwable.getCause());
         }
 
         return text;

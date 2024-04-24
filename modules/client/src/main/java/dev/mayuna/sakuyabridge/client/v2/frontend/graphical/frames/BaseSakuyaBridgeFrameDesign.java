@@ -1,9 +1,24 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.frames;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames;
 
 import dev.mayuna.cinnamonroll.BaseFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
 
+import java.awt.*;
+
 public abstract class BaseSakuyaBridgeFrameDesign extends BaseFrameDesign {
+
+    /**
+//     * {@inheritDoc}
+     */
+    public BaseSakuyaBridgeFrameDesign() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BaseSakuyaBridgeFrameDesign(Component parentComponent) {
+        super(parentComponent);
+    }
 
     /**
      * Get a translation from the language manager.

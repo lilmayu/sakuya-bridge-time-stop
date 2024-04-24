@@ -1,8 +1,8 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.frames.main.panels;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels;
 
-import dev.mayuna.sakuyabridge.client.v2.frontend.TabbedPanel;
+import dev.mayuna.cinnamonroll.TabbedPanel;
 
-public class ServerBrowserTabbedPanel extends TabbedPanel {
+public class GameBrowserTabbedPanel extends TabbedPanel {
 
     @Override
     public void onOpen() {

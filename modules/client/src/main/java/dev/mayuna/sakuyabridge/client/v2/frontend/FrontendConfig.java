@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import lombok.Data;
+import org.apache.logging.log4j.Level;
 
 import javax.swing.*;
 
@@ -19,6 +20,7 @@ public final class FrontendConfig {
     private static final Gson GSON = new Gson();
 
     private String lookAndFeelClass = FlatMoonlightIJTheme.class.getName(); // Default to FlatMoonlight
+    private int minimalLogLevelLoggerFrame = Level.INFO.intLevel();
 
     /**
      * Loads the settings from the file.

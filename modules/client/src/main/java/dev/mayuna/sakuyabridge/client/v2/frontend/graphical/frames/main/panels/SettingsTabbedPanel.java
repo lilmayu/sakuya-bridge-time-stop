@@ -1,8 +1,8 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.frames.main.panels;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.sakuyabridge.client.v1.ui.utils.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.frontend.TabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
 import dev.mayuna.sakuyabridge.client.v2.frontend.util.FlatLafThemeUtils;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
