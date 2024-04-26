@@ -1,95 +1,196 @@
 package dev.mayuna.sakuyabridge.server.v2.managers.user;
 
+import dev.mayuna.pumpk1n.Pumpk1n;
+import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
-import lombok.NonNull;
+import dev.mayuna.sakuyabridge.server.v2.config.Config;
+import dev.mayuna.sakuyabridge.server.v2.objects.users.StorageUserWrap;
+import dev.mayuna.sakuyabridge.server.v2.util.pumpk1n.Pumpk1nLogger;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
- * A manager for users
- *
- * @param <T> The type of the user
+ * Manages users
  */
-public abstract class UserManager<T extends User> {
+public final class UserManager {
 
-    private final List<T> users = Collections.synchronizedList(new LinkedList<>());
+    private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(UserManager.class);
+
+    private final Config.UserManager config;
+    private final List<StorageUserWrap> loadedUsers = new LinkedList<>();
+
+    private Pumpk1n pumpk1n;
 
     /**
-     * Gets all users
+     * Creates a new user manager
      *
-     * @return Unmodifiable list of users
+     * @param config The config
      */
-    public List<T> getUsers() {
-        return Collections.unmodifiableList(users);
+    public UserManager(Config.UserManager config) {
+        this.config = config;
     }
 
     /**
-     * Gets a user by their UUID
-     *
-     * @param uuid The UUID
-     *
-     * @return Optional of the user
+     * Initializes the user manager
      */
-    public Optional<T> getUser(@NonNull UUID uuid) {
-        synchronized (users) {
-            return users.stream().filter(user -> user.getUuid().equals(uuid)).findFirst();
+    public void init() {
+        LOGGER.info("Initializing user manager...");
+
+        initStorage();
+    }
+
+    /**
+     * Initializes the storage
+     */
+    private void initStorage() {
+        LOGGER.mdebug("Initializing storage...");
+
+        pumpk1n = new Pumpk1n(config.getStorageSettings().createStorageHandler());
+
+        // Create logger
+        var logger = new Pumpk1nLogger(LOGGER, config.getStorageSettings().getLogLevel().getLog4jLevel());
+
+        // Enable all pumpk1n logging, if desired
+        if (config.getStorageSettings().isLogOperations()) {
+            logger.enableAllLogs();
+        }
+
+        // Set logger
+        pumpk1n.setLogger(logger);
+
+        // Prepare storage
+        pumpk1n.prepareStorage();
+    }
+
+    /**
+     * Shuts down the user manager
+     */
+    public void shutdown() {
+        saveStorage();
+    }
+
+    /**
+     * Saves the users to storage
+     */
+    private void saveStorage() {
+        LOGGER.mdebug("Saving users to storage...");
+
+        synchronized (loadedUsers) {
+            for (var user : loadedUsers) {
+                user.getDataHolderParent().save();
+            }
+
+            LOGGER.mdebug("Saved {} users to the storage", loadedUsers.size());
         }
     }
 
     /**
-     * Gets a user by their username
+     * Gets, loads or creates a user
      *
-     * @param username The username
+     * @param loggedAccount The logged account
      *
-     * @return Optional of the user
+     * @return The user
      */
-    public Optional<T> getUser(@NonNull String username) {
-        synchronized (users) {
-            return users.stream().filter(user -> user.getUsername().equals(username)).findFirst();
+    public StorageUserWrap getLoadOrCreateUser(LoggedAccount loggedAccount) {
+        var optionalUserLoaded = getUser(loggedAccount.getUuid());
+
+        if (optionalUserLoaded.isPresent()) {
+            return optionalUserLoaded.get();
+        }
+
+        var optionalUserInStorage = loadUser(loggedAccount);
+
+        //noinspection OptionalIsPresent
+        if (optionalUserInStorage.isPresent()) {
+            return optionalUserInStorage.get();
+        }
+
+        return createUser(loggedAccount);
+    }
+
+    /**
+     * Gets a user by account UUID from the loaded users
+     *
+     * @param accountUuid The account UUID
+     *
+     * @return Optional of the StorageUserWrap
+     */
+    private Optional<StorageUserWrap> getUser(UUID accountUuid) {
+        synchronized (loadedUsers) {
+            return loadedUsers.stream()
+                              .filter(user -> user.getUser().getUuid().equals(accountUuid))
+                              .findFirst();
         }
     }
 
     /**
-     * Adds a user
+     * Loads a user from storage<br>
+     * If loaded, {@link LoggedAccount} is set to the loaded {@link StorageUserWrap}'s User
      *
-     * @param user The user
+     * @param loggedAccount Logged account
+     *
+     * @return The user
      */
-    public boolean addUser(T user) {
-        synchronized (users) {
-            return users.add(user);
+    private Optional<StorageUserWrap> loadUser(LoggedAccount loggedAccount) {
+        var dataHolder = pumpk1n.getOrLoadDataHolder(loggedAccount.getUuid());
+
+        if (dataHolder == null) {
+            return Optional.empty();
         }
+
+        var userWrap = dataHolder.getDataElement(StorageUserWrap.class);
+
+        if (userWrap == null) {
+            return Optional.empty();
+        }
+
+        // Set the logged account
+        userWrap.getUser().setLoggedAccount(loggedAccount);
+
+        // Add to loaded users
+        synchronized (loadedUsers) {
+            loadedUsers.add(userWrap);
+        }
+
+        LOGGER.mdebug("Loaded user: {}", userWrap);
+
+        return Optional.of(userWrap);
     }
 
     /**
-     * Removes a user
+     * Creates a user and saves it to storage<br>
+     * Should be only called, when we are sure that the user does not exist in storage to
+     * prevent deleted user data
      *
-     * @param user The user
+     * @param loggedAccount The logged account
+     *
+     * @return The user
      */
-    public boolean removeUser(T user) {
-        synchronized (users) {
-            return users.remove(user);
-        }
-    }
+    private StorageUserWrap createUser(LoggedAccount loggedAccount) {
+        var user = new User(loggedAccount);
+        var userWrap = new StorageUserWrap(user);
 
-    /**
-     * Removes a user by their UUID
-     *
-     * @param uuid The UUID
-     */
-    public boolean removeUser(UUID uuid) {
-        synchronized (users) {
-            return users.removeIf(user -> user.getUuid().equals(uuid));
-        }
-    }
+        // Load the data holder
+        var dataHolder = pumpk1n.getOrCreateDataHolder(loggedAccount.getUuid());
+        dataHolder.addOrReplaceDataElement(userWrap);
 
-    /**
-     * Removes a user by their username
-     *
-     * @param username The username
-     */
-    public boolean removeUser(String username) {
-        synchronized (users) {
-            return users.removeIf(user -> user.getUsername().equals(username));
+        // Set the parent DataHolder
+        userWrap.setDataHolderParent(dataHolder);
+
+        // Save the user
+        userWrap.getDataHolderParent().save();
+
+        // Add to loaded users
+        synchronized (loadedUsers) {
+            loadedUsers.add(userWrap);
         }
+
+        LOGGER.mdebug("Created user: {}", userWrap);
+
+        return userWrap;
     }
 }

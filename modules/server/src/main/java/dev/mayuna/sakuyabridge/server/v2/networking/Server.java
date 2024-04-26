@@ -1,14 +1,15 @@
 package dev.mayuna.sakuyabridge.server.v2.networking;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.minlog.Log;
-import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.NetworkRegistration;
-import dev.mayuna.sakuyabridge.server.v2.Config;
-import dev.mayuna.sakuyabridge.server.v2.networking.listeners.EncryptedCommunicationVerifierListener;
-import dev.mayuna.sakuyabridge.server.v2.networking.listeners.ServerInfoListener;
-import dev.mayuna.sakuyabridge.server.v2.networking.listeners.ExchangeVersionListener;
+import dev.mayuna.sakuyabridge.server.v2.config.Config;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.SessionTokenListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.UsernamePasswordListeners;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.EncryptedCommunicationVerifierListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ExchangeVersionListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ServerInfoListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.user.FetchCurrentUserListener;
 import dev.mayuna.timestop.managers.EncryptionManager;
 import dev.mayuna.timestop.networking.base.TimeStopServer;
 import dev.mayuna.timestop.networking.base.listener.TimeStopListenerManager;
@@ -106,11 +107,21 @@ public final class Server extends TimeStopServer {
 
         TimeStopListenerManager listenerManager = getListenerManager();
 
+        // Library
         listenerManager.registerListener(new CryptoKeyExchange.AsymmetricKeyListener(encryptionManager));
         listenerManager.registerListener(new CryptoKeyExchange.SymmetricKeyListener(encryptionManager, keyStorage));
 
+        // Basic
         listenerManager.registerListener(new ServerInfoListener());
         listenerManager.registerListener(new ExchangeVersionListener());
+
+        // Auth
+        listenerManager.registerListener(new UsernamePasswordListeners.LoginRequestListener());
+        listenerManager.registerListener(new UsernamePasswordListeners.RegisterRequestListener());
+        listenerManager.registerListener(new SessionTokenListener());
+
+        // User
+        listenerManager.registerListener(new FetchCurrentUserListener());
     }
 
     @Override

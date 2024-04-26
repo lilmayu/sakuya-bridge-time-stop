@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Level;
 /**
  * A logger that logs to the Sakuya Bridge logger
  */
-public class Pumpk1nLogger extends BaseLogger {
+public final class Pumpk1nLogger extends BaseLogger {
 
     private final SakuyaBridgeLogger logger;
     private final Level logLevel;
@@ -27,5 +27,20 @@ public class Pumpk1nLogger extends BaseLogger {
     @Override
     public void log(@NonNull String s, Throwable throwable) {
         logger.log(logLevel, s, throwable);
+    }
+
+    /**
+     * Enables logging of all types
+     *
+     * @return This logger
+     */
+    public Pumpk1nLogger enableAllLogs() {
+        logMisc = true;
+        logLoad = true;
+        logRead = true;
+        logWrite = true;
+        logCreate = true;
+
+        return this;
     }
 }

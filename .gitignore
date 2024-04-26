@@ -46,5 +46,8 @@ artifacts/
 gradle.properties
 client-config.json
 server-config.json
-graphical_frontend.json
+graphical-frontend-config.json
+sessions.db
+accounts.db
+users.db
 logs/

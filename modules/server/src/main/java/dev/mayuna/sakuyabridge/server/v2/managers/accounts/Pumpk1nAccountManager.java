@@ -1,17 +1,22 @@
 package dev.mayuna.sakuyabridge.server.v2.managers.accounts;
 
+import com.google.gson.*;
 import dev.mayuna.pumpk1n.Pumpk1n;
+import dev.mayuna.pumpk1n.api.Migratable;
 import dev.mayuna.pumpk1n.api.ParentedDataElement;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
+import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
+import dev.mayuna.sakuyabridge.server.v2.util.pumpk1n.Pumpk1nLogger;
+import lombok.Getter;
 import lombok.NonNull;
+import org.apache.logging.log4j.Level;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-// TODO: UNIT TESTY!!!
 
 /**
  * A manager for accounts (data storage managed by Pumpk1n)
@@ -20,24 +25,59 @@ import java.util.UUID;
  */
 public abstract class Pumpk1nAccountManager<T extends Account> extends AccountManager<T> {
 
-    /**
-     * The UUID of the main data holder, which holds list of all accounts
-     */
-    public static final UUID MAIN_DATAHOLDER_UUID = UUID.fromString("02fb64d1-6fa0-4c40-a7b2-cab12c1b6c06");
-
     private final SakuyaBridgeLogger logger;
+    private final Level logLevel;
     private final Pumpk1n pumpk1n;
 
+    @Getter
     private AccountListDataElement accountListDataElement = new AccountListDataElement();
 
     /**
      * Creates a new account manager
      *
-     * @param pumpk1n The pumpk1n instance
+     * @param logger   The logger
+     * @param logLevel The log level
+     * @param pumpk1n  The pumpk1n instance
      */
-    public Pumpk1nAccountManager(SakuyaBridgeLogger logger, Pumpk1n pumpk1n) {
+    public Pumpk1nAccountManager(SakuyaBridgeLogger logger, Level logLevel, Pumpk1n pumpk1n) {
         this.logger = logger;
+        this.logLevel = logLevel;
         this.pumpk1n = pumpk1n;
+    }
+
+    /**
+     * Enables logging with the current logger and current log level
+     */
+    public void enablePumpk1nLogging() {
+        pumpk1n.setLogger(new Pumpk1nLogger(logger, logLevel));
+    }
+
+    /**
+     * Enables logging with the current logger and the given level
+     *
+     * @param level The level
+     */
+    public void enablePumpk1nLogging(Level level) {
+        pumpk1n.setLogger(new Pumpk1nLogger(logger, level));
+    }
+
+    /**
+     * Enables logging with the given logger and the given level
+     *
+     * @param logger The logger
+     * @param level  The level
+     */
+    public void enablePumpk1nLogging(SakuyaBridgeLogger logger, Level level) {
+        pumpk1n.setLogger(new Pumpk1nLogger(logger, level));
+    }
+
+    /**
+     * Enables all pumpk1n logs if the pumpk1n logger is a Pumpk1nLogger
+     */
+    public void enableAllPumpk1nLogs() {
+        if (pumpk1n.getLogger() instanceof Pumpk1nLogger pumpk1nLogger) {
+            pumpk1nLogger.enableAllLogs();
+        }
     }
 
     /**
@@ -45,11 +85,48 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
      */
     @Override
     public void prepare() {
+        // Prepare pumpk1n
+        pumpk1n.prepareStorage();
+
         // Load the account list data element
-        var dataHolder = pumpk1n.getOrCreateDataHolder(MAIN_DATAHOLDER_UUID);
+        var dataHolder = pumpk1n.getOrCreateDataHolder(ServerConstants.MAIN_DATA_HOLDER_UUID);
         accountListDataElement = dataHolder.getOrCreateDataElement(AccountListDataElement.class);
 
-        logger.log(AccountManagerBundle.LOG_LEVEL, "Loaded account list data element (" + accountListDataElement.countAccounts() + " accounts)");
+        logger.log(logLevel, "Loaded account list data element (" + accountListDataElement.countAccounts() + " accounts)");
+    }
+
+    /**
+     * Recreates the account list from the storage
+     */
+    public void recreateAccountList() {
+        if (!(pumpk1n.getStorageHandler() instanceof Migratable migratableStorageHandler)) {
+            logger.log(logLevel, "Storage handler is not migratable (cannot recreate whole account list)");
+            return;
+        }
+
+
+        logger.log(logLevel, "Recreating account list");
+        pumpk1n.deleteDataHolder(ServerConstants.MAIN_DATA_HOLDER_UUID);
+
+        AccountListDataElement newAccountListDataElement = new AccountListDataElement();
+
+        for (UUID dataHolderUUID : migratableStorageHandler.getAllHolderUUIDs()) {
+            var dataHolder = pumpk1n.getOrLoadDataHolder(dataHolderUUID);
+            var dataElement = dataHolder.getDataElement(AccountDataElement.class);
+
+            if (dataElement == null) {
+                continue; // Skip, might by the main data holder
+            }
+
+            logger.log(logLevel, "Recreating account: " + dataElement.account);
+            newAccountListDataElement.addAccount(dataElement.account.getUuid(), dataElement.account.getUsername());
+        }
+
+        var mainDataHolder = pumpk1n.getOrCreateDataHolder(ServerConstants.MAIN_DATA_HOLDER_UUID);
+        mainDataHolder.addOrReplaceDataElement(newAccountListDataElement);
+        mainDataHolder.save();
+
+        logger.log(logLevel, "Recreated account list with " + newAccountListDataElement.countAccounts() + " accounts");
     }
 
     /**
@@ -62,7 +139,25 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
         // Save the account list data element
         accountListDataElement.save();
 
-        logger.log(AccountManagerBundle.LOG_LEVEL, "Saved account list data element (" + accountListDataElement.countAccounts() + " accounts)");
+        logger.log(logLevel, "Saved account list data element (" + accountListDataElement.countAccounts() + " accounts)");
+    }
+
+    /**
+     * Deletes an account from the database
+     *
+     * @param username The username of the account
+     *
+     * @return Whether the account was deleted
+     */
+    @Override
+    public boolean deleteAccount(@NonNull String username) {
+        var uuid = accountListDataElement.getAccountUUID(username);
+
+        if (uuid == null) {
+            return false;
+        }
+
+        return deleteAccount(uuid);
     }
 
     /**
@@ -77,6 +172,7 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
         // Remove the account from the list
         boolean deletedSomething = false;
 
+        // Remove the account from the account list
         if (accountListDataElement.removeAccount(uuid)) {
             accountListDataElement.save();
             deletedSomething = true;
@@ -89,9 +185,12 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
             deletedSomething = true;
         }
 
+        // Remove the account from the memory
+        super.removeAccount(uuid);
+
         // Log
         if (deletedSomething) {
-            logger.log(AccountManagerBundle.LOG_LEVEL, "Deleted account with UUID " + uuid);
+            logger.log(logLevel, "Deleted account with UUID " + uuid);
         }
 
         return deletedSomething;
@@ -127,7 +226,7 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
         dataHolder.addOrReplaceDataElement(new AccountDataElement<>(account));
         dataHolder.save();
 
-        logger.log(AccountManagerBundle.LOG_LEVEL, "Saved account " + account);
+        logger.log(logLevel, "Saved account " + account);
     }
 
     /**
@@ -167,7 +266,10 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
             return Optional.empty();
         }
 
-        logger.log(AccountManagerBundle.LOG_LEVEL, "Loaded account " + account);
+        // Add the account to the memory
+        super.addAccount(account);
+
+        logger.log(logLevel, "Loaded account " + account);
 
         // Return the account
         return Optional.of(accountDataElement.account);
@@ -224,7 +326,7 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
      * Represents an account list data element for pumpk1n<br>
      * <b>Do not access the accountUUIDs directly</b>
      */
-    private static final class AccountListDataElement extends ParentedDataElement {
+    public static final class AccountListDataElement extends ParentedDataElement {
 
         @SuppressWarnings("FieldMayBeFinal")
         private Map<UUID, String> accountUUIDs = new HashMap<>();
@@ -315,8 +417,11 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
      *
      * @param <T> The type of the account
      */
-    private static final class AccountDataElement<T extends Account> extends ParentedDataElement {
+    public static final class AccountDataElement<T extends Account> extends ParentedDataElement {
 
+        private transient final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(AccountDataElement.class, new AccountDataElementTypeAdapter<T>());
+
+        private Class<T> accountClass;
         private T account;
 
         /**
@@ -331,7 +436,42 @@ public abstract class Pumpk1nAccountManager<T extends Account> extends AccountMa
          * @param account The account
          */
         public AccountDataElement(T account) {
+            this.accountClass = (Class<T>) account.getClass();
             this.account = account;
+        }
+
+        @Override
+        public @NonNull GsonBuilder getGsonBuilder() {
+            return gsonBuilder;
+        }
+    }
+
+    private static final class AccountDataElementTypeAdapter<T extends Account> implements JsonSerializer<AccountDataElement<T>>, JsonDeserializer<AccountDataElement<T>> {
+
+        @Override
+        public AccountDataElement<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+
+            Class<T> accountClass;
+            String accountClassName = jsonObject.get("accountClassName").getAsString();
+
+            try {
+                accountClass = (Class<T>) Class.forName(accountClassName);
+            } catch (Exception exception) {
+                throw new RuntimeException("Failed to deserialize accountClassName: " + accountClassName, exception);
+            }
+
+            T account = context.deserialize(jsonObject.get("account"), accountClass);
+
+            return new AccountDataElement<>(account);
+        }
+
+        @Override
+        public JsonElement serialize(AccountDataElement<T> src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("accountClassName", src.accountClass.getName());
+            jsonObject.add("account", context.serialize(src.account));
+            return jsonObject;
         }
     }
 }

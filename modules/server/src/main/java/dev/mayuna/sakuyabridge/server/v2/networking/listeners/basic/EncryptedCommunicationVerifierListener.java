@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.server.v2.networking.listeners;
+package dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -11,7 +11,7 @@ import java.util.TimerTask;
 /**
  * Listener that verifies if a connection has completed encryption in time
  */
-public class EncryptedCommunicationVerifierListener implements Listener {
+public final class EncryptedCommunicationVerifierListener implements Listener {
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(EncryptedCommunicationVerifierListener.class);
 
@@ -44,12 +44,10 @@ public class EncryptedCommunicationVerifierListener implements Listener {
      * @param connection Connection to check
      */
     private void checkConnection(Connection connection) {
-        if (!(connection instanceof SakuyaBridgeConnection)) {
-            LOGGER.warn("Connection " + connection + " is not a SakuyaBridgeConnection");
+        if (!(connection instanceof SakuyaBridgeConnection sakuyaBridgeConnection)) {
+            LOGGER.warn("Connection " + connection + " is not a SakuyaBridgeConnection (bug)");
             return;
         }
-
-        var sakuyaBridgeConnection = (SakuyaBridgeConnection) connection;
 
         if (sakuyaBridgeConnection.isConnected() && !sakuyaBridgeConnection.hasEncryptedConnection()) {
             LOGGER.warn("Connection " + connection + " did not complete encryption in time - closing connection");

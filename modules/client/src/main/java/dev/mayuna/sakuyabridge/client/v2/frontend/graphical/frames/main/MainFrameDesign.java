@@ -54,17 +54,6 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
     protected void registerListeners() {
     }
 
-    @Override
-    public void windowClosing(WindowEvent event) {
-        var result = JOptionPane.showConfirmDialog(this, $getTranslation(Lang.Frames.Main.TEXT_CONFIRM_CLOSE), $getTranslation(Lang.Frames.Main.TEXT_TITLE_CONFIRM_CLOSE), JOptionPane.YES_NO_OPTION);
-
-        if (result == JOptionPane.NO_OPTION) {
-            return;
-        }
-
-        dispose();
-    }
-
     private void prepareHeader() {
         JPanel headerPanel = new JPanel(MigLayoutUtils.createGrow());
 

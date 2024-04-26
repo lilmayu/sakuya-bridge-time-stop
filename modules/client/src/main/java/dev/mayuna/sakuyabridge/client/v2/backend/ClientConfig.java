@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public final class ClientConfig {
 
-    private static final String CONFIG_FILE_NAME = "client_config.json";
+    private static final String CONFIG_FILE_NAME = "client-config.json";
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(FrontendConfig.class);
     private static final Gson GSON = new Gson();

@@ -39,6 +39,15 @@ public abstract class AccountManager<T extends Account> {
     /**
      * Deletes an account from the database
      *
+     * @param username The username of the account
+     *
+     * @return Whether the account was deleted
+     */
+    public abstract boolean deleteAccount(@NonNull String username);
+
+    /**
+     * Deletes an account from the database
+     *
      * @param uuid The UUID of the account
      *
      * @return Whether the account was deleted

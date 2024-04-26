@@ -1,7 +1,9 @@
 package dev.mayuna.sakuyabridge.commons.v2.objects.auth;
 
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.text.SimpleDateFormat;
 import java.util.UUID;
@@ -12,9 +14,15 @@ import java.util.UUID;
 @Getter
 public final class SessionToken {
 
-    private final LoggedAccount loggedAccount;
-    private final UUID token;
-    private final long expirationTimeMillis;
+    private LoggedAccount loggedAccount;
+    private UUID token;
+    private @Setter long expirationTimeMillis;
+
+    /**
+     * For serialization
+     */
+    public SessionToken() {
+    }
 
     /**
      * Creates a new session token
@@ -27,6 +35,18 @@ public final class SessionToken {
         this.loggedAccount = loggedAccount;
         this.token = token;
         this.expirationTimeMillis = expirationTimeMillis;
+    }
+
+    /**
+     * Creates a new session token
+     *
+     * @param account              The account
+     * @param expirationTimeMillis The expiration time (UTC)
+     *
+     * @return The session token
+     */
+    public static SessionToken create(Account account, long expirationTimeMillis) {
+        return new SessionToken(LoggedAccount.fromAccount(account), UUID.randomUUID(), expirationTimeMillis);
     }
 
     /**

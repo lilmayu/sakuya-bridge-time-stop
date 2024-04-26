@@ -1,6 +1,6 @@
 package dev.mayuna.sakuyabridge.server.v2.networking;
 
-import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
 
 /**
  * A listener that will be processed only if the connection has authenticated
@@ -27,10 +27,9 @@ public abstract class AuthenticatedListener<T> extends EncryptedListener<T> {
      * Processes the message
      *
      * @param connection The connection
-     * @param user       The user
      * @param message    The message
      */
-    public abstract void process(SakuyaBridgeConnection connection, User user, T message);
+    public abstract void processAuthenticated(SakuyaBridgeConnection connection, T message);
 
     /**
      * Processes the message
@@ -45,6 +44,6 @@ public abstract class AuthenticatedListener<T> extends EncryptedListener<T> {
         }
 
         // Process the message
-        process(connection, connection.getUser(), message);
+        processAuthenticated(connection, message);
     }
 }

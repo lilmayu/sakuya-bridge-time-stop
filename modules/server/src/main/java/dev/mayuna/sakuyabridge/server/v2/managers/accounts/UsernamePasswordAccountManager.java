@@ -1,9 +1,11 @@
 package dev.mayuna.sakuyabridge.server.v2.managers.accounts;
 
 import dev.mayuna.pumpk1n.Pumpk1n;
+import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.server.v2.objects.accounts.UsernamePasswordAccount;
 import lombok.NonNull;
+import org.apache.logging.log4j.Level;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -14,7 +16,6 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,8 +24,8 @@ public final class UsernamePasswordAccountManager extends Pumpk1nAccountManager<
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(UsernamePasswordAccountManager.class);
     private static final PasswordAuthentication PASSWORD_AUTHENTICATION = new PasswordAuthentication();
 
-    public UsernamePasswordAccountManager(Pumpk1n pumpk1n) {
-        super(LOGGER, pumpk1n);
+    public UsernamePasswordAccountManager(Level logLevel, Pumpk1n pumpk1n) {
+        super(LOGGER, logLevel, pumpk1n);
     }
 
     /**
@@ -36,26 +37,55 @@ public final class UsernamePasswordAccountManager extends Pumpk1nAccountManager<
      * @return The account
      */
     public Optional<UsernamePasswordAccount> createAccount(@NonNull String username, char @NonNull [] password) {
-        var account = tryCreateAccount(username);
+        if (username.isBlank() || username.length() < CommonConstants.MINIMUM_USERNAME_LENGTH) {
+            throw new IllegalArgumentException("Username is invalid");
+        }
 
+        if (password.length < CommonConstants.MINIMUM_PASSWORD_LENGTH) {
+            throw new IllegalArgumentException("Password is invalid");
+        }
+
+        var optionalAccount = tryCreateAccount(username);
+
+        if (optionalAccount.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var account = optionalAccount.get();
+
+        account.setPasswordHash(PASSWORD_AUTHENTICATION.hash(password));
+        saveAccount(account); // Save the account, after hashing the password
+
+        return optionalAccount;
+    }
+
+    /**
+     * Authenticates a user with the given username and password.
+     *
+     * @param username The username
+     * @param password The password
+     *
+     * @return True if the user is authenticated, false otherwise
+     */
+    public Optional<UsernamePasswordAccount> authenticate(@NonNull String username, char @NonNull [] password) {
+        var account = getOrLoadAccount(username);
+
+        //noinspection OptionalIsPresent
         if (account.isEmpty()) {
             return Optional.empty();
         }
 
-        account.get().setPasswordHash(PASSWORD_AUTHENTICATION.hash(password));
+        // Check if the password is correct
+        if (PASSWORD_AUTHENTICATION.authenticate(password, account.get().getPasswordHash())) {
+            return account;
+        }
 
-        return account;
+        return Optional.empty();
     }
 
     @Override
     protected @NonNull UsernamePasswordAccount createAccount(@NonNull String username) {
         return new UsernamePasswordAccount(username);
-    }
-
-    @Override
-    public boolean deleteAccount(@NonNull UUID uuid) {
-        // TODO: Implement
-        return false;
     }
 
     /**
@@ -130,7 +160,7 @@ public final class UsernamePasswordAccountManager extends Pumpk1nAccountManager<
          *
          * @return a secure authentication token to be stored for later authentication
          */
-        public String hash(char[] password) {
+        public String hash(char @NonNull [] password) {
             byte[] salt = new byte[SIZE / 8];
             random.nextBytes(salt);
             byte[] dk = pbkdf2(password, salt, 1 << cost);
@@ -146,7 +176,7 @@ public final class UsernamePasswordAccountManager extends Pumpk1nAccountManager<
          *
          * @return true if the password and token match
          */
-        public boolean authenticate(char[] password, String token) {
+        public boolean authenticate(char @NonNull [] password, @NonNull String token) {
             Matcher m = layout.matcher(token);
             if (!m.matches()) {
                 throw new IllegalArgumentException("Invalid token format");

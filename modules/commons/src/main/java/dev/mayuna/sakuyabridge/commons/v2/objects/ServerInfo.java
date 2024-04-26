@@ -1,6 +1,5 @@
 package dev.mayuna.sakuyabridge.commons.v2.objects;
 
-import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;
 import lombok.Data;
 
@@ -26,5 +25,16 @@ public final class ServerInfo {
      * Used for serialization
      */
     public ServerInfo() {
+    }
+
+    /**
+     * Determines if the given authentication method is enabled
+     *
+     * @param method The method
+     *
+     * @return True if the method is enabled
+     */
+    public boolean isAuthenticationMethodEnabled(AuthenticationMethods method) {
+        return authenticationMethods.contains(method);
     }
 }

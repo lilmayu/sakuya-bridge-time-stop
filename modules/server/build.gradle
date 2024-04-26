@@ -23,6 +23,18 @@ dependencies {
 
     // Pumpk1n
     implementation 'dev.mayuna:pumpk1n:2.2'
+
+    // SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+    testImplementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+
+    // MySQL
+    implementation 'mysql:mysql-connector-java:8.0.29'
+    testImplementation 'mysql:mysql-connector-java:8.0.29'
+
+    // HikariCP
+    implementation 'com.zaxxer:HikariCP:3.4.5'
+    testImplementation 'com.zaxxer:HikariCP:3.4.5'
 }
 
 test {

@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.serverinfo;
 
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
+import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
@@ -113,6 +114,20 @@ public abstract class ServerInfoFrameDesign extends BaseSakuyaBridgeFrameDesign 
                     buttonAuthAnonymously.setEnabled(true);
                     break;
             }
+        }
+
+        // Enable / Disable previous session token button
+        buttonContinueInPreviousSession.setEnabled(false);
+
+        if (serverInfo.isAuthenticationMethodEnabled(AuthenticationMethods.PREVIOUS_SESSION_TOKEN)) {
+            var previousSessionToken = SakuyaBridge.INSTANCE.getConfig().getPreviousSessionTokenIfNotExpired();
+
+            if (previousSessionToken != null) {
+                buttonContinueInPreviousSession.setEnabled(true);
+                buttonContinueInPreviousSession.setText($formatTranslation(Lang.Frames.ServerInfo.BUTTON_CONTINUE_IN_PREVIOUS_SESSION, previousSessionToken.getLoggedAccount().getUsername()));
+            }
+        } else {
+            buttonContinueInPreviousSession.setText($getTranslation(Lang.Frames.ServerInfo.BUTTON_CONTINUE_IN_PREVIOUS_SESSION_DISABLED));
         }
     }
 

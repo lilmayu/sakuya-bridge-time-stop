@@ -1,6 +1,8 @@
 package dev.mayuna.sakuyabridge.commons.v2.networking;
 
+import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
+import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.timestop.TimeStopPackets;
 import lombok.Getter;
 
@@ -38,9 +40,9 @@ public final class Packets {
         /**
          * Requests the server info
          */
-        public static final class ServerInfo extends SakuyaBridgePacket {
+        public static final class FetchServerInfo extends SakuyaBridgePacket {
 
-            public ServerInfo() {
+            public FetchServerInfo() {
             }
         }
 
@@ -49,7 +51,7 @@ public final class Packets {
          * Also exchanges the client version.
          */
         @Getter
-        public static class VersionExchange extends SakuyaBridgePacket {
+        public static final class VersionExchange extends SakuyaBridgePacket {
 
             private int clientVersion;
             private int networkProtocolVersion;
@@ -63,51 +65,74 @@ public final class Packets {
             }
         }
 
+        // <editor-fold desc="Authentication Packets">
+
         /**
-         * Requests to login using a previous session token
+         * Auth requests
          */
-        @Getter
-        public static class PreviousSessionLogin extends SakuyaBridgePacket {
+        @IgnoreNetworkRegistration(ignoreInnerClasses = false)
+        public static final class Auth {
 
-            private UUID previousSessionToken;
+            /**
+             * Requests to login using a previous session token
+             */
+            @Getter
+            public static final class PreviousSessionLogin extends SakuyaBridgePacket {
 
-            public PreviousSessionLogin() {
+                private UUID previousSessionToken;
+
+                public PreviousSessionLogin() {
+                }
+
+                public PreviousSessionLogin(UUID previousSessionToken) {
+                    this.previousSessionToken = previousSessionToken;
+                }
             }
 
-            public PreviousSessionLogin(UUID previousSessionToken) {
-                this.previousSessionToken = previousSessionToken;
+            /**
+             * Requests to login using username and password
+             */
+            @Getter
+            public static class UsernamePasswordLogin extends SakuyaBridgePacket {
+
+                private String username;
+                private char[] password;
+
+                public UsernamePasswordLogin() {
+                }
+
+                public UsernamePasswordLogin(String username, char[] password) {
+                    this.username = username;
+                    this.password = password;
+                }
+            }
+
+            /**
+             * Requests to register using username and password
+             */
+            @Getter
+            public static final class UsernamePasswordRegister extends UsernamePasswordLogin {
+
+                public UsernamePasswordRegister() {
+                }
+
+                public UsernamePasswordRegister(String username, char[] password) {
+                    super(username, password);
+                }
             }
         }
 
-        /**
-         * Requests to login using username and password
-         */
-        @Getter
-        public static class UsernamePasswordLogin extends SakuyaBridgePacket {
-
-            private String username;
-            private char[] password;
-
-            public UsernamePasswordLogin() {
-            }
-
-            public UsernamePasswordLogin(String username, char[] password) {
-                this.username = username;
-                this.password = password;
-            }
-        }
+        // </editor-fold>
 
         /**
-         * Requests to register using username and password
+         * Requests to fetch current user data
          */
-        @Getter
-        public static class UsernamePasswordRegister extends UsernamePasswordLogin {
+        public static final class FetchCurrentUser extends SakuyaBridgePacket {
 
-            public UsernamePasswordRegister() {
-            }
-
-            public UsernamePasswordRegister(String username, char[] password) {
-                super(username, password);
+            /**
+             * Used for serialization
+             */
+            public FetchCurrentUser() {
             }
         }
     }
@@ -127,11 +152,11 @@ public final class Packets {
          * Response to the server info request
          */
         @Getter
-        public static final class ServerInfo extends SakuyaBridgePacket {
+        public static final class FetchServerInfo extends SakuyaBridgePacket {
 
-            private dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo serverInfo;
+            private ServerInfo serverInfo;
 
-            public ServerInfo() {
+            public FetchServerInfo() {
             }
 
             /**
@@ -139,7 +164,7 @@ public final class Packets {
              *
              * @param serverInfo The server info
              */
-            public ServerInfo(dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo serverInfo) {
+            public FetchServerInfo(ServerInfo serverInfo) {
                 this.serverInfo = serverInfo;
             }
         }
@@ -148,7 +173,7 @@ public final class Packets {
          * Response to the server version request
          */
         @Getter
-        public static class VersionExchange extends SakuyaBridgePacket {
+        public static final class VersionExchange extends SakuyaBridgePacket {
 
             private int serverVersion;
             private int networkProtocol;
@@ -162,63 +187,108 @@ public final class Packets {
             }
         }
 
+        // <editor-fold desc="Authentication Packets">
+
         /**
-         * Represents basic login response
+         * Auth responses
          */
-        @Getter
-        private static abstract class Login extends SakuyaBridgePacket {
+        @IgnoreNetworkRegistration(ignoreInnerClasses = false)
+        public static final class Auth {
 
-            protected boolean success = false; // Default to false
-            protected SessionToken sessionToken;
+            /**
+             * Represents basic login response
+             */
+            @Getter
+            private static abstract class Login extends SakuyaBridgePacket {
 
-            public Login() {
+                protected SessionToken sessionToken;
+
+                public Login() {
+                }
+
+                public Login(SessionToken sessionToken) {
+                    this.sessionToken = sessionToken;
+                }
+
+                /**
+                 * Sets the session token
+                 *
+                 * @param sessionToken The session token
+                 *
+                 * @return The login response
+                 */
+                public SakuyaBridgePacket withSessionToken(SessionToken sessionToken) {
+                    this.sessionToken = sessionToken;
+                    return this;
+                }
             }
 
-            public Login(boolean success, SessionToken sessionToken) {
-                this.success = success;
-                this.sessionToken = sessionToken;
+            /**
+             * Response to the previous session login request
+             */
+            @Getter
+            public static final class PreviousSessionLogin extends Login {
+
+                public PreviousSessionLogin() {
+                }
+
+                public PreviousSessionLogin(SessionToken sessionToken) {
+                    super(sessionToken);
+                }
+            }
+
+            /**
+             * Response to the username and password login request
+             */
+            @Getter
+            public static class UsernamePasswordLogin extends Login {
+
+                public UsernamePasswordLogin() {
+                }
+
+                public UsernamePasswordLogin(SessionToken sessionToken) {
+                    super(sessionToken);
+                }
+            }
+
+            /**
+             * Response to the username and password register request
+             */
+            @Getter
+            public static final class UsernamePasswordRegister extends UsernamePasswordLogin {
+
+                public UsernamePasswordRegister() {
+                }
+
+                public UsernamePasswordRegister(SessionToken sessionToken) {
+                    super(sessionToken);
+                }
             }
         }
 
-        /**
-         * Response to the previous session login request
-         */
-        @Getter
-        public static class PreviousSessionLogin extends Login {
-
-            public PreviousSessionLogin() {
-            }
-
-            public PreviousSessionLogin(boolean success, SessionToken sessionToken) {
-                super(success, sessionToken);
-            }
-        }
+        // </editor-fold>
 
         /**
-         * Response to the username and password login request
+         * Response to fetch current user data
          */
         @Getter
-        public static class UsernamePasswordLogin extends Login {
+        public static final class FetchCurrentUser extends SakuyaBridgePacket {
 
-            public UsernamePasswordLogin() {
+            private User user;
+
+            /**
+             * Used for serialization
+             */
+            public FetchCurrentUser() {
             }
 
-            public UsernamePasswordLogin(boolean success, SessionToken sessionToken) {
-                super(success, sessionToken);
-            }
-        }
-
-        /**
-         * Response to the username and password register request
-         */
-        @Getter
-        public static class UsernamePasswordRegister extends UsernamePasswordLogin {
-
-            public UsernamePasswordRegister() {
-            }
-
-            public UsernamePasswordRegister(boolean success, SessionToken sessionToken) {
-                super(success, sessionToken);
+            /**
+             * Creates a new fetch user response
+             *
+             * @param user The user
+             */
+            public FetchCurrentUser(User user) {
+                this.user = user;
             }
         }
     }

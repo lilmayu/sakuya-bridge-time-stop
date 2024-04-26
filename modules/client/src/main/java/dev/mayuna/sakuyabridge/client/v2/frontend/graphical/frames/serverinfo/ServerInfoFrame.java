@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.serverinfo;
 
 import dev.mayuna.cinnamonroll.extension.frames.loading.LoadingDialogFrame;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.auth.usernamepassword.UsernamePasswordAuthFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
@@ -16,24 +17,31 @@ public final class ServerInfoFrame extends ServerInfoFrameDesign {
         super(serverInfo);
     }
 
-    @Override
-    protected void populateData() {
-        super.populateData();
-
-        var previousSessionToken = SakuyaBridge.INSTANCE.getConfig().getPreviousSessionTokenIfNotExpired();
-
-        if (previousSessionToken != null) {
-            buttonContinueInPreviousSession.setEnabled(true);
-            buttonContinueInPreviousSession.setText($formatTranslation(Lang.Frames.ServerInfo.BUTTON_CONTINUE_IN_PREVIOUS_SESSION_NO_SESSION, previousSessionToken.getLoggedAccount().getUsername()));
-        }
-    }
-
     /**
      * Called when the user has successfully logged in.
      */
     private void successfulLogin() {
-        this.dispose();
-        GraphicalUserInterface.INSTANCE.openMainFrame();
+        var loadingDialog = new LoadingDialogFrame($getTranslation(Lang.Frames.ServerInfo.TEXT_FETCHING_CURRENT_USER));
+        loadingDialog.blockAndShow(this);
+
+        // Fetch user
+        SakuyaBridge.INSTANCE.fetchCurrentUser().thenAcceptAsync(result -> {
+            loadingDialog.unblockAndClose();
+
+            if (!result.isSuccessful()) {
+                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.ServerInfo.TEXT_FAILED_TO_FETCH_CURRENT_USER, result.getErrorMessage())).showError(this);
+
+                // Disconnect
+                SakuyaBridge.INSTANCE.reset();
+                this.dispose();
+                GraphicalUserInterface.INSTANCE.openConnectFrame();
+                return;
+            }
+
+            // Open main frame
+            this.dispose();
+            GraphicalUserInterface.INSTANCE.openMainFrame();
+        });
     }
 
     @Override

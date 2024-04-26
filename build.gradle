@@ -49,10 +49,10 @@ allprojects {
         implementation 'dev.mayuna:mayus-json-utilities:1.3.2'
 
         // Lombok
-        compileOnly 'org.projectlombok:lombok:1.18.24'
-        annotationProcessor 'org.projectlombok:lombok:1.18.24'
-        testCompileOnly 'org.projectlombok:lombok:1.18.24'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+        compileOnly 'org.projectlombok:lombok:1.18.+'
+        annotationProcessor 'org.projectlombok:lombok:1.18.+'
+        testCompileOnly 'org.projectlombok:lombok:1.18.+'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.+'
 
         // Log4j
         implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'

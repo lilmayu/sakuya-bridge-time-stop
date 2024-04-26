@@ -23,4 +23,15 @@ public final class LoggedAccount extends Account {
     public LoggedAccount(String username, UUID uuid) {
         super(username, uuid);
     }
+
+    /**
+     * Creates a logged account from an account.
+     *
+     * @param account The account
+     *
+     * @return The logged account
+     */
+    public static LoggedAccount fromAccount(Account account) {
+        return new LoggedAccount(account.getUsername(), account.getUuid());
+    }
 }

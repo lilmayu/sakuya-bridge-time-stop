@@ -41,9 +41,11 @@ public final class RegisterUsernamePasswordAuthFrame extends RegisterUsernamePas
         String username = fieldUsername.getText();
         char[] password = fieldPassword.getPassword();
 
+        // Register with username and password
         SakuyaBridge.INSTANCE.registerWithUsernameAndPassword(username, password).thenAcceptAsync(result -> {
             loadingDialog.unblockAndClose();
 
+            // Register successful -> set registered to true and dispose frame
             if (result.isSuccessful()) {
                 registered = true;
                 this.dispose();

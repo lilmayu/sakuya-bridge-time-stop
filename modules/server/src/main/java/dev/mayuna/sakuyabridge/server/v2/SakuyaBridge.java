@@ -4,7 +4,10 @@ import com.esotericsoftware.minlog.Log;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.server.v2.config.Config;
 import dev.mayuna.sakuyabridge.server.v2.managers.accounts.AccountManagerBundle;
+import dev.mayuna.sakuyabridge.server.v2.managers.sessions.SessionTokenManager;
+import dev.mayuna.sakuyabridge.server.v2.managers.user.UserManager;
 import dev.mayuna.sakuyabridge.server.v2.networking.Server;
 import lombok.Getter;
 
@@ -21,7 +24,9 @@ public final class SakuyaBridge {
     private Config config;
     private Server server;
 
-    public AccountManagerBundle accountManagers = new AccountManagerBundle();
+    private AccountManagerBundle accountManagers;
+    private SessionTokenManager sessionTokenManager;
+    private UserManager userManager;
 
     private SakuyaBridge() {
     }
@@ -37,6 +42,18 @@ public final class SakuyaBridge {
         LOGGER.info("Loading config");
         config = Config.load();
 
+        LOGGER.info("Initializing account managers");
+        accountManagers = new AccountManagerBundle(config.getAccountManager());
+        accountManagers.init();
+
+        LOGGER.info("Initializing session token manager");
+        sessionTokenManager = new SessionTokenManager(config.getSessionTokenManager());
+        sessionTokenManager.init();
+
+        LOGGER.info("Initializing user manager");
+        userManager = new UserManager(config.getUserManager());
+        userManager.init();
+
         LOGGER.info("Creating server");
         Log.setLogger(new KryoLogger(Server.LOGGER));
         server = new Server(config.getServer());
@@ -51,5 +68,14 @@ public final class SakuyaBridge {
     public void stop() {
         LOGGER.info("Stopping server");
         server.stop();
+
+        // Shutdown account managers
+        accountManagers.shutdown();
+
+        // Shutdown session token manager
+        sessionTokenManager.shutdown();
+
+        // Shutdown user manager
+        userManager.shutdown();
     }
 }

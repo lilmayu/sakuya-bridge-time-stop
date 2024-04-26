@@ -71,6 +71,7 @@ public final class Lang {
             public static final String LABEL_AUTHENTICATE = "frames.server_info.label.authenticate";
             public static final String BUTTON_CONTINUE_IN_PREVIOUS_SESSION_NO_SESSION = "frames.server_info.button.continue_in_previous_session.no_session";
             public static final String BUTTON_CONTINUE_IN_PREVIOUS_SESSION = "frames.server_info.button.continue_in_previous_session";
+            public static final String BUTTON_CONTINUE_IN_PREVIOUS_SESSION_DISABLED = "frames.server_info.button.continue_in_previous_session_disabled";
             public static final String BUTTON_AUTH_DISCORD = "frames.server_info.button.auth_discord";
             public static final String BUTTON_AUTH_USERNAME_PASSWORD = "frames.server_info.button.auth_username_password";
             public static final String BUTTON_AUTH_ANONYMOUS = "frames.server_info.button.auth_anonymous";
@@ -84,6 +85,8 @@ public final class Lang {
             public static final String TEXT_LOGGING_IN_WITH_SESSION_TOKEN = "frames.server_info.text.logging_in_with_session_token";
             public static final String TEXT_FAILED_TO_LOGIN_WITH_SESSION_TOKEN = "frames.server_info.text.failed_to_login_with_session_token";
             public static final String TEXT_TITLE_FAILED_TO_LOGIN_WITH_SESSION_TOKEN = "frames.server_info.text.title.failed_to_login_with_session_token";
+            public static final String TEXT_FETCHING_CURRENT_USER = "frames.server_info.text.fetching_current_user";
+            public static final String TEXT_FAILED_TO_FETCH_CURRENT_USER = "frames.server_info.text.failed_to_fetch_current_user";
         }
 
         public static final class Auth {

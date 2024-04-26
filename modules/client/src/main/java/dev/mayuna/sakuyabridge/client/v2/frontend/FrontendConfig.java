@@ -14,7 +14,7 @@ import javax.swing.*;
 @Data
 public final class FrontendConfig {
 
-    private static final String CONFIG_FILE_NAME = "graphical_frontend.json";
+    private static final String CONFIG_FILE_NAME = "graphical-frontend-config.json";
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(FrontendConfig.class);
     private static final Gson GSON = new Gson();

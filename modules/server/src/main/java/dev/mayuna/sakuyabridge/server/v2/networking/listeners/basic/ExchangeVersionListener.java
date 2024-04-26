@@ -1,11 +1,10 @@
-package dev.mayuna.sakuyabridge.server.v2.networking.listeners;
+package dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic;
 
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
 import dev.mayuna.sakuyabridge.server.v2.networking.EncryptedListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
-import dev.mayuna.timestop.networking.base.listener.TimeStopListener;
 import lombok.NonNull;
 
 public final class ExchangeVersionListener extends EncryptedListener<Packets.Requests.VersionExchange> {

@@ -2,8 +2,10 @@ package dev.mayuna.sakuyabridge.server.v2.networking;
 
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
-import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
+import dev.mayuna.sakuyabridge.server.v2.objects.users.StorageUserWrap;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import dev.mayuna.timestop.networking.base.TimeStopConnection;
 import dev.mayuna.timestop.networking.base.listener.TimeStopListenerManager;
@@ -14,16 +16,17 @@ import lombok.Setter;
 /**
  * Represents a connection with user and other data
  */
-@Getter
 @Setter
 public final class SakuyaBridgeConnection extends TimeStopConnection {
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridgeConnection.class);
 
-    private final long bornTimeMillis = System.currentTimeMillis();
+    private @Getter final long bornTimeMillis = System.currentTimeMillis();
 
-    private int clientVersion = -1;
-    private User user;
+    private @Getter int clientVersion = -1;
+    private @Getter Account account;
+
+    private StorageUserWrap storageUserWrap;
 
     /**
      * Creates a new connection with the given translator manager
@@ -42,7 +45,7 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
      * @return True if the connection is authenticated
      */
     public boolean isAuthenticated() {
-        return user != null;
+        return account != null;
     }
 
     /**
@@ -52,6 +55,19 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
      */
     public boolean hasEncryptedConnection() {
         return SakuyaBridge.INSTANCE.getServer().getKeyStorage().hasKey(this);
+    }
+
+    /**
+     * Gets, loads or creates the StorageUserWrap for the connection
+     *
+     * @return The StorageUserWrap
+     */
+    public StorageUserWrap getLoadOrCreateUser() {
+        if (storageUserWrap == null) {
+            storageUserWrap = SakuyaBridge.INSTANCE.getUserManager().getLoadOrCreateUser(LoggedAccount.fromAccount(account));
+        }
+
+        return storageUserWrap;
     }
 
     @Override
@@ -65,7 +81,7 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
 
     @Override
     public String toString() {
-        // 8f4e4b9e-4f7b-4f6b-8f4e-4f7b4f6b8f4e[mayuna](ID){VERSION}@localhost:28748
+        // mayuna[8f4e4b9e-4f7b-4f6b-8f4e-4f7b4f6b8f4e](ID){VERSION}@localhost:28748
 
         String remoteAddress = "[Unknown address]";
 
@@ -73,6 +89,6 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
             remoteAddress = getRemoteAddressTCP().toString();
         }
 
-        return (user == null ? "Unauthenticated" : user.getUuid() + "[" + user.getUsername() + "]") + "(" + getID() + "){" + clientVersion + "}@" + remoteAddress;
+        return (account == null ? "Unauthenticated" : account.getUsername() + "[" + account.getUuid() + "]") + "(" + getID() + "){" + clientVersion + "}@" + remoteAddress;
     }
 }

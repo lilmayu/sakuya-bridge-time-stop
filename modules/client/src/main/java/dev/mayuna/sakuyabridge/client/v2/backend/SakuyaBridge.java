@@ -10,6 +10,7 @@ import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
+import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.extension.CryptoKeyExchange;
 import lombok.Getter;
 import lombok.NonNull;
@@ -116,22 +117,15 @@ public final class SakuyaBridge {
     /**
      * Handles pre-request checks
      *
-     * @param requestResultFuture         The future to complete if the pre-request checks fail
-     * @param shouldBeConnectionEncrypted If the connection should be encrypted
-     * @param <T>                         The type of the request result
+     * @param requestResultFuture The future to complete if the pre-request checks fail
+     * @param <T>                 The type of the request result
      *
      * @return True if the pre-request checks pass
      */
-    private <T> boolean handlePreRequest(CompletableFuture<RequestResult<T>> requestResultFuture, boolean shouldBeConnectionEncrypted) {
+    private <T> boolean handlePreRequest(CompletableFuture<RequestResult<T>> requestResultFuture) {
         if (!canRequestConnected()) {
             LOGGER.error("Cannot request: Not connected");
             requestResultFuture.complete(RequestResult.failure("Not connected"));
-            return false;
-        }
-
-        if (shouldBeConnectionEncrypted && !canRequestEncrypted()) {
-            LOGGER.error("Cannot request: Connection not encrypted");
-            requestResultFuture.complete(RequestResult.failure("Connection not encrypted"));
             return false;
         }
 
@@ -146,8 +140,40 @@ public final class SakuyaBridge {
      *
      * @return True if the pre-request checks pass
      */
-    private <T> boolean handlePreRequest(CompletableFuture<RequestResult<T>> requestResultFuture) {
-        return handlePreRequest(requestResultFuture, true);
+    private <T> boolean handleEncryptedPreRequest(CompletableFuture<RequestResult<T>> requestResultFuture) {
+        if (!handlePreRequest(requestResultFuture)) {
+            return false;
+        }
+
+        if (!canRequestEncrypted()) {
+            LOGGER.error("Cannot request: Connection not encrypted");
+            requestResultFuture.complete(RequestResult.failure("Connection not encrypted"));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles pre-request checks (connection must be encrypted and authenticated)
+     *
+     * @param requestResultFuture The future to complete if the pre-request checks fail
+     * @param <T>                 The type of the request result
+     *
+     * @return True if the pre-request checks pass
+     */
+    private <T> boolean handleAuthenticatedPreRequest(CompletableFuture<RequestResult<T>> requestResultFuture) {
+        if (!handleEncryptedPreRequest(requestResultFuture)) {
+            return false;
+        }
+
+        if (currentSessionToken == null) {
+            LOGGER.error("Cannot request: Not authenticated");
+            requestResultFuture.complete(RequestResult.failure("Not authenticated"));
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -236,7 +262,7 @@ public final class SakuyaBridge {
     public CompletableFuture<RequestResult<ExchangeVersionResult>> exchangeVersions() {
         var future = new CompletableFuture<RequestResult<ExchangeVersionResult>>();
 
-        if (!handlePreRequest(future)) {
+        if (!handleEncryptedPreRequest(future)) {
             return future;
         }
 
@@ -278,14 +304,14 @@ public final class SakuyaBridge {
     public CompletableFuture<RequestResult<ServerInfo>> fetchServerInfo() {
         var future = new CompletableFuture<RequestResult<ServerInfo>>();
 
-        if (!handlePreRequest(future)) {
+        if (!handleEncryptedPreRequest(future)) {
             return future;
         }
 
         LOGGER.info("Fetching server info");
 
         // Send the server info request
-        client.sendTCPWithResponse(new Packets.Requests.ServerInfo(), Packets.Responses.ServerInfo.class, response -> {
+        client.sendTCPWithResponse(new Packets.Requests.FetchServerInfo(), Packets.Responses.FetchServerInfo.class, response -> {
             if (response.hasError()) {
                 LOGGER.error("Failed to fetch server info: " + response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
@@ -319,6 +345,7 @@ public final class SakuyaBridge {
     private void handleSuccessfulLogin(SessionToken sessionToken) {
         this.currentSessionToken = sessionToken;
         this.config.setPreviousSessionToken(this.currentSessionToken);
+        this.config.save();
 
         LoggedAccount loggedAccount = this.currentSessionToken.getLoggedAccount();
 
@@ -333,10 +360,10 @@ public final class SakuyaBridge {
      *
      * @return A future that completes when the login is successful (will not be ever completed exceptionally)
      */
-    public CompletableFuture<RequestResult<Packets.Responses.PreviousSessionLogin>> loginWithPreviousSession() {
-        var future = new CompletableFuture<RequestResult<Packets.Responses.PreviousSessionLogin>>();
+    public CompletableFuture<RequestResult<Packets.Responses.Auth.PreviousSessionLogin>> loginWithPreviousSession() {
+        var future = new CompletableFuture<RequestResult<Packets.Responses.Auth.PreviousSessionLogin>>();
 
-        if (!handlePreRequest(future)) {
+        if (!handleEncryptedPreRequest(future)) {
             return future;
         }
 
@@ -350,17 +377,10 @@ public final class SakuyaBridge {
         UUID previousSessionToken = config.getPreviousSessionToken().getToken();
 
         // Send the login request
-        client.sendTCPWithResponse(new Packets.Requests.PreviousSessionLogin(previousSessionToken), Packets.Responses.PreviousSessionLogin.class, response -> {
+        client.sendTCPWithResponse(new Packets.Requests.Auth.PreviousSessionLogin(previousSessionToken), Packets.Responses.Auth.PreviousSessionLogin.class, response -> {
             if (response.hasError()) {
                 LOGGER.error("Failed to login with previous session: " + response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
-                return;
-            }
-
-            // Sanity check, should never happen
-            if (!response.isSuccess()) {
-                LOGGER.warn("Failed to login with previous session but no error message was supplied (bug?)");
-                future.complete(RequestResult.failure("Unknown error (bug?)"));
                 return;
             }
 
@@ -383,26 +403,20 @@ public final class SakuyaBridge {
      *
      * @return A future that completes when the login is successful (will not be ever completed exceptionally)
      */
-    public CompletableFuture<RequestResult<Packets.Responses.UsernamePasswordLogin>> loginWithUsernameAndPassword(final @NonNull String username, final char @NonNull [] password) {
-        var future = new CompletableFuture<RequestResult<Packets.Responses.UsernamePasswordLogin>>();
+    public CompletableFuture<RequestResult<Packets.Responses.Auth.UsernamePasswordLogin>> loginWithUsernameAndPassword(final @NonNull String username, final char @NonNull [] password) {
+        var future = new CompletableFuture<RequestResult<Packets.Responses.Auth.UsernamePasswordLogin>>();
 
-        if (!handlePreRequest(future)) {
+        if (!handleEncryptedPreRequest(future)) {
             return future;
         }
 
         LOGGER.info("Logging in with username '" + username + "' and password");
 
         // Send the login request
-        client.sendTCPWithResponse(new Packets.Requests.UsernamePasswordLogin(username, password), Packets.Responses.UsernamePasswordLogin.class, response -> {
+        client.sendTCPWithResponse(new Packets.Requests.Auth.UsernamePasswordLogin(username, password), Packets.Responses.Auth.UsernamePasswordLogin.class, response -> {
             if (response.hasError()) {
                 LOGGER.error("Failed to login with username and password: " + response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
-                return;
-            }
-
-            // Sanity check, should never happen
-            if (!response.isSuccess()) {
-                LOGGER.warn("Failed to login with username and password but no error message was supplied (bug?)");
                 return;
             }
 
@@ -425,26 +439,20 @@ public final class SakuyaBridge {
      *
      * @return A future that completes when the registration is successful (will not be ever completed exceptionally)
      */
-    public CompletableFuture<RequestResult<Packets.Responses.UsernamePasswordRegister>> registerWithUsernameAndPassword(final @NonNull String username, final char @NonNull [] password) {
-        var future = new CompletableFuture<RequestResult<Packets.Responses.UsernamePasswordRegister>>();
+    public CompletableFuture<RequestResult<Packets.Responses.Auth.UsernamePasswordRegister>> registerWithUsernameAndPassword(final @NonNull String username, final char @NonNull [] password) {
+        var future = new CompletableFuture<RequestResult<Packets.Responses.Auth.UsernamePasswordRegister>>();
 
-        if (!handlePreRequest(future)) {
+        if (!handleEncryptedPreRequest(future)) {
             return future;
         }
 
         LOGGER.info("Registering with username '" + username + "' and password");
 
         // Send the register request
-        client.sendTCPWithResponse(new Packets.Requests.UsernamePasswordRegister(username, password), Packets.Responses.UsernamePasswordRegister.class, response -> {
+        client.sendTCPWithResponse(new Packets.Requests.Auth.UsernamePasswordRegister(username, password), Packets.Responses.Auth.UsernamePasswordRegister.class, response -> {
             if (response.hasError()) {
                 LOGGER.error("Failed to register with username and password: " + response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
-                return;
-            }
-
-            // Sanity check, should never happen
-            if (!response.isSuccess()) {
-                LOGGER.warn("Failed to register with username and password but no error message was supplied (bug?)");
                 return;
             }
 
@@ -453,6 +461,43 @@ public final class SakuyaBridge {
             future.complete(RequestResult.success(response));
         }, () -> {
             LOGGER.error("Failed to register with username and password: Timeout");
+            future.complete(RequestResult.timeout());
+        });
+
+        return future;
+    }
+
+    /**
+     * Fetches the current user
+     *
+     * @return A future that completes when the current user is fetched (will not be ever completed exceptionally)
+     */
+    public CompletableFuture<RequestResult<User>> fetchCurrentUser() {
+        var future = new CompletableFuture<RequestResult<User>>();
+
+        if (!handleAuthenticatedPreRequest(future)) {
+            return future;
+        }
+
+        LOGGER.info("Fetching current user");
+
+        // Send the fetch current user request
+        client.sendTCPWithResponse(new Packets.Requests.FetchCurrentUser(), Packets.Responses.FetchCurrentUser.class, response -> {
+            if (response.hasError()) {
+                LOGGER.error("Failed to fetch current user: " + response.getErrorMessage());
+                future.complete(RequestResult.failure(response.getErrorMessage()));
+                return;
+            }
+
+            User user = response.getUser();
+
+            LOGGER.info("Successfully fetched current user:");
+            LOGGER.info(" = Username: " + user.getUsername());
+            LOGGER.info(" = UUID: " + user.getUuid());
+
+            future.complete(RequestResult.success(user));
+        }, () -> {
+            LOGGER.error("Failed to fetch current user: Timeout");
             future.complete(RequestResult.timeout());
         });
 
