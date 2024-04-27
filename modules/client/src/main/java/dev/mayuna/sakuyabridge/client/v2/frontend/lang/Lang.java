@@ -54,6 +54,7 @@ public final class Lang {
             public static final String PLACEHOLDER_SERVER_ADDRESS = "frames.connect.placeholder.server_address";
             public static final String TEXT_CONNECTING = "frames.connect.text.connecting";
             public static final String TEXT_FAILED_TO_CONNECT = "frames.connect.text.failed_to_connect";
+            public static final String TEXT_FAILED_TO_PREPARE_CLIENT = "frames.connect.text.failed_to_prepare_client";
             public static final String TEXT_CHECKING_VERSION = "frames.connect.text.checking_version";
             public static final String TEXT_FAILED_TO_EXCHANGE_VERSIONS = "frames.connect.text.failed_to_exchange_versions";
             public static final String TEXT_FETCHING_SERVER_INFO = "frames.connect.text.fetching_server_info";

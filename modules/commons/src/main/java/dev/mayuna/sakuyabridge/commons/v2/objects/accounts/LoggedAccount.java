@@ -8,6 +8,8 @@ import java.util.UUID;
  */
 public final class LoggedAccount extends Account {
 
+    private AccountType accountType;
+
     /**
      * Used for serialization.
      */
@@ -20,8 +22,9 @@ public final class LoggedAccount extends Account {
      * @param username The username
      * @param uuid     The UUID
      */
-    public LoggedAccount(String username, UUID uuid) {
+    public LoggedAccount(String username, UUID uuid, AccountType accountType) {
         super(username, uuid);
+        this.accountType = accountType;
     }
 
     /**
@@ -32,6 +35,11 @@ public final class LoggedAccount extends Account {
      * @return The logged account
      */
     public static LoggedAccount fromAccount(Account account) {
-        return new LoggedAccount(account.getUsername(), account.getUuid());
+        return new LoggedAccount(account.getUsername(), account.getUuid(), account.getAccountType());
+    }
+
+    @Override
+    public AccountType getAccountType() {
+        return accountType;
     }
 }

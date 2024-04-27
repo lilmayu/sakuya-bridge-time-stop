@@ -21,6 +21,7 @@ public final class FrontendConfig {
 
     private String lookAndFeelClass = FlatMoonlightIJTheme.class.getName(); // Default to FlatMoonlight
     private int minimalLogLevelLoggerFrame = Level.INFO.intLevel();
+    private String lastServerAddress = "";
 
     /**
      * Loads the settings from the file.
@@ -30,6 +31,29 @@ public final class FrontendConfig {
     public static FrontendConfig load() {
         LOGGER.info("Loading frontend settings (" + CONFIG_FILE_NAME + ")");
         return ApplicationConfigLoader.loadFrom(GSON, CONFIG_FILE_NAME, FrontendConfig.class, false);
+    }
+
+    /**
+     * Checks if the last server address is valid.
+     *
+     * @return True if the last server address is valid
+     */
+    public boolean isLastServerAddressValid() {
+        return lastServerAddress != null && !lastServerAddress.isBlank();
+    }
+
+    /**
+     * Gets the last server address.<br>
+     * If the last server address is null or blank, it will return an empty string.
+     *
+     * @return The last server address
+     */
+    public String getLastServerAddress() {
+        if (!isLastServerAddressValid()) {
+            lastServerAddress = "";
+        }
+
+        return lastServerAddress;
     }
 
     /**

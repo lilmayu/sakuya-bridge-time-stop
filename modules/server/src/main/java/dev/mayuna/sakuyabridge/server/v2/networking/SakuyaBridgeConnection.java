@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking;
 
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
@@ -13,6 +14,8 @@ import dev.mayuna.timestop.networking.base.translator.TimeStopTranslatorManager;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.net.InetSocketAddress;
+
 /**
  * Represents a connection with user and other data
  */
@@ -23,6 +26,7 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
 
     private @Getter final long bornTimeMillis = System.currentTimeMillis();
 
+    private @Getter InetSocketAddress lastRemoteAddressTCP;
     private @Getter int clientVersion = -1;
     private @Getter Account account;
 
@@ -72,7 +76,7 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
 
     @Override
     public int sendTCP(Object object) {
-        if (!(object instanceof FrameworkMessage)) {
+        if (!(object instanceof FrameworkMessage) && !(object instanceof Packets.IgnoreLogging)) {
             LOGGER.flow("[" + this + "] Sending TCP: " + object.getClass().getSimpleName());
         }
 
@@ -86,7 +90,11 @@ public final class SakuyaBridgeConnection extends TimeStopConnection {
         String remoteAddress = "[Unknown address]";
 
         if (getRemoteAddressTCP() != null) {
-            remoteAddress = getRemoteAddressTCP().toString();
+            lastRemoteAddressTCP = getRemoteAddressTCP();
+        }
+
+        if (lastRemoteAddressTCP != null) {
+            remoteAddress = lastRemoteAddressTCP.toString();
         }
 
         return (account == null ? "Unauthenticated" : account.getUsername() + "[" + account.getUuid() + "]") + "(" + getID() + "){" + clientVersion + "}@" + remoteAddress;

@@ -40,6 +40,13 @@ public abstract class Account {
         this.uuid = uuid;
     }
 
+    /**
+     * Returns the account type.
+     *
+     * @return The account type
+     */
+    public abstract AccountType getAccountType();
+
     @Override
     public String toString() {
         return "Account{" +

@@ -15,6 +15,11 @@ public final class ServerInfoFrame extends ServerInfoFrameDesign {
 
     public ServerInfoFrame(ServerInfo serverInfo) {
         super(serverInfo);
+
+        // Focus the continue in last session if available
+        if (buttonContinueInPreviousSession.isEnabled()) {
+            buttonContinueInPreviousSession.requestFocus();
+        }
     }
 
     /**

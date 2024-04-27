@@ -1,7 +1,7 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.connect;
 
 import dev.mayuna.cinnamonroll.extension.frames.loading.LoadingDialogFrame;
-import dev.mayuna.sakuyabridge.client.v2.MiscConstants;
+import dev.mayuna.sakuyabridge.client.v2.ClientConstants;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
 import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
@@ -16,19 +16,40 @@ import java.util.concurrent.CompletableFuture;
  */
 public final class ConnectFrame extends ConnectFrameDesign {
 
+    public ConnectFrame() {
+        super();
+
+        // Focus the connect button if the last server address is valid
+        if (GraphicalUserInterface.INSTANCE.getSettings().isLastServerAddressValid()) {
+            buttonConnect.requestFocus();
+        }
+    }
+
     @Override
     protected void prepareComponents() {
         super.prepareComponents();
 
         labelVersion.setText($formatTranslation(Lang.Frames.Connect.LABEL_VERSION, "2.0", "N/A"));
+
+        // Set the server address to the last used server address
+        fieldServerAddress.setText(GraphicalUserInterface.INSTANCE.getSettings().getLastServerAddress());
     }
 
     @Override
     protected void clickConnect(MouseEvent mouseEvent) {
+        // Set the last server address to the config
+        GraphicalUserInterface.INSTANCE.getSettings().setLastServerAddress(fieldServerAddress.getText());
+        GraphicalUserInterface.INSTANCE.getSettings().save(); // Save
+
         var loadingDialog = new LoadingDialogFrame($getTranslation(Lang.Frames.Connect.TEXT_CONNECTING));
         loadingDialog.blockAndShow(this);
 
-        SakuyaBridge.INSTANCE.prepareForConnect();
+        if (!SakuyaBridge.INSTANCE.prepareForConnect()) {
+            loadingDialog.unblockAndClose();
+            TranslatedInfoMessage.create($getTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_PREPARE_CLIENT)).showError(this);
+            return;
+
+        }
 
         CompletableFuture.runAsync(() -> {
             // Connect
@@ -36,7 +57,8 @@ public final class ConnectFrame extends ConnectFrameDesign {
 
             if (!connectResult.isSuccessful()) {
                 loadingDialog.unblockAndClose();
-                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_CONNECT, connectResult.getErrorMessage())).showError(this);
+                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_CONNECT, connectResult.getErrorMessage()))
+                                     .showError(this);
                 return;
             }
 
@@ -47,7 +69,8 @@ public final class ConnectFrame extends ConnectFrameDesign {
 
             if (!exchangeVersionsResult.isSuccessful()) {
                 loadingDialog.unblockAndClose();
-                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_EXCHANGE_VERSIONS, exchangeVersionsResult.getErrorMessage())).showError(this);
+                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_EXCHANGE_VERSIONS, exchangeVersionsResult.getErrorMessage()))
+                                     .showError(this);
                 return;
             }
 
@@ -58,7 +81,8 @@ public final class ConnectFrame extends ConnectFrameDesign {
 
             if (!serverInfoResult.isSuccessful()) {
                 loadingDialog.unblockAndClose();
-                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_FETCH_SERVER_INFO, serverInfoResult.getErrorMessage())).showError(this);
+                TranslatedInfoMessage.create($formatTranslation(Lang.Frames.Connect.TEXT_FAILED_TO_FETCH_SERVER_INFO, serverInfoResult.getErrorMessage()))
+                                     .showError(this);
                 return;
             }
 
@@ -79,11 +103,11 @@ public final class ConnectFrame extends ConnectFrameDesign {
 
     @Override
     protected void clickAuthor(MouseEvent mouseEvent) {
-        DesktopUtils.openUrl(MiscConstants.MAYUNA_WEBSITE_URL);
+        DesktopUtils.openUrl(ClientConstants.MAYUNA_WEBSITE_URL);
     }
 
     @Override
     protected void clickVersion(MouseEvent mouseEvent) {
-        DesktopUtils.openUrl(MiscConstants.GITHUB_RELEASE_URL);
+        DesktopUtils.openUrl(ClientConstants.GITHUB_RELEASE_URL);
     }
 }

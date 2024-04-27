@@ -1,6 +1,7 @@
 package dev.mayuna.sakuyabridge.server.v2.objects.accounts;
 
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.AccountType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,4 +51,8 @@ public final class UsernamePasswordAccount extends Account {
         this.passwordHash = passwordHash;
     }
 
+    @Override
+    public AccountType getAccountType() {
+        return AccountType.USERNAME_PASSWORD;
+    }
 }

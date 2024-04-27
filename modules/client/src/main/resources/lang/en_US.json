@@ -37,6 +37,7 @@
     "frames.connect.placeholder.server_address": "Host / IPv4",
     "frames.connect.text.connecting": "Connecting...",
     "frames.connect.text.failed_to_connect": "Failed to connect to the server: {0}",
+    "frames.connect.text.failed_to_prepare_client": "Failed to prepare client",
     "frames.connect.text.checking_version": "Checking for server version",
     "frames.connect.text.failed_to_exchange_versions": "Failed to exchange version with the server: {0}",
     "frames.connect.text.fetching_server_info": "Fetching Server Info",

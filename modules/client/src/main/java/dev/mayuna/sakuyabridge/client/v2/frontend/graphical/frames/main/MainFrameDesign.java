@@ -6,20 +6,30 @@ import dev.mayuna.cinnamonroll.TabType;
 import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.AccountTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.GameBrowserTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.SettingsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
+import dev.mayuna.sakuyabridge.client.v2.frontend.util.DesignUtils;
+import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.WindowEvent;
+import java.awt.event.MouseEvent;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
+// TODO: Translations
 public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     protected JTabbedPane tabbedPane;
+    protected JLabel labelLoggedAs;
+    protected JLabel labelPing;
+    protected JButton buttonDisconnect;
 
     public MainFrameDesign() {
+        super();
+        populateData();
     }
 
     @Override
@@ -40,6 +50,12 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.getContentPane().requestFocusInWindow();
     }
 
+    /**
+     * Populates the data of the frame.
+     */
+    protected void populateData() {
+    }
+
     @Override
     protected void prepareComponents() {
         this.tabbedPane = new JTabbedPane();
@@ -48,11 +64,19 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         CinnamonRollFlatLaf.showTabSeparator(tabbedPane, true);
         CinnamonRollFlatLaf.showBorder(tabbedPane, true);
         TabbedPanel.configureTabbedPane(tabbedPane);
+
+        this.labelLoggedAs = new JLabel();
+        this.labelPing = new JLabel();
+
+        this.buttonDisconnect = new JButton("Disconnect");
     }
 
     @Override
     protected void registerListeners() {
+        CinnamonRoll.onClick(buttonDisconnect, this::clickDisconnect);
     }
+
+    protected abstract void clickDisconnect(MouseEvent mouseEvent);
 
     private void prepareHeader() {
         JPanel headerPanel = new JPanel(MigLayoutUtils.createGrow());
@@ -61,19 +85,19 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         CinnamonRoll.deriveFontWith(labelTitle, Font.BOLD, 24);
         headerPanel.add(labelTitle, "gapleft 10, wrap");
 
-        headerPanel.add(new JSeparator(), "growx");
+        headerPanel.add(CinnamonRoll.horizontalSeparator(), "growx");
 
         this.add(headerPanel, BorderLayout.NORTH);
     }
 
     private void prepareTabbedPane() {
         JPanel tabPanel = new JPanel(new BorderLayout());
-        tabPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
+        tabPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
 
         tabbedPane.addTab("Game Browser", new GameBrowserTabbedPanel());
         tabbedPane.addTab("Host Game", new JPanel());
         tabbedPane.addTab("Chat room", new JPanel());
-        tabbedPane.addTab("Account", new JPanel());
+        tabbedPane.addTab("Account", new AccountTabbedPanel());
         tabbedPane.addTab("Settings", new SettingsTabbedPanel());
 
         tabPanel.add(tabbedPane, BorderLayout.CENTER);
@@ -81,5 +105,17 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
     }
 
     private void prepareFooter() {
+        JPanel footerPanel = new JPanel(MigLayoutUtils.createVerbose("righttoleft"));
+        footerPanel.setBorder(new EmptyBorder(0, 0, 0, 10));
+
+        footerPanel.add(buttonDisconnect);
+        footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");
+        footerPanel.add(new JLabel("Version " + CommonConstants.CURRENT_CLIENT_VERSION + " (network ver. " + CommonConstants.CURRENT_NETWORK_PROTOCOL + ")"));
+        footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");
+        footerPanel.add(labelLoggedAs);
+        footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");
+        footerPanel.add(labelPing);
+
+        this.add(footerPanel, BorderLayout.SOUTH);
     }
 }

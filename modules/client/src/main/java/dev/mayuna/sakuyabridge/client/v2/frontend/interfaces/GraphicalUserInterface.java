@@ -1,20 +1,25 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.interfaces;
 
 import com.formdev.flatlaf.extras.FlatInspector;
+import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.FrontendConfig;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.connect.ConnectFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger.LoggerFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.MainFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.serverinfo.ServerInfoFrame;
-import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.logging.LoggerFrameLogHandler;
+import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
 import dev.mayuna.sakuyabridge.commons.v2.logging.Log4jUtils;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
-import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.AccountType;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
+import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
+import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import lombok.Getter;
 
 import javax.swing.*;
+import java.util.UUID;
 
 @Getter
 public final class GraphicalUserInterface implements UserInterface {
@@ -50,12 +55,13 @@ public final class GraphicalUserInterface implements UserInterface {
         Log4jUtils.addAppender(LoggerFrameLogHandler.INSTANCE);
         LoggerFrame.INSTANCE.installKeybind();
 
-        //new MainFrame().openFrame();
-        var s = new ServerInfo();
-        s.getAuthenticationMethods().add(AuthenticationMethods.USERNAME_PASSWORD);
-        s.getAuthenticationMethods().add(AuthenticationMethods.DISCORD);
-        s.getAuthenticationMethods().add(AuthenticationMethods.ANONYMOUS);
-        openServerInfo(s);
+        // TODO: Debug, remove later
+        LoggedAccount loggedAccount = new LoggedAccount("mayuna", UUID.randomUUID(), AccountType.USERNAME_PASSWORD);
+        User user = new User(loggedAccount);
+        SakuyaBridge.INSTANCE.setUser(user);
+        SessionToken sessionToken = new SessionToken(loggedAccount, UUID.randomUUID(), 99999999999999L);
+        SakuyaBridge.INSTANCE.setCurrentSessionToken(sessionToken);
+        openMainFrame();
 
         //openConnectFrame();
     }

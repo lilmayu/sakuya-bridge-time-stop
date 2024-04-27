@@ -8,6 +8,7 @@ import dev.mayuna.sakuyabridge.client.v2.backend.ClientConfig;
 import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.NetworkRegistration;
+import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
 import dev.mayuna.timestop.managers.EncryptionManager;
 import dev.mayuna.timestop.networking.base.TimeStopClient;
 import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketCompressor;
@@ -118,7 +119,7 @@ public final class Client extends TimeStopClient implements Listener {
 
     @Override
     public int sendTCP(Object object) {
-        if (!(object instanceof FrameworkMessage)) {
+        if (!(object instanceof FrameworkMessage) && !(object instanceof Packets.IgnoreLogging)) {
             LOGGER.flow("Sending TCP: " + object.getClass().getSimpleName());
         }
 

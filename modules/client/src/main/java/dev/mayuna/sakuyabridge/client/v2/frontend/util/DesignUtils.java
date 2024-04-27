@@ -1,5 +1,8 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.util;
 
-public class DesignUtils {
+import javax.swing.*;
+import java.awt.*;
+
+public final class DesignUtils {
 
 }

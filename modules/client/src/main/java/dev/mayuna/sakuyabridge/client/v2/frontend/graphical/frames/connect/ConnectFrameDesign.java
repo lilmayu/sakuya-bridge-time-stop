@@ -3,7 +3,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.connect;
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.CinnamonRollFlatLaf;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.MiscConstants;
+import dev.mayuna.sakuyabridge.client.v2.ClientConstants;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import net.miginfocom.swing.MigLayout;
@@ -43,8 +43,6 @@ public abstract class ConnectFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.pack();
         this.setMinimumSize(new Dimension(340, this.getHeight()));
         this.setLocationRelativeTo(parentComponent);
-
-        this.getContentPane().requestFocusInWindow();
     }
 
     @Override
@@ -57,7 +55,7 @@ public abstract class ConnectFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.fieldServerAddress.setFont(CinnamonRoll.createMonospacedFont(12));
         CinnamonRollFlatLaf.setTextPlaceholder(fieldServerAddress, $getTranslation(Lang.Frames.Connect.PLACEHOLDER_SERVER_ADDRESS));
 
-        this.labelAuthor = new JLabel($formatTranslation(Lang.Frames.Connect.LABEL_AUTHOR, MiscConstants.AUTHOR_NAME));
+        this.labelAuthor = new JLabel($formatTranslation(Lang.Frames.Connect.LABEL_AUTHOR, ClientConstants.AUTHOR_NAME));
         this.labelAuthor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         this.labelAuthor.setToolTipText($getTranslation(Lang.Frames.Connect.WEBSITE_TOOLTIP));
 

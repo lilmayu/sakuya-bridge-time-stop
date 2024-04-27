@@ -8,6 +8,7 @@ import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.SessionTokenL
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.UsernamePasswordListeners;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.EncryptedCommunicationVerifierListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ExchangeVersionListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.PingListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ServerInfoListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.user.FetchCurrentUserListener;
 import dev.mayuna.timestop.managers.EncryptionManager;
@@ -112,6 +113,7 @@ public final class Server extends TimeStopServer {
         listenerManager.registerListener(new CryptoKeyExchange.SymmetricKeyListener(encryptionManager, keyStorage));
 
         // Basic
+        listenerManager.registerListener(new PingListener());
         listenerManager.registerListener(new ServerInfoListener());
         listenerManager.registerListener(new ExchangeVersionListener());
 

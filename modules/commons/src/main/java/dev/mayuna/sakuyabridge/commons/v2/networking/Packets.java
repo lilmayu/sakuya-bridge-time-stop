@@ -26,6 +26,12 @@ public final class Packets {
         }
     }
 
+    /**
+     * Represents a packet that should not be logged (e.g., Ping packets)
+     */
+    public interface IgnoreLogging {
+    }
+
     // ============= Requests ============= //
 
     /**
@@ -35,6 +41,30 @@ public final class Packets {
     public static final class Requests {
 
         private Requests() {
+        }
+
+        /**
+         * Ping packet
+         */
+        @Getter
+        public static final class Ping extends SakuyaBridgePacket implements IgnoreLogging {
+
+            private long sentTimestampMillis;
+
+            /**
+             * Used for serialization
+             */
+            public Ping() {
+            }
+
+            /**
+             * Creates a new ping packet
+             *
+             * @param sentTimestampMillis The timestamp when the packet was sent
+             */
+            public Ping(long sentTimestampMillis) {
+                this.sentTimestampMillis = sentTimestampMillis;
+            }
         }
 
         /**
@@ -146,6 +176,30 @@ public final class Packets {
     public static final class Responses {
 
         private Responses() {
+        }
+
+        /**
+         * Response to the ping packet
+         */
+        @Getter
+        public static final class Pong extends SakuyaBridgePacket implements IgnoreLogging {
+
+            private long sentTimestampMillis;
+
+            /**
+             * Used for serialization
+             */
+            public Pong() {
+            }
+
+            /**
+             * Creates a new ping packet
+             *
+             * @param sentTimestampMillis The timestamp when the packet was sent
+             */
+            public Pong(long sentTimestampMillis) {
+                this.sentTimestampMillis = sentTimestampMillis;
+            }
         }
 
         /**

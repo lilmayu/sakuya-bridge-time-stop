@@ -15,6 +15,7 @@ import dev.mayuna.timestop.networking.extension.CryptoKeyExchange;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,16 +28,42 @@ public final class SakuyaBridge {
     public static final SakuyaBridge INSTANCE = new SakuyaBridge();
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridge.class);
 
+    private Timer timer;
+
     private ClientConfig config;
     private Client client;
+
+    private long lastPingIn;
+    private long lastPingOut;
 
     private ServerInfo serverInfo;
     private int serverVersion;
     private int networkProtocol;
 
     private SessionToken currentSessionToken;
+    private User user;
 
     private SakuyaBridge() {
+    }
+
+    /**
+     * Used for debugging
+     *
+     * @param currentSessionToken The current session token
+     */
+    @Deprecated
+    public void setCurrentSessionToken(SessionToken currentSessionToken) {
+        this.currentSessionToken = currentSessionToken;
+    }
+
+    /**
+     * Used for debugging
+     *
+     * @param user The user
+     */
+    @Deprecated
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
@@ -48,6 +75,41 @@ public final class SakuyaBridge {
 
         config = ClientConfig.load();
         config.clearPreviousSessionTokenIfExpired();
+    }
+
+    /**
+     * Prepares the ping timer task
+     */
+    private void preparePingTimerTask() {
+        if (timer != null) {
+            timer.cancel(); // Cancel timer
+        }
+
+        timer = new Timer(); // Create new instance of the timer
+
+        timer.scheduleAtFixedRate(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                if (!canRequestAuthenticated()) {
+                    return;
+                }
+
+                final long sentMillis = System.currentTimeMillis();
+
+                client.sendTCPWithResponse(new Packets.Requests.Ping(sentMillis), Packets.Responses.Pong.class, CommonConstants.PING_INTERVAL / 5, response -> {
+                    final long receivedMillis = System.currentTimeMillis();
+                    final long serverReceivedMillis = response.getSentTimestampMillis();
+
+                    lastPingIn = (lastPingIn + receivedMillis - sentMillis) / 2;
+                    lastPingOut = receivedMillis - serverReceivedMillis; // Useless... Basically measures the time difference between systems.
+                }, () -> {
+                    LOGGER.warn("Failed to ping server: Timeout");
+
+                    lastPingIn = -1;
+                    lastPingOut = -1;
+                });
+            }
+        }, 0, CommonConstants.PING_INTERVAL + 100); // +100ms to be on the safe side
     }
 
     /**
@@ -78,6 +140,12 @@ public final class SakuyaBridge {
         serverVersion = -1;
         networkProtocol = -1;
         currentSessionToken = null;
+        user = null;
+        lastPingIn = -1;
+        lastPingOut = -1;
+
+        LOGGER.info("Preparing timer");
+        preparePingTimerTask();
 
         if (client != null) {
             LOGGER.info("Stopping client");
@@ -112,6 +180,15 @@ public final class SakuyaBridge {
      */
     private boolean canRequestEncrypted() {
         return canRequestConnected() && client.isEncryptTraffic();
+    }
+
+    /**
+     * Checks if the client can request (encrypted and authenticated)
+     *
+     * @return True if the client can request
+     */
+    private boolean canRequestAuthenticated() {
+        return canRequestEncrypted() && currentSessionToken != null;
     }
 
     /**
@@ -167,7 +244,7 @@ public final class SakuyaBridge {
             return false;
         }
 
-        if (currentSessionToken == null) {
+        if (!canRequestAuthenticated()) {
             LOGGER.error("Cannot request: Not authenticated");
             requestResultFuture.complete(RequestResult.failure("Not authenticated"));
             return false;
@@ -489,13 +566,13 @@ public final class SakuyaBridge {
                 return;
             }
 
-            User user = response.getUser();
+            this.user = response.getUser();
 
             LOGGER.info("Successfully fetched current user:");
-            LOGGER.info(" = Username: " + user.getUsername());
-            LOGGER.info(" = UUID: " + user.getUuid());
+            LOGGER.info(" = Username: " + this.user.getUsername());
+            LOGGER.info(" = UUID: " + this.user.getUuid());
 
-            future.complete(RequestResult.success(user));
+            future.complete(RequestResult.success(this.user));
         }, () -> {
             LOGGER.error("Failed to fetch current user: Timeout");
             future.complete(RequestResult.timeout());
