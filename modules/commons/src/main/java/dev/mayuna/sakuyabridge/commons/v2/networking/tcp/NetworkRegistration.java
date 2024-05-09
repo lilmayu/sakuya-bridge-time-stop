@@ -1,8 +1,7 @@
-package dev.mayuna.sakuyabridge.commons.v2.networking;
+package dev.mayuna.sakuyabridge.commons.v2.networking.tcp;
 
 import com.esotericsoftware.kryo.Kryo;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
-import dev.mayuna.timestop.networking.base.serialization.UUIDSerializer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 

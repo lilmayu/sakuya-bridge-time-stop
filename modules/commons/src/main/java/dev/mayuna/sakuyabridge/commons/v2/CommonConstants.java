@@ -11,6 +11,7 @@ public final class CommonConstants {
     public static final int MINIMUM_PASSWORD_LENGTH = 8;
     public static final int MAXIMUM_PASSWORD_LENGTH = 32;
     public static final int PING_INTERVAL = 5000;
+    public static final int MAX_GAME_NAME_LENGTH = 64;
 
     private CommonConstants() {
     }

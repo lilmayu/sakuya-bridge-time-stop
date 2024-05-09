@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.commons.v2.networking;
+package dev.mayuna.sakuyabridge.commons.v2.networking.tcp;
 
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;

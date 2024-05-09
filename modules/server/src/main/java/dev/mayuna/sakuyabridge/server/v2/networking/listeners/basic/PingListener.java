@@ -1,6 +1,6 @@
 package dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic;
 
-import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
+import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.server.v2.networking.AuthenticatedListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 

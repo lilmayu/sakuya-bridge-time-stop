@@ -2,7 +2,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking;
 
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
+import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.Account;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;

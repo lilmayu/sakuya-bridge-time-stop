@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.commons.v2.networking;
+package dev.mayuna.sakuyabridge.commons.v2.networking.tcp;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -6,7 +6,7 @@ import dev.mayuna.sakuyabridge.client.v2.backend.networking.Client;
 import dev.mayuna.sakuyabridge.client.v2.backend.networking.results.RequestResult;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
+import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;

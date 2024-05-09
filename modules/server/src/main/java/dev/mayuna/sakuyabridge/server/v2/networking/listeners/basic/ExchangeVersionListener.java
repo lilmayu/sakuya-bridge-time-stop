@@ -2,7 +2,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic;
 
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
-import dev.mayuna.sakuyabridge.commons.v2.networking.Packets;
+import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.server.v2.networking.EncryptedListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 import lombok.NonNull;

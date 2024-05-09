@@ -71,9 +71,23 @@ public final class Config {
         private StorageSettings storageSettings = new StorageSettings("sessions");
     }
 
+    /**
+     * The settings for the user manager
+     */
     @Getter
     public static final class UserManager {
 
         private StorageSettings storageSettings = new StorageSettings("users");
+    }
+
+    /**
+     * The settings for the game manager
+     */
+    @Getter
+    public static final class GameManager {
+
+        private long clientInactivityTimeoutMillis = 30000;
+        private int startingPort = 28078;
+        private int maxGames = 50;
     }
 }
