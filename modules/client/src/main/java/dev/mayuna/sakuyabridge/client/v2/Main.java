@@ -19,8 +19,6 @@ public class Main {
      * @param args The arguments
      */
     public static void main(String[] args) {
-        testStuff();
-
         // Hooking the shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
 

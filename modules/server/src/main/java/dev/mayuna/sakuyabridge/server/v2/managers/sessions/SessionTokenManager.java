@@ -58,6 +58,8 @@ public final class SessionTokenManager {
                 cleanupExpiredSessions();
             }
         }, 0, SESSION_CLEANUP_INTERVAL);
+
+        LOGGER.success("SessionTokenManager initialized");
     }
 
     /**

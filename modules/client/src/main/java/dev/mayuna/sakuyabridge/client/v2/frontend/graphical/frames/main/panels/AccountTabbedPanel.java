@@ -43,6 +43,8 @@ public class AccountTabbedPanel extends TabbedPanel {
 
         buttonChangeAccountUsername.setEnabled(false); // Allowed for every other account than anonymous
         buttonTransferToUsernamePasswordAccountType.setEnabled(false); // Enabled only for account that are not username/password and anonymous
+
+        // TODO: Implement listeners
     }
 
     private void populateData() {

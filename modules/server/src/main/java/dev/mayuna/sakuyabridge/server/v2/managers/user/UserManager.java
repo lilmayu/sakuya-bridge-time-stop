@@ -41,6 +41,8 @@ public final class UserManager {
         LOGGER.info("Initializing user manager...");
 
         initStorage();
+
+        LOGGER.success("UserManager initialized");
     }
 
     /**

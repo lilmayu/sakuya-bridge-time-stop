@@ -44,6 +44,7 @@ public final class UdpClientBundle {
             } catch (IOException e) {
                 localClient.getLogger().error("Error while sending packet to local client", e);
                 // TODO: What to do with this exception? Stop the clients? It could spam the logs, if unstopped.
+                // Maybe add error threshold?
             }
         });
 
@@ -56,6 +57,7 @@ public final class UdpClientBundle {
             } catch (IOException e) {
                 remoteClient.getLogger().error("Error while sending packet to remote client", e);
                 // TODO: What to do with this exception? Stop the clients? It could spam the logs, if unstopped.
+                // Maybe add error threshold?
             }
         });
     }

@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
  * Represents a UDP destination (IP address and port)
@@ -35,6 +37,17 @@ public final class UdpDestination {
      */
     public static UdpDestination of(InetAddress destinationAddress, int port) {
         return new UdpDestination(destinationAddress, port);
+    }
+
+    /**
+     * Creates a new UDP destination
+     *
+     * @param socketAddress Destination Socket Address
+     *
+     * @return UDP destination
+     */
+    public static UdpDestination of(InetSocketAddress socketAddress) {
+        return of(socketAddress.getAddress(), socketAddress.getPort());
     }
 
     /**
@@ -94,5 +107,21 @@ public final class UdpDestination {
     @Override
     public String toString() {
         return destinationAddress + ":" + port;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof UdpDestination that)) {
+            return false;
+        }
+        return port == that.port && Objects.equals(destinationAddress, that.destinationAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(destinationAddress, port);
     }
 }

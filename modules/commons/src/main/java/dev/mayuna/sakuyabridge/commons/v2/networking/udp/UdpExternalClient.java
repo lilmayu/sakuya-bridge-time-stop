@@ -15,6 +15,11 @@ public final class UdpExternalClient {
     private final UdpDestination destination;
     private long lastDatagramPacketAtMillis = System.currentTimeMillis();
 
+    /**
+     * Creates new UDP Client with specified UDP Destination
+     *
+     * @param destination UDP Destination (to which address and port will be packets sent)
+     */
     public UdpExternalClient(UdpDestination destination) {
         this.destination = destination;
     }

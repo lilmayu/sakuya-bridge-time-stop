@@ -63,6 +63,8 @@ public final class AccountManagerBundle {
                 }
             });
         }
+
+        LOGGER.success("AccountManagerBundle initialized");
     }
 
     /**

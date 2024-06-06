@@ -97,4 +97,18 @@ public final class GameInfo {
             this.compatibleGame = compatibleGame;
         }
     }
+
+    @Override
+    public String toString() {
+        return "GameInfo{" +
+                "name='" + name + '\'' +
+                ", region=" + region +
+                ", status=" + status +
+                ", preferredPlayerSide=" + preferredPlayerSide +
+                ", version=" + version +
+                ", createdByUser=" + createdByUser +
+                ", isPasswordProtected=" + isPasswordProtected +
+                ", isUdpHolePunchingEnabled=" + isUdpHolePunchingEnabled +
+                '}';
+    }
 }

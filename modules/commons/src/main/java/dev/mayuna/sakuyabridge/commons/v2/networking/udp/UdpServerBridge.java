@@ -1,5 +1,7 @@
 package dev.mayuna.sakuyabridge.commons.v2.networking.udp;
 
+import lombok.Getter;
+
 import java.net.DatagramPacket;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +18,9 @@ public final class UdpServerBridge extends UdpServer {
     private final long inactiveAfterMillis;
     private final List<UdpExternalClient> clients = new LinkedList<>();
     private final Timer inactiveClientTimer = new Timer();
+
+    private final @Getter UdpDestinationWhitelist clientWhitelist = new UdpDestinationWhitelist();
+    private final @Getter UdpDestinationWhitelist hostWhitelist = new UdpDestinationWhitelist();
 
     // TODO: Whitelisting clients, somehow
 
@@ -119,6 +124,16 @@ public final class UdpServerBridge extends UdpServer {
         }
     }
 
+    @Override
+    protected void onExceptionDuringTick(Throwable throwable) {
+        // TODO: Remove client that caused the exception during tick
+        // TODO: If it's host -> stop the server
+        super.onExceptionDuringTick(throwable);
+    }
+
+    /**
+     * Stops the server's inactive client timer, clears clients, sets host as null and stops the server itself
+     */
     @Override
     public void stop() {
         inactiveClientTimer.cancel();

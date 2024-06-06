@@ -1,15 +1,18 @@
 package dev.mayuna.sakuyabridge.server.v2.managers.games;
 
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
+import dev.mayuna.sakuyabridge.commons.v2.networking.udp.UdpDestination;
+import dev.mayuna.sakuyabridge.commons.v2.networking.udp.UdpServerBridge;
 import dev.mayuna.sakuyabridge.commons.v2.objects.games.GameInfo;
 import dev.mayuna.sakuyabridge.server.v2.config.Config;
+import dev.mayuna.sakuyabridge.server.v2.exceptions.CouldNotCreateUdpServerBridgeException;
+import dev.mayuna.sakuyabridge.server.v2.exceptions.MaxGamesPerUserReachedException;
+import dev.mayuna.sakuyabridge.server.v2.exceptions.NoAvailablePortException;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 import dev.mayuna.sakuyabridge.server.v2.objects.games.Game;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.net.SocketException;
+import java.util.*;
 
 /**
  * Manages games
@@ -18,7 +21,7 @@ public final class GameManager {
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(GameManager.class);
 
-    private final List<Game> activeGames = new LinkedList<>();
+    private final List<Game> games = new LinkedList<>();
     private final Config.GameManager config;
 
     /**
@@ -31,15 +34,93 @@ public final class GameManager {
     }
 
     /**
-     * Creates a game
+     * Initializes game manager
+     */
+    public void init() {
+        LOGGER.success("GameManager initialized with maximum of {} starting on port {} (max {} games per user)", config.getMaxGames(), config.getStartingPort(), config.getMaxGamesPerUser());
+    }
+
+    // TODO: Packets for getting game list, game info, connect, etc. etc.
+
+    /**
+     * Creates and starts a game
      *
      * @param connection Connection
      * @param gameInfo   Game info
      *
-     * @return Optional of Game
+     * @return Game
+     *
+     * @throws NoAvailablePortException No available ports
+     * @throws MaxGamesPerUserReachedException Max games per user reached
+     * @throws CouldNotCreateUdpServerBridgeException} Could not create UDP Server Bridge
      */
-    public Optional<Game> createGame(SakuyaBridgeConnection connection, GameInfo gameInfo) {
+    public synchronized Game createGame(SakuyaBridgeConnection connection, GameInfo gameInfo) {
+        Optional<Integer> optionalPort = getFirstAvailablePort();
 
+        if (optionalPort.isEmpty()) {
+            throw new NoAvailablePortException();
+        }
+
+        int port = optionalPort.get();
+
+        if (getGameByCreatedByUserUuid(connection.getAccount().getUuid()).isPresent()) {
+            throw new MaxGamesPerUserReachedException();
+        }
+
+        // Create UdpServerBridge
+        UdpServerBridge udpServerBridge = new UdpServerBridge(port, config.getClientInactivityTimeoutMillis());
+        udpServerBridge.getHostWhitelist().add(UdpDestination.of(connection.getLastRemoteAddressTCP()));
+
+        // Create Game
+        LOGGER.mdebug("Creating Game for connection {} on port {} with game info {}", connection, port, gameInfo);
+        Game game = new Game(gameInfo);
+        game.setUdpServerBridge(udpServerBridge);
+
+        // Set server listeners
+        udpServerBridge.setOnStopped(() -> serverStoppedListener(connection, game));
+
+        // TODO: Add user's default whitelisted clients?
+        //udpServerBridge.getClientWhitelist().add();
+
+        LOGGER.mdebug("Starting UDP Server Bridge for connection {} on port {}", connection, port);
+        try {
+            udpServerBridge.start();
+        } catch (SocketException socketException) {
+            throw new CouldNotCreateUdpServerBridgeException(socketException);
+        }
+
+        // Add game
+        synchronized (games) {
+            games.add(game);
+        }
+
+        LOGGER.success("Started Game for connection {} on port {}", connection, port);
+
+        return game;
+    }
+
+    /**
+     * Invoked when UdpServerBridge stops
+     *
+     * @param game Game to which the UdpServerBridge was tied to
+     */
+    private void serverStoppedListener(SakuyaBridgeConnection connection, Game game) {
+        LOGGER.info("Game for connection {} on port {} has stopped", connection, game.getUdpServerBridge().getPort());
+
+        synchronized (games) {
+            games.remove(game);
+        }
+    }
+
+    /**
+     * Returns unmodifiable list of Games
+     *
+     * @return List of Games
+     */
+    private List<Game> getGames() {
+        synchronized (games) {
+            return Collections.unmodifiableList(games);
+        }
     }
 
     /**
@@ -50,8 +131,8 @@ public final class GameManager {
      * @return Game
      */
     private Optional<Game> getGameByPort(int port) {
-        synchronized (activeGames) {
-            return activeGames.stream().filter(game -> game.getUdpServerBridge().getPort() == port).findFirst();
+        synchronized (games) {
+            return games.stream().filter(game -> game.getUdpServerBridge().getPort() == port).findFirst();
         }
     }
 
@@ -63,8 +144,8 @@ public final class GameManager {
      * @return Game
      */
     public Optional<Game> getGameByCreatedByUserUuid(UUID userUuid) {
-        synchronized (activeGames) {
-            return activeGames.stream().filter(game -> game.getGameInfo().getCreatedByUser().getUuid().equals(userUuid)).findFirst();
+        synchronized (games) {
+            return games.stream().filter(game -> game.getGameInfo().getCreatedByUser().getUuid().equals(userUuid)).findFirst();
         }
     }
 
@@ -74,15 +155,16 @@ public final class GameManager {
      * @return The first available port
      */
     private Optional<Integer> getFirstAvailablePort() {
-        synchronized (activeGames) {
-            if (activeGames.size() >= config.getMaxGames()) {
+        // Checks if maximum games limit was reached
+        synchronized (games) {
+            if (games.size() >= config.getMaxGames()) {
                 return Optional.empty();
             }
         }
 
         int port = config.getStartingPort();
 
-        synchronized (activeGames) {
+        synchronized (games) {
             while (getGameByPort(port).isPresent()) {
                 port++;
             }

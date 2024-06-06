@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.v2;
 
 import dev.mayuna.pumpk1n.Pumpk1n;
 import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
+import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
 import dev.mayuna.sakuyabridge.server.v2.managers.accounts.Pumpk1nAccountManager;
 import dev.mayuna.sakuyabridge.server.v2.managers.accounts.UsernamePasswordAccountManager;
 import org.apache.logging.log4j.Level;
@@ -93,7 +94,7 @@ public class UsernamePasswordAccountManagerTest {
 
         usernamePasswordAccountManager.shutdown();
 
-        assertTrue(Files.exists(Path.of(DATA_FOLDER, Pumpk1nAccountManager.MAIN_DATAHOLDER_UUID + ".json")), "Data holder file for account list does not exist");
+        assertTrue(Files.exists(Path.of(DATA_FOLDER, ServerConstants.MAIN_DATA_HOLDER_UUID + ".json")), "Data holder file for account list does not exist");
 
         usernamePasswordAccountManager = new UsernamePasswordAccountManager(Level.INFO, new Pumpk1n(new FolderStorageHandler(DATA_FOLDER)));
         usernamePasswordAccountManager.enablePumpk1nLogging();

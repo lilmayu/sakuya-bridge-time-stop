@@ -10,8 +10,6 @@ import lombok.SneakyThrows;
 public class Main {
 
     public static void main(String[] args) {
-        testStuff();
-
         // Hook the shutdown handler
         Runtime.getRuntime().addShutdownHook(new Thread(Main::exit));
 

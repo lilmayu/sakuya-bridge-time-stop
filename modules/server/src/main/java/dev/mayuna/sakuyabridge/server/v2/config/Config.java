@@ -22,6 +22,7 @@ public final class Config {
     private AccountManager accountManager = new AccountManager();
     private SessionTokenManager sessionTokenManager = new SessionTokenManager();
     private UserManager userManager = new UserManager();
+    private GameManager gameManager = new GameManager();
 
     /**
      * Loads the configuration from the config file
@@ -89,5 +90,6 @@ public final class Config {
         private long clientInactivityTimeoutMillis = 30000;
         private int startingPort = 28078;
         private int maxGames = 50;
+        private int maxGamesPerUser = 1;
     }
 }
