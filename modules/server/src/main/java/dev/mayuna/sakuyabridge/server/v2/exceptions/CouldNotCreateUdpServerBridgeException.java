@@ -1,6 +1,9 @@
 package dev.mayuna.sakuyabridge.server.v2.exceptions;
 
-public class CouldNotCreateUdpServerBridgeException extends RuntimeException {
+/**
+ * Exception thrown when the server could not create a UDP server bridge
+ */
+public final class CouldNotCreateUdpServerBridgeException extends RuntimeException {
 
     public CouldNotCreateUdpServerBridgeException(Throwable cause) {
         super(cause);

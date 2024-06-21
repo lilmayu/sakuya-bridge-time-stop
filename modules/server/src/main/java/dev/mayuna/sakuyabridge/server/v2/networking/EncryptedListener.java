@@ -24,16 +24,8 @@ public abstract class EncryptedListener<T> extends TimeStopListener<T> {
         this(listeningClass, 0);
     }
 
-    /**
-     * Processes the message
-     *
-     * @param connection The connection
-     * @param message    The message
-     */
-    public abstract void process(SakuyaBridgeConnection connection, T message);
-
     @Override
-    public void process(@NonNull TimeStopListener.Context context, @NonNull T message) {
+    public void process(@NonNull TimeStopListener.Context context, @NonNull T request) {
         if (!(context.getConnection() instanceof SakuyaBridgeConnection connection)) {
             // This should never happen
             return;
@@ -44,7 +36,15 @@ public abstract class EncryptedListener<T> extends TimeStopListener<T> {
             return;
         }
 
-        // Process the message
-        process(connection, message);
+        // Process the request
+        process(connection, request);
     }
+
+    /**
+     * Processes the request
+     *
+     * @param connection The connection
+     * @param request    The request
+     */
+    public abstract void process(SakuyaBridgeConnection connection, T request);
 }

@@ -1,6 +1,7 @@
 package dev.mayuna.sakuyabridge.commons.v2.networking.tcp;
 
 import com.esotericsoftware.kryo.Kryo;
+import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -26,7 +27,7 @@ public final class NetworkRegistration {
         kryo.register(char[].class);
 
         registerClassesRecursively(Packets.class, kryo);
-        registerClassesInPackage("dev.mayuna.sakuyabridge.commons.v2.objects", kryo);
+        registerClassesInPackage(CommonConstants.OBJECTS_PACKAGE, kryo);
     }
 
     /**
@@ -47,6 +48,12 @@ public final class NetworkRegistration {
 
         LOGGER.flow("Registering network class: " + clazz.getName());
         kryo.register(clazz);
+
+        if (shouldExtraRegisterAsArray(clazz)) {
+            LOGGER.flow("Registering network class as array: " + clazz.getName());
+            kryo.register(clazz.arrayType());
+        }
+
         return true;
     }
 
@@ -98,6 +105,17 @@ public final class NetworkRegistration {
      */
     private static boolean shouldIgnoreClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(IgnoreNetworkRegistration.class);
+    }
+
+    /**
+     * Checks if a class should be also registered as an array
+     *
+     * @param clazz The class
+     *
+     * @return Whether the class should be also registered as an array
+     */
+    private static boolean shouldExtraRegisterAsArray(Class<?> clazz) {
+        return clazz.isAnnotationPresent(ExtraRegisterArray.class);
     }
 
     /**

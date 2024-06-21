@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.CompletableFuture;
 
@@ -67,5 +68,10 @@ public final class UsernamePasswordAuthFrame extends UsernamePasswordAuthFrameDe
                 return;
             }
         });
+    }
+
+    @Override
+    public void onEnterPressed(ActionEvent event) {
+        onLoginClick(null);
     }
 }

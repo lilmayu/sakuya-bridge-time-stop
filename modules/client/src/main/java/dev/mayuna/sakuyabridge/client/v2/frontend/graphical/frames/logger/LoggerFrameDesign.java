@@ -20,7 +20,7 @@ public abstract class LoggerFrameDesign extends BaseSakuyaBridgeFrameDesign {
     protected JButton buttonExit;
     protected JButton buttonCopy;
 
-    protected JTableCinnamonRoll tableLogs;
+    public JTableCinnamonRoll tableLogs;
 
     @Override
     protected void prepareFrame(Component component) {

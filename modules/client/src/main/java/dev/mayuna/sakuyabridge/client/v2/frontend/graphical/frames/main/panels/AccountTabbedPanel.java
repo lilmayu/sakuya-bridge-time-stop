@@ -12,6 +12,7 @@ import java.awt.*;
 
 public class AccountTabbedPanel extends TabbedPanel {
 
+    private JTabbedPane tabbedPane;
     private JTextField textFieldAccountUsername;
     private JTextField textFieldAccountUuid;
     private JTextField textFieldAccountAccountType;
@@ -29,6 +30,8 @@ public class AccountTabbedPanel extends TabbedPanel {
     }
 
     private void prepareComponents() {
+        tabbedPane = new JTabbedPane();
+
         textFieldAccountUsername = new JTextField();
         textFieldAccountUuid = new JTextField();
         textFieldAccountAccountType = new JTextField();
@@ -71,8 +74,6 @@ public class AccountTabbedPanel extends TabbedPanel {
     }
 
     private void prepareTabs() {
-        JTabbedPane tabbedPane = new JTabbedPane();
-
         tabbedPane.addTab("Account", createAccountPanel());
         tabbedPane.addTab("User", createUserPanel());
 

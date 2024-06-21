@@ -23,6 +23,7 @@ public final class Config {
     private SessionTokenManager sessionTokenManager = new SessionTokenManager();
     private UserManager userManager = new UserManager();
     private GameManager gameManager = new GameManager();
+    private ChatManager chatManager = new ChatManager();
 
     /**
      * Loads the configuration from the config file
@@ -91,5 +92,14 @@ public final class Config {
         private int startingPort = 28078;
         private int maxGames = 50;
         private int maxGamesPerUser = 1;
+    }
+
+    @Getter
+    public static final class ChatManager {
+
+        private boolean enabled = true;
+        private long deleteGameChatRoomsAfterMillis = 7_200_000; // 2 hours
+        private long chatDelay = 1000; // 1 second
+
     }
 }

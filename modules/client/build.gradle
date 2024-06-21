@@ -21,7 +21,7 @@ dependencies {
     implementation project(":commons")
 
     // Personal
-    implementation 'dev.mayuna:cinnamonroll:0.0.10'
+    implementation 'dev.mayuna:cinnamonroll:0.0.11'
 
     // FLatlaf UI
     implementation 'com.formdev:flatlaf:3.4.1'

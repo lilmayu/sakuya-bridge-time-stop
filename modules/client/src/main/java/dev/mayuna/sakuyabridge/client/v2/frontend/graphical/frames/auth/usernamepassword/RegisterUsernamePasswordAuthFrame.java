@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -54,5 +55,10 @@ public final class RegisterUsernamePasswordAuthFrame extends RegisterUsernamePas
 
             JOptionPane.showMessageDialog(this, $formatTranslation(Lang.Frames.Auth.UsernamePassword.TEXT_REGISTER_FAILED, result.getErrorMessage()), $getTranslation(Lang.General.TEXT_ERROR), JOptionPane.ERROR_MESSAGE);
         });
+    }
+
+    @Override
+    public void onEnterPressed(ActionEvent event) {
+        onRegisterClick(null);
     }
 }

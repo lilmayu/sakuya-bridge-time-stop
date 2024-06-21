@@ -6,6 +6,7 @@ import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.server.v2.config.Config;
 import dev.mayuna.sakuyabridge.server.v2.managers.accounts.AccountManagerBundle;
+import dev.mayuna.sakuyabridge.server.v2.managers.chat.ChatManager;
 import dev.mayuna.sakuyabridge.server.v2.managers.games.GameManager;
 import dev.mayuna.sakuyabridge.server.v2.managers.sessions.SessionTokenManager;
 import dev.mayuna.sakuyabridge.server.v2.managers.user.UserManager;
@@ -29,6 +30,7 @@ public final class SakuyaBridge {
     private SessionTokenManager sessionTokenManager;
     private UserManager userManager;
     private GameManager gameManager;
+    private ChatManager chatManager;
 
     private SakuyaBridge() {
     }
@@ -59,6 +61,10 @@ public final class SakuyaBridge {
         LOGGER.info("Initializing game manager");
         gameManager = new GameManager(config.getGameManager());
         gameManager.init();
+
+        LOGGER.info("Initializing chat manager");
+        chatManager = new ChatManager(config.getChatManager());
+        chatManager.init();
 
         LOGGER.info("Creating server");
         Log.setLogger(new KryoLogger(Server.LOGGER));

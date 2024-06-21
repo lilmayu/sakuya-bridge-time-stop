@@ -7,17 +7,16 @@ import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.AccountTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.ChatRoomsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.GameBrowserTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.SettingsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
-import dev.mayuna.sakuyabridge.client.v2.frontend.util.DesignUtils;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
 // TODO: Translations
 public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
@@ -96,7 +95,7 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
         tabbedPane.addTab("Game Browser", new GameBrowserTabbedPanel());
         tabbedPane.addTab("Host Game", new JPanel());
-        tabbedPane.addTab("Chat room", new JPanel());
+        tabbedPane.addTab("Chat Rooms", new ChatRoomsTabbedPanel());
         tabbedPane.addTab("Account", new AccountTabbedPanel());
         tabbedPane.addTab("Settings", new SettingsTabbedPanel());
 

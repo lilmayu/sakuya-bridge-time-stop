@@ -27,23 +27,23 @@ public abstract class AuthenticatedListener<T> extends EncryptedListener<T> {
      * Processes the message
      *
      * @param connection The connection
-     * @param message    The message
+     * @param request    The message
      */
-    public abstract void processAuthenticated(SakuyaBridgeConnection connection, T message);
-
-    /**
-     * Processes the message
-     *
-     * @param connection The connection
-     * @param message    The message
-     */
-    public void process(SakuyaBridgeConnection connection, T message) {
+    public void process(SakuyaBridgeConnection connection, T request) {
         if (!connection.isAuthenticated()) {
             // The connection is not authenticated; ignore.
             return;
         }
 
         // Process the message
-        processAuthenticated(connection, message);
+        processAuthenticated(connection, request);
     }
+
+    /**
+     * Processes the request
+     *
+     * @param connection The connection
+     * @param request    The request
+     */
+    public abstract void processAuthenticated(SakuyaBridgeConnection connection, T request);
 }

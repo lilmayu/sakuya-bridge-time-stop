@@ -4,6 +4,7 @@ import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
+import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 
 public final class SessionTokenListener extends AuthenticationListener<Packets.Requests.Auth.PreviousSessionLogin, Packets.Responses.Auth.PreviousSessionLogin> {
@@ -26,7 +27,7 @@ public final class SessionTokenListener extends AuthenticationListener<Packets.R
         if (sessionTokenUuid == null) {
             LOGGER.warn("[" + connection + "] Failed to authenticate with previous session token: No session token provided");
 
-            connection.sendTCP(createEmptyAuthenticationResponse().withError("Invalid session token").withResponseTo(message));
+            connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INVALID_SESSION_TOKEN).withResponseTo(message));
             return;
         }
 
@@ -35,7 +36,7 @@ public final class SessionTokenListener extends AuthenticationListener<Packets.R
         if (sessionTokenOptional.isEmpty()) {
             LOGGER.warn("[" + connection + "] Failed to authenticate with previous session token: Invalid/expired session token");
 
-            connection.sendTCP(createEmptyAuthenticationResponse().withError("Invalid session token").withResponseTo(message));
+            connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INVALID_SESSION_TOKEN).withResponseTo(message));
             return;
         }
 

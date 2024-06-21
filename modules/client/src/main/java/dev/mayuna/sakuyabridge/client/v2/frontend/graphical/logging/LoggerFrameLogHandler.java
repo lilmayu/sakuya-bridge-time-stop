@@ -139,7 +139,7 @@ public final class LoggerFrameLogHandler extends AbstractAppender {
                 case LEVEL_COLUMN_INDEX -> LanguageManager.INSTANCE.getTranslation(Lang.Frames.Logger.COLUMN_LEVEL);
                 case SOURCE_COLUMN_INDEX -> LanguageManager.INSTANCE.getTranslation(Lang.Frames.Logger.COLUMN_SOURCE);
                 case MESSAGE_COLUMN_INDEX -> LanguageManager.INSTANCE.getTranslation(Lang.Frames.Logger.COLUMN_MESSAGE);
-                default -> "Unknown column (bug)";
+                default -> LanguageManager.INSTANCE.getTranslation(Lang.General.COLUMN_UNKNOWN);
             };
         }
 
@@ -159,7 +159,7 @@ public final class LoggerFrameLogHandler extends AbstractAppender {
                     case LEVEL_COLUMN_INDEX -> event.getLevel().name();
                     case SOURCE_COLUMN_INDEX -> event.getLoggerName();
                     case MESSAGE_COLUMN_INDEX -> event.getMessage();
-                    default -> null;
+                    default -> LanguageManager.INSTANCE.getTranslation(Lang.General.COLUMN_UNKNOWN);
                 };
             }
         }

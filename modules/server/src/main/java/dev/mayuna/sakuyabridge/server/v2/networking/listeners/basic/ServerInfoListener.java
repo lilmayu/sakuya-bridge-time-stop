@@ -21,8 +21,8 @@ public final class ServerInfoListener extends EncryptedListener<Packets.Requests
     }
 
     @Override
-    public void process(SakuyaBridgeConnection connection, Packets.Requests.FetchServerInfo message) {
+    public void process(SakuyaBridgeConnection connection, Packets.Requests.FetchServerInfo request) {
         LOGGER.mdebug("[" + connection + "] Requested server info");
-        connection.sendTCP(new Packets.Responses.FetchServerInfo(SakuyaBridge.INSTANCE.getConfig().getServerInfo()).withResponseTo(message));
+        connection.sendTCP(new Packets.Responses.FetchServerInfo(SakuyaBridge.INSTANCE.getConfig().getServerInfo()).withResponseTo(request));
     }
 }

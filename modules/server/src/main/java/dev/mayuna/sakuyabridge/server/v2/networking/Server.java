@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking;
 import com.esotericsoftware.kryonet.Connection;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.NetworkRegistration;
+import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.sakuyabridge.server.v2.config.Config;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.SessionTokenListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth.UsernamePasswordListeners;
@@ -10,6 +11,10 @@ import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.EncryptedCom
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ExchangeVersionListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.PingListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.basic.ServerInfoListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.FetchChatRoomListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.FetchChatRoomsListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.LeaveChatRoomListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.SendChatMessageListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.user.FetchCurrentUserListener;
 import dev.mayuna.timestop.managers.EncryptionManager;
 import dev.mayuna.timestop.networking.base.TimeStopServer;
@@ -21,6 +26,10 @@ import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketEncrypt
 import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketSegmentTranslator;
 import dev.mayuna.timestop.networking.timestop.translators.TimeStopPacketTranslator;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Sakuya Bridge Server
@@ -124,10 +133,50 @@ public final class Server extends TimeStopServer {
 
         // User
         listenerManager.registerListener(new FetchCurrentUserListener());
+
+        // Chat
+        listenerManager.registerListener(new LeaveChatRoomListener());
+        listenerManager.registerListener(new SendChatMessageListener());
+        listenerManager.registerListener(new FetchChatRoomListener());
+        listenerManager.registerListener(new FetchChatRoomsListener());
     }
 
     @Override
     protected Connection newConnection() {
         return new SakuyaBridgeConnection(getEndpointConfig(), getListenerManager(), getTranslatorManager());
+    }
+
+    /**
+     * Gets {@link SakuyaBridgeConnection}
+     *
+     * @param userUuid User UUID
+     *
+     * @return Optional of {@link SakuyaBridgeConnection}
+     */
+    public Optional<SakuyaBridgeConnection> getConnectionByUserUuid(UUID userUuid) {
+        return getConnections().stream()
+                               .filter(connection -> ((SakuyaBridgeConnection) connection).getAccount().getUuid().equals(userUuid))
+                               .findFirst()
+                               .map(connection -> (SakuyaBridgeConnection) connection);
+    }
+
+    /**
+     * Gets list of {@link SakuyaBridgeConnection}s filtered by the list of {@link User}s
+     * @param users Users
+     * @return List of {@link SakuyaBridgeConnection}s
+     */
+    public List<SakuyaBridgeConnection> getConnectionsByUsers(List<User> users) {
+        return getConnections().stream()
+                               .map(connection -> (SakuyaBridgeConnection) connection)
+                               .filter(connection -> users.stream().anyMatch(user -> user.getUuid().equals(connection.getAccount().getUuid())))
+                               .toList();
+    }
+
+    /**
+     * Returns connections list mapped to {@link SakuyaBridgeConnection}
+     * @return List of {@link SakuyaBridgeConnection}s
+     */
+    public List<SakuyaBridgeConnection> getConnectionsMapped() {
+        return getConnections().stream().map(connection -> (SakuyaBridgeConnection) connection).toList();
     }
 }

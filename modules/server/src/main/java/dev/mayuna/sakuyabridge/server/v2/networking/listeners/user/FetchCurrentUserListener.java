@@ -21,7 +21,7 @@ public class FetchCurrentUserListener extends AuthenticatedListener<Packets.Requ
     }
 
     @Override
-    public void processAuthenticated(SakuyaBridgeConnection connection, Packets.Requests.FetchCurrentUser message) {
+    public void processAuthenticated(SakuyaBridgeConnection connection, Packets.Requests.FetchCurrentUser request) {
         LOGGER.mdebug("[{}] Requested current user", connection);
 
         try {
@@ -29,10 +29,10 @@ public class FetchCurrentUserListener extends AuthenticatedListener<Packets.Requ
 
             LOGGER.mdebug("[{}] Fetched current user: {}", connection, storageUserWrap);
 
-            connection.sendTCP(new Packets.Responses.FetchCurrentUser(storageUserWrap.getUser()).withResponseTo(message));
+            connection.sendTCP(new Packets.Responses.FetchCurrentUser(storageUserWrap.getUser()).withResponseTo(request));
         } catch (Exception exception) {
             LOGGER.error("[{}] Failed to fetch current user", connection, exception);
-            connection.sendTCP(new Packets.Responses.FetchCurrentUser().withError("Internal server error").withResponseTo(message));
+            connection.sendTCP(new Packets.Responses.FetchCurrentUser().withError("Internal server error").withResponseTo(request));
         }
     }
 }

@@ -13,6 +13,8 @@
     "general.text.success": "Success",
     "general.text.question": "Question",
     "general.text.exit": "Exit",
+    "general.text.loading": "Loading...",
+    "general.column.unknown": "Unknown column (bug)",
     "frames.logger.column.time": "Time",
     "frames.logger.column.level": "Level",
     "frames.logger.column.source": "Source",
@@ -84,6 +86,13 @@
     "frames.username_password_auth.text.register_failed": "Failed to register: {0}",
     "frames.username_password_auth.text.logging_in": "Logging in...",
     "frames.username_password_auth.text.registering": "Registering...",
+    "frames.chat_rooms_panel.button.send_message": "Send",
+    "frames.chat_rooms_panel.label.failed_to_fetch_chat_rooms": "Failed to fetch Chat Rooms.",
+    "frames.chat_rooms_panel.text.no_chat_rooms_available": "No Chat Rooms available.",
+    "frames.chat_rooms_panel.text.failed_to_send_message": "There was an error while sending message! Please, try again.",
+    "frames.chat_rooms_panel.column.time": "Time",
+    "frames.chat_rooms_panel.column.username": "Username",
+    "frames.chat_rooms_panel.column.message": "Message",
     "frames.main.text.title.confirm_close": "Confirm Close",
     "frames.main.text.confirm_close": "Do you really want to close Sakuya Bridge? (⊙﹏⊙✿)"
   }

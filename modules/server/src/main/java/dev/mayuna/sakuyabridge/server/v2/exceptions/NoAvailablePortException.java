@@ -1,5 +1,8 @@
 package dev.mayuna.sakuyabridge.server.v2.exceptions;
 
-public class NoAvailablePortException extends RuntimeException {
+/**
+ * Exception thrown when no available port is found
+ */
+public final class NoAvailablePortException extends RuntimeException {
 
 }

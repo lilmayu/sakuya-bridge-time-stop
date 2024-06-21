@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import dev.mayuna.sakuyabridge.client.v2.backend.ClientConfig;
+import dev.mayuna.sakuyabridge.client.v2.backend.networking.listeners.ChatMessageSentListener;
 import dev.mayuna.sakuyabridge.commons.v2.logging.KryoLogger;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.NetworkRegistration;
@@ -102,6 +103,7 @@ public final class Client extends TimeStopClient implements Listener {
         LOGGER.info("Registering listeners");
 
         addListener(this);
+        listenerManager.registerListener(new ChatMessageSentListener());
     }
 
     @Override

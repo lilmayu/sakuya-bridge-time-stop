@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.server.v2.networking.listeners.auth;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
+import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
 import dev.mayuna.sakuyabridge.server.v2.networking.EncryptedListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 import dev.mayuna.timestop.networking.timestop.TimeStopMessage;
@@ -43,14 +44,14 @@ abstract class AuthenticationListener<TRequest extends TimeStopMessage, TRespons
     }
 
     @Override
-    public void process(SakuyaBridgeConnection connection, TRequest message) {
+    public void process(SakuyaBridgeConnection connection, TRequest request) {
         if (!SakuyaBridge.INSTANCE.getConfig().getServerInfo().isAuthenticationMethodEnabled(authenticationMethod)) {
             LOGGER.warn("[" + connection + "] Attempted to login with " + authenticationMethod + ", but the method is disabled");
-            connection.sendTCP(createEmptyAuthenticationResponse().withError("Auth method disabled").withResponseTo(message));
+            connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.AUTH_METHOD_DISABLED).withResponseTo(request));
             return;
         }
 
-        processAuthenticationMethodAllowed(connection, message);
+        processAuthenticationMethodAllowed(connection, request);
     }
 
     /**

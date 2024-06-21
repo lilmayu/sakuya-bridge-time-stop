@@ -17,7 +17,7 @@ public class PingListener extends AuthenticatedListener<Packets.Requests.Ping> {
     }
 
     @Override
-    public void processAuthenticated(SakuyaBridgeConnection connection, Packets.Requests.Ping message) {
-        connection.sendTCP(new Packets.Responses.Pong(System.currentTimeMillis()).withResponseTo(message));
+    public void processAuthenticated(SakuyaBridgeConnection connection, Packets.Requests.Ping request) {
+        connection.sendTCP(new Packets.Responses.Pong(System.currentTimeMillis()).withResponseTo(request));
     }
 }

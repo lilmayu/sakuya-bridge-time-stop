@@ -10,11 +10,15 @@ import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
+import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatMessage;
+import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatRoom;
 import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.extension.CryptoKeyExchange;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +31,8 @@ public final class SakuyaBridge {
 
     public static final SakuyaBridge INSTANCE = new SakuyaBridge();
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridge.class);
+
+    private final List<ChatRoom> activeChatRooms = new LinkedList<>();
 
     private Timer timer;
 
@@ -143,6 +149,7 @@ public final class SakuyaBridge {
         user = null;
         lastPingIn = -1;
         lastPingOut = -1;
+        activeChatRooms.clear();
 
         LOGGER.info("Preparing timer");
         preparePingTimerTask();
@@ -153,6 +160,19 @@ public final class SakuyaBridge {
         }
 
         client = null;
+    }
+
+    /**
+     * Handles a received chat message
+     * @param chatRoomName The chat room name
+     * @param chatMessage The chat message
+     */
+    public void receiveMessage(String chatRoomName, ChatMessage chatMessage) {
+        synchronized (activeChatRooms) {
+            activeChatRooms.stream().filter(chatRoom -> chatRoom.getName().equals(chatRoomName)).findFirst().ifPresent(chatRoom -> {
+                chatRoom.addMessage(chatMessage);
+            });
+        }
     }
 
     /**
@@ -273,25 +293,25 @@ public final class SakuyaBridge {
 
         // Check if the hostname is empty
         if (hostname.isEmpty()) {
-            LOGGER.error("Failed to connect to server: " + host + " (hostname is empty)");
+            LOGGER.error("Failed to connect to server: {} (hostname is empty)", host);
             return CompletableFuture.completedFuture(RequestResult.failure(ConnectToServerResult.INVALID_HOST, "Empty hostname"));
         }
 
         // Check if the port is invalid
         if (port < 0 || port > 65535) {
-            LOGGER.error("Failed to connect to server: " + host + " (invalid port)");
+            LOGGER.error("Failed to connect to server: {} (invalid port)", host);
             return CompletableFuture.completedFuture(RequestResult.failure(ConnectToServerResult.INVALID_PORT, "Out of range port (0-65535)"));
         }
 
         // Create the future
         var future = new CompletableFuture<RequestResult<ConnectToServerResult>>();
 
-        LOGGER.info("Connecting to server: " + hostname + " on port " + port);
+        LOGGER.info("Connecting to server: {} on port {}", hostname, port);
 
         // Complete the future if the connection fails (e.g., gets disconnected sooner than crypto key exchange result)
         client.getConnectionSuccessful().whenCompleteAsync((success, throwable) -> {
             if (!success) {
-                LOGGER.error("Failed to connect to server: " + host, throwable);
+                LOGGER.error("Failed to connect to server: {}", host, throwable);
                 future.complete(RequestResult.failure(ConnectToServerResult.CONNECTION_FAILED, "Connection failed (" + throwable.getMessage() + ")"));
             }
         });
@@ -299,7 +319,7 @@ public final class SakuyaBridge {
         // Connect to the server
         client.connectAsync(config.getConnectionTimeoutMillis(), hostname, port).whenCompleteAsync((connected, throwable) -> {
             if (throwable != null || !connected) {
-                LOGGER.error("Failed to connect to server: " + host, throwable);
+                LOGGER.error("Failed to connect to server: {}", host, throwable);
                 future.complete(RequestResult.failure(ConnectToServerResult.CONNECTION_FAILED, "Connection failed (" + (throwable != null ? throwable.getMessage() : "Unknown error") + ")"));
                 return;
             }
@@ -351,12 +371,12 @@ public final class SakuyaBridge {
             this.networkProtocol = response.getNetworkProtocol();
 
             LOGGER.info("Server Version Exchange:");
-            LOGGER.info(" = Server Version: " + this.serverVersion);
-            LOGGER.info(" = Network Protocol: " + this.networkProtocol + " (expected: " + CommonConstants.CURRENT_NETWORK_PROTOCOL + ")");
+            LOGGER.info(" = Server Version: {}", this.serverVersion);
+            LOGGER.info(" = Network Protocol: {} (expected: {})", CommonConstants.CURRENT_NETWORK_PROTOCOL, this.networkProtocol);
 
             // Check if the response has an error
             if (response.hasError()) {
-                LOGGER.error("Failed version exchange: " + response.getErrorMessage());
+                LOGGER.error("Failed version exchange: {}", response.getErrorMessage());
                 future.complete(RequestResult.failure(ExchangeVersionResult.UNSUPPORTED, response.getErrorMessage()));
                 return;
             }
@@ -390,7 +410,7 @@ public final class SakuyaBridge {
         // Send the server info request
         client.sendTCPWithResponse(new Packets.Requests.FetchServerInfo(), Packets.Responses.FetchServerInfo.class, response -> {
             if (response.hasError()) {
-                LOGGER.error("Failed to fetch server info: " + response.getErrorMessage());
+                LOGGER.error("Failed to fetch server info: {}", response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
                 return;
             }
@@ -398,12 +418,12 @@ public final class SakuyaBridge {
             this.serverInfo = response.getServerInfo();
 
             LOGGER.info("Successfully fetched server info:");
-            LOGGER.info(" = UUID: " + serverInfo.getUuid());
-            LOGGER.info(" = Name: " + serverInfo.getName());
-            LOGGER.info(" = Region: " + serverInfo.getRegion());
-            LOGGER.info(" = Maintainer: " + serverInfo.getMaintainer());
-            LOGGER.info(" = MOTD: " + serverInfo.getMotd());
-            LOGGER.info(" = Authentication Methods: " + serverInfo.getAuthenticationMethods());
+            LOGGER.info(" = UUID: {}", serverInfo.getUuid());
+            LOGGER.info(" = Name: {}", serverInfo.getName());
+            LOGGER.info(" = Region: {}", serverInfo.getRegion());
+            LOGGER.info(" = Maintainer: {}", serverInfo.getMaintainer());
+            LOGGER.info(" = MOTD: {}", serverInfo.getMotd());
+            LOGGER.info(" = Authentication Methods: {}", serverInfo.getAuthenticationMethods());
 
             future.complete(RequestResult.success(serverInfo));
         }, () -> {
@@ -427,9 +447,9 @@ public final class SakuyaBridge {
         LoggedAccount loggedAccount = this.currentSessionToken.getLoggedAccount();
 
         LOGGER.info("Successfully logged in");
-        LOGGER.info(" = Username: " + loggedAccount.getUsername());
-        LOGGER.info(" = UUID: " + loggedAccount.getUuid());
-        LOGGER.info(" = Session token expires: " + this.currentSessionToken.getExpirationTimePretty() + " (" + this.currentSessionToken.getExpirationTimeMillis() + ")");
+        LOGGER.info(" = Username: {}", loggedAccount.getUsername());
+        LOGGER.info(" = UUID: {}", loggedAccount.getUuid());
+        LOGGER.info(" = Session token expires: {} ({})", this.currentSessionToken.getExpirationTimePretty(), this.currentSessionToken.getExpirationTimeMillis());
     }
 
     /**
@@ -456,7 +476,7 @@ public final class SakuyaBridge {
         // Send the login request
         client.sendTCPWithResponse(new Packets.Requests.Auth.PreviousSessionLogin(previousSessionToken), Packets.Responses.Auth.PreviousSessionLogin.class, response -> {
             if (response.hasError()) {
-                LOGGER.error("Failed to login with previous session: " + response.getErrorMessage());
+                LOGGER.error("Failed to login with previous session: {}", response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
                 return;
             }
@@ -487,12 +507,12 @@ public final class SakuyaBridge {
             return future;
         }
 
-        LOGGER.info("Logging in with username '" + username + "' and password");
+        LOGGER.info("Logging in with username '{}' and password", username);
 
         // Send the login request
         client.sendTCPWithResponse(new Packets.Requests.Auth.UsernamePasswordLogin(username, password), Packets.Responses.Auth.UsernamePasswordLogin.class, response -> {
             if (response.hasError()) {
-                LOGGER.error("Failed to login with username and password: " + response.getErrorMessage());
+                LOGGER.error("Failed to login with username and password: {}", response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
                 return;
             }
@@ -523,7 +543,7 @@ public final class SakuyaBridge {
             return future;
         }
 
-        LOGGER.info("Registering with username '" + username + "' and password");
+        LOGGER.info("Registering with username '{}' and password", username);
 
         // Send the register request
         client.sendTCPWithResponse(new Packets.Requests.Auth.UsernamePasswordRegister(username, password), Packets.Responses.Auth.UsernamePasswordRegister.class, response -> {
@@ -561,7 +581,7 @@ public final class SakuyaBridge {
         // Send the fetch current user request
         client.sendTCPWithResponse(new Packets.Requests.FetchCurrentUser(), Packets.Responses.FetchCurrentUser.class, response -> {
             if (response.hasError()) {
-                LOGGER.error("Failed to fetch current user: " + response.getErrorMessage());
+                LOGGER.error("Failed to fetch current user: {}", response.getErrorMessage());
                 future.complete(RequestResult.failure(response.getErrorMessage()));
                 return;
             }
@@ -569,12 +589,99 @@ public final class SakuyaBridge {
             this.user = response.getUser();
 
             LOGGER.info("Successfully fetched current user:");
-            LOGGER.info(" = Username: " + this.user.getUsername());
-            LOGGER.info(" = UUID: " + this.user.getUuid());
+            LOGGER.info(" = Username: {}", this.user.getUsername());
+            LOGGER.info(" = UUID: {}", this.user.getUuid());
 
             future.complete(RequestResult.success(this.user));
         }, () -> {
             LOGGER.error("Failed to fetch current user: Timeout");
+            future.complete(RequestResult.timeout());
+        });
+
+        return future;
+    }
+
+    /**
+     * Fetches active chat rooms in which the user is in
+     *
+     * @return A future that completes when the chat rooms are fetched (will not be ever completed exceptionally)
+     */
+    public CompletableFuture<RequestResult<List<ChatRoom>>> fetchChatRooms() {
+        var future = new CompletableFuture<RequestResult<List<ChatRoom>>>();
+
+        /*
+        synchronized (activeChatRooms) {
+            activeChatRooms.clear();
+
+            // mock
+            activeChatRooms.add(new ChatRoom("General"));
+            activeChatRooms.add(new ChatRoom("Random"));
+            activeChatRooms.add(new ChatRoom("Some longer name (1)"));
+            future.complete(RequestResult.success(activeChatRooms));
+
+            if (true) {
+                return future;
+            }
+        }*/
+
+        if (!handleAuthenticatedPreRequest(future)) {
+            return future;
+        }
+
+        LOGGER.info("Fetching chat rooms");
+
+        // Send the fetch chat rooms request
+        client.sendTCPWithResponse(new Packets.Requests.Chat.FetchChatRooms(), Packets.Responses.Chat.FetchChatRooms.class, response -> {
+            if (response.hasError()) {
+                LOGGER.error("Failed to fetch chat rooms: {}", response.getErrorMessage());
+                future.complete(RequestResult.failure(response.getErrorMessage()));
+                return;
+            }
+
+            synchronized (activeChatRooms) {
+                this.activeChatRooms.clear();
+                this.activeChatRooms.addAll(response.getChatRooms());
+            }
+
+            LOGGER.info("Successfully fetched {} chat room(s)", activeChatRooms.size());
+            future.complete(RequestResult.success(this.activeChatRooms));
+        }, () -> {
+            LOGGER.error("Failed to fetch chat rooms: Timeout");
+            future.complete(RequestResult.timeout());
+        });
+
+        return future;
+    }
+
+    /**
+     * Sends a chat message to a chat room
+     *
+     * @param chatRoom The chat room
+     * @param content  The content
+     *
+     * @return A future that completes when the chat message is sent (will not be ever completed exceptionally). The result of RequestResult is always <code>null</code>.
+     */
+    public CompletableFuture<RequestResult<Void>> sendChatMessage(ChatRoom chatRoom, String content) {
+        var future = new CompletableFuture<RequestResult<Void>>();
+
+        if (!handleAuthenticatedPreRequest(future)) {
+            return future;
+        }
+
+        LOGGER.info("Sending chat message to chat room '{}': '{}'", chatRoom.getName(), content);
+
+        // Send the send chat message request
+        client.sendTCPWithResponse(new Packets.Requests.Chat.SendChatMessage(chatRoom.getName(), content), Packets.Responses.Chat.SendChatMessage.class, response -> {
+            if (response.hasError()) {
+                LOGGER.error("Failed to send chat message: {}", response.getErrorMessage());
+                future.complete(RequestResult.failure(response.getErrorMessage()));
+                return;
+            }
+
+            LOGGER.info("Successfully sent chat message to chat room '{}'", chatRoom.getName());
+            future.complete(RequestResult.success(null));
+        }, () -> {
+            LOGGER.error("Failed to send chat message: Timeout");
             future.complete(RequestResult.timeout());
         });
 

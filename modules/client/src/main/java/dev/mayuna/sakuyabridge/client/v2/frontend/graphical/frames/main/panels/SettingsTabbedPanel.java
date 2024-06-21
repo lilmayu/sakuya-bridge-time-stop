@@ -1,6 +1,7 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.sakuyabridge.client.v1.ui.utils.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+// TODO: Translations
 public class SettingsTabbedPanel extends TabbedPanel {
 
     private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SettingsTabbedPanel.class);
@@ -48,6 +50,7 @@ public class SettingsTabbedPanel extends TabbedPanel {
 
     private void prepareComponents() {
         themeComboBox = new JComboBox<>();
+        themeComboBox.setToolTipText("You may need to restart Sakuya Bridge for the changes to take effect");
 
         // Load all installed look and feels
         for (UIManager.LookAndFeelInfo installedLookAndFeel : UIManager.getInstalledLookAndFeels()) {
@@ -111,7 +114,7 @@ public class SettingsTabbedPanel extends TabbedPanel {
         JPanel panel = new JPanel(MigLayoutUtils.createGrow());
 
         panel.add(new JLabel("Theme"), "wrap");
-        panel.add(themeComboBox, "growx, wrap");
+        panel.add(themeComboBox, "growx");
 
         return panel;
     }

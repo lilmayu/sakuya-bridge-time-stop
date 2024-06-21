@@ -5,9 +5,10 @@ import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessag
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
-public class LogInfoFrame extends LogInfoFrameDesign {
+public final class LogInfoFrame extends LogInfoFrameDesign {
 
     /**
      * Open the log info frame.
@@ -32,5 +33,10 @@ public class LogInfoFrame extends LogInfoFrameDesign {
         ClipboardUtils.setContent(logTime + "\t" + logLevel + "\t" + logSource + "\t" + logMessage);
 
         TranslatedInfoMessage.create($getTranslation(Lang.Frames.LogInfo.TEXT_LOG_COPIED_TO_CLIPBOARD)).showInfo();
+    }
+
+    @Override
+    public void onEscapePressed(ActionEvent event) {
+        dispose();
     }
 }

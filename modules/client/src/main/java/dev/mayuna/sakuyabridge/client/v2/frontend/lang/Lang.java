@@ -16,6 +16,8 @@ public final class Lang {
         public static final String TEXT_SUCCESS = "general.text.success";
         public static final String TEXT_QUESTION = "general.text.question";
         public static final String TEXT_EXIT = "general.text.exit";
+        public static final String TEXT_LOADING = "general.text.loading";
+        public static final String COLUMN_UNKNOWN = "general.column.unknown";
     }
 
     public static final class Frames {
@@ -112,6 +114,17 @@ public final class Lang {
                 public static final String TEXT_LOGGING_IN = "frames.username_password_auth.text.logging_in";
                 public static final String TEXT_REGISTERING = "frames.username_password_auth.text.registering";
             }
+        }
+
+        public static final class ChatRoomsPanel {
+
+            public static final String BUTTON_SEND_MESSAGE = "frames.chat_rooms_panel.button.send_message";
+            public static final String LABEL_FAILED_TO_FETCH_CHAT_ROOMS = "frames.chat_rooms_panel.label.failed_to_fetch_chat_rooms";
+            public static final String TEXT_NO_CHAT_ROOMS_AVAILABLE = "frames.chat_rooms_panel.text.no_chat_rooms_available";
+            public static final String COLUMN_TIME = "frames.chat_rooms_panel.column.time";
+            public static final String COLUMN_USERNAME = "frames.chat_rooms_panel.column.username";
+            public static final String COLUMN_MESSAGE = "frames.chat_rooms_panel.column.message";
+            public static final String TEXT_FAILED_TO_SEND_MESSAGE = "frames.chat_rooms_panel.text.failed_to_send_message";
         }
 
         public static final class Main {

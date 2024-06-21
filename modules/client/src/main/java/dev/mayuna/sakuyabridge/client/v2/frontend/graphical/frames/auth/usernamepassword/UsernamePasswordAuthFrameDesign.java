@@ -156,4 +156,9 @@ public abstract class UsernamePasswordAuthFrameDesign extends BaseSakuyaBridgeFr
 
         return true;
     }
+
+    @Override
+    public void onEscapePressed(ActionEvent event) {
+        dispose();
+    }
 }

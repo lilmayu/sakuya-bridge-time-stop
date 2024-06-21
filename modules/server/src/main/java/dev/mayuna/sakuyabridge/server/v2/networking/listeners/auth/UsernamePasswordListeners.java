@@ -4,6 +4,7 @@ import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;
 import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
+import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
 import dev.mayuna.sakuyabridge.server.v2.objects.accounts.UsernamePasswordAccount;
 
@@ -44,13 +45,13 @@ public final class UsernamePasswordListeners {
                 authenticatedAccount = SakuyaBridge.INSTANCE.getAccountManagers().getUsernamePassword().authenticate(username, password);
             } catch (Exception e) {
                 LOGGER.error("[" + connection + "] Failed to authenticate as " + username + " due to an exception", e);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError("Internal server error").withResponseTo(message));
+                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INTERNAL_SERVER_ERROR).withResponseTo(message));
                 return;
             }
 
             if (authenticatedAccount.isEmpty()) {
                 LOGGER.warn("[" + connection + "] Failed to authenticate as {}", username);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError("Invalid credentials").withResponseTo(message));
+                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INVALID_CREDENTIALS).withResponseTo(message));
                 return;
             }
 
@@ -93,13 +94,13 @@ public final class UsernamePasswordListeners {
                 optionalAccount = SakuyaBridge.INSTANCE.getAccountManagers().getUsernamePassword().createAccount(username, password);
             } catch (Exception e) {
                 LOGGER.error("[" + connection + "] Failed to create account as " + username + " due to an exception", e);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError("Internal server error").withResponseTo(message));
+                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INTERNAL_SERVER_ERROR).withResponseTo(message));
                 return;
             }
 
             if (optionalAccount.isEmpty()) {
                 LOGGER.warn("[" + connection + "] Failed to create account as {}", username);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError("Username already taken").withResponseTo(message));
+                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.USERNAME_ALREADY_TAKEN).withResponseTo(message));
                 return;
             }
 

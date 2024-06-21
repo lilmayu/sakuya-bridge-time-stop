@@ -19,16 +19,16 @@ public final class ExchangeVersionListener extends EncryptedListener<Packets.Req
     }
 
     @Override
-    public void process(SakuyaBridgeConnection connection, Packets.Requests.@NonNull VersionExchange message) {
-        int clientVersion = message.getClientVersion();
-        int networkProtocolVersion = message.getNetworkProtocolVersion();
+    public void process(SakuyaBridgeConnection connection, Packets.Requests.@NonNull VersionExchange request) {
+        int clientVersion = request.getClientVersion();
+        int networkProtocolVersion = request.getNetworkProtocolVersion();
 
         // Check if the client version is valid
         if (clientVersion < 0) {
             LOGGER.mdebug("[" + connection + "] Invalid client version: " + clientVersion + " - sending error and disconnecting.");
 
             synchronized (connection) {
-                connection.sendTCP(createResponsePacket().withError("Invalid client version").withResponseTo(message));
+                connection.sendTCP(createResponsePacket().withError("Invalid client version").withResponseTo(request));
                 connection.close();
             }
             return;
@@ -39,7 +39,7 @@ public final class ExchangeVersionListener extends EncryptedListener<Packets.Req
             LOGGER.mdebug("[" + connection + "] Unsupported network protocol version: " + networkProtocolVersion + " - sending error and disconnecting.");
 
             synchronized (connection) {
-                connection.sendTCP(createResponsePacket().withError("Unsupported network protocol version").withResponseTo(message));
+                connection.sendTCP(createResponsePacket().withError("Unsupported network protocol version").withResponseTo(request));
                 connection.close();
             }
             return;
@@ -47,14 +47,14 @@ public final class ExchangeVersionListener extends EncryptedListener<Packets.Req
 
         // Set the client version
         synchronized (connection) {
-            connection.setClientVersion(message.getClientVersion());
+            connection.setClientVersion(request.getClientVersion());
         }
 
         LOGGER.mdebug("[" + connection + "] Requested server version");
 
         // Send the server version
         synchronized (connection) {
-            connection.sendTCP(createResponsePacket().withResponseTo(message));
+            connection.sendTCP(createResponsePacket().withResponseTo(request));
         }
     }
 
