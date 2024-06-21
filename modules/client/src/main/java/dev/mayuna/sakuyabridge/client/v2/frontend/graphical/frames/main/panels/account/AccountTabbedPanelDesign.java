@@ -1,35 +1,32 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.account;
 
 import dev.mayuna.cinnamonroll.CinnamonRoll;
-import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
-import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.AccountType;
-import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.SakuyaBridgeTabbedPanelDesign;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class AccountTabbedPanel extends TabbedPanel {
+/**
+ * The design of the account tabbed panel.
+ */
+public abstract class AccountTabbedPanelDesign extends SakuyaBridgeTabbedPanelDesign {
 
-    private JTabbedPane tabbedPane;
-    private JTextField textFieldAccountUsername;
-    private JTextField textFieldAccountUuid;
-    private JTextField textFieldAccountAccountType;
-    private JButton buttonChangeAccountUsername;
-    private JButton buttonTransferToUsernamePasswordAccountType;
-    private JButton buttonDeleteAccount;
+    protected JTabbedPane tabbedPane;
+    protected JTextField textFieldAccountUsername;
+    protected JTextField textFieldAccountUuid;
+    protected JTextField textFieldAccountAccountType;
+    protected JButton buttonChangeAccountUsername;
+    protected JButton buttonTransferToUsernamePasswordAccountType;
+    protected JButton buttonDeleteAccount;
 
-    public AccountTabbedPanel() {
+    public AccountTabbedPanelDesign() {
         super(new BorderLayout());
-
-        prepareComponents();
-        populateData();
-
-        prepareTabs();
+        loadData();
     }
 
-    private void prepareComponents() {
+    @Override
+    protected void prepareComponents() {
         tabbedPane = new JTabbedPane();
 
         textFieldAccountUsername = new JTextField();
@@ -46,40 +43,31 @@ public class AccountTabbedPanel extends TabbedPanel {
 
         buttonChangeAccountUsername.setEnabled(false); // Allowed for every other account than anonymous
         buttonTransferToUsernamePasswordAccountType.setEnabled(false); // Enabled only for account that are not username/password and anonymous
+    }
 
+    @Override
+    protected void registerListeners() {
         // TODO: Implement listeners
     }
 
-    private void populateData() {
-        LoggedAccount loggedAccount = SakuyaBridge.INSTANCE.getLoggedAccount();
-
-        // Should not happen, but just in case
-        if (loggedAccount == null) {
-            return;
-        }
-
-        textFieldAccountUsername.setText(loggedAccount.getUsername());
-        textFieldAccountUuid.setText(loggedAccount.getUuid().toString());
-        textFieldAccountAccountType.setText(loggedAccount.getAccountType().name()); // TODO: Translation based on enum name
-
-        AccountType accountType = loggedAccount.getAccountType();
-
-        if (accountType != AccountType.USERNAME_PASSWORD && accountType != AccountType.ANONYMOUS) {
-            buttonTransferToUsernamePasswordAccountType.setEnabled(true);
-        }
-
-        if (accountType != AccountType.ANONYMOUS) {
-            buttonChangeAccountUsername.setEnabled(true);
-        }
-    }
-
-    private void prepareTabs() {
+    @Override
+    protected void populatePanel() {
         tabbedPane.addTab("Account", createAccountPanel());
         tabbedPane.addTab("User", createUserPanel());
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Loads the data for the account tabbed panel
+     */
+    protected abstract void loadData();
+
+    // TODO: Move to its own class
+    /**
+     * Creates the account panel
+     * @return The account panel
+     */
     private JPanel createAccountPanel() {
         JPanel accountPanel = new JPanel(MigLayoutUtils.createGrow());
 
@@ -112,15 +100,5 @@ public class AccountTabbedPanel extends TabbedPanel {
         userPanel.add(new JLabel("User Statistics (now empty)"));
 
         return userPanel;
-    }
-
-    @Override
-    public void onOpen() {
-
-    }
-
-    @Override
-    public void onClose() {
-
     }
 }

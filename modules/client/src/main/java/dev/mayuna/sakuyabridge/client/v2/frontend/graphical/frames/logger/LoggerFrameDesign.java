@@ -3,7 +3,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger;
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.table.JTableCinnamonRoll;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.logging.LoggerFrameLogHandler;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 

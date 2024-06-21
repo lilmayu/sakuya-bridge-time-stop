@@ -3,7 +3,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.serverinfo;
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.AuthenticationMethods;

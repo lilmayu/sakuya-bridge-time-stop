@@ -4,7 +4,7 @@ import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.CinnamonRollFlatLaf;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
 import dev.mayuna.sakuyabridge.client.v2.ClientConstants;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import net.miginfocom.swing.MigLayout;
 

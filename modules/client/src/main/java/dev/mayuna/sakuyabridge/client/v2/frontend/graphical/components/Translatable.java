@@ -1,24 +1,11 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components;
 
-import dev.mayuna.cinnamonroll.BaseFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
 
-import java.awt.*;
-
-public abstract class BaseSakuyaBridgeFrameDesign extends BaseFrameDesign {
-
-    /**
-//     * {@inheritDoc}
-     */
-    public BaseSakuyaBridgeFrameDesign() {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public BaseSakuyaBridgeFrameDesign(Component parentComponent) {
-        super(parentComponent);
-    }
+/**
+ * Interface for components that can be translated.
+ */
+public interface Translatable {
 
     /**
      * Get a translation from the language manager.
@@ -27,7 +14,7 @@ public abstract class BaseSakuyaBridgeFrameDesign extends BaseFrameDesign {
      *
      * @return The translation.
      */
-    protected String $getTranslation(String key) {
+    default String $getTranslation(String key) {
         return LanguageManager.INSTANCE.getTranslation(key);
     }
 
@@ -39,7 +26,8 @@ public abstract class BaseSakuyaBridgeFrameDesign extends BaseFrameDesign {
      *
      * @return The formatted translation.
      */
-    protected String $formatTranslation(String key, Object... args) {
+    default String $formatTranslation(String key, Object... args) {
         return LanguageManager.INSTANCE.formatTranslation(key, args);
     }
+
 }

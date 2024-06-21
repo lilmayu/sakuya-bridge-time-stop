@@ -2,13 +2,16 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger.info;
 
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuyaBridgeFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+/**
+ * The design of the log info frame.
+ */
 public abstract class LogInfoFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     protected String logTime;

@@ -1,8 +1,11 @@
 package dev.mayuna.sakuyabridge.client.v2.frontend.interfaces;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatInspector;
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.FrontendConfig;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.connect.ConnectFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger.LoggerFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.MainFrame;
@@ -38,6 +41,7 @@ public final class GraphicalUserInterface implements UserInterface {
 
         // FlatLaf
         FlatInspector.install("ctrl shift alt X");
+        FlatDarkLaf.setup();
 
         // Load settings
         settings = FrontendConfig.load();
@@ -47,7 +51,7 @@ public final class GraphicalUserInterface implements UserInterface {
 
         // Load language packs
         if (!LanguageManager.INSTANCE.loadLanguagePacks()) {
-            JOptionPane.showMessageDialog(null, "Failed to load language packs", "Error", JOptionPane.ERROR_MESSAGE);
+            TranslatedInfoMessage.create("Failed to load language packs").showError(null);
         }
 
         // Logger stuff

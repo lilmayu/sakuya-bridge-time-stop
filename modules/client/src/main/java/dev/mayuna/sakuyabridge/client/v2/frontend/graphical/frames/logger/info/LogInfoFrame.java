@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
+/**
+ * The log info frame.
+ */
 public final class LogInfoFrame extends LogInfoFrameDesign {
 
     /**

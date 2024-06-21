@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.util;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.util;
 
 import java.awt.*;
 import java.io.IOException;

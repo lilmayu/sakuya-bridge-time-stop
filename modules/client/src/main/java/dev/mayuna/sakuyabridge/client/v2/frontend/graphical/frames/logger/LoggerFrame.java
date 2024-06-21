@@ -15,7 +15,7 @@ import java.awt.event.*;
 /**
  * Logger frame
  */
-public class LoggerFrame extends LoggerFrameDesign {
+public final class LoggerFrame extends LoggerFrameDesign {
 
     public static final LoggerFrame INSTANCE = new LoggerFrame();
 

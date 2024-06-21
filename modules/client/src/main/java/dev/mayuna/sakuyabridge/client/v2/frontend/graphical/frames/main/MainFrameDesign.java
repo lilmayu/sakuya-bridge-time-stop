@@ -5,11 +5,11 @@ import dev.mayuna.cinnamonroll.CinnamonRollFlatLaf;
 import dev.mayuna.cinnamonroll.TabType;
 import dev.mayuna.cinnamonroll.TabbedPanel;
 import dev.mayuna.cinnamonroll.util.MigLayoutUtils;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.BaseSakuyaBridgeFrameDesign;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.AccountTabbedPanel;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.ChatRoomsTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuyaBridgeFrameDesign;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.account.AccountTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.chatrooms.ChatRoomsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.GameBrowserTabbedPanel;
-import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.SettingsTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.settings.SettingsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 
@@ -18,7 +18,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-// TODO: Translations
 public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
     protected JTabbedPane tabbedPane;
@@ -67,7 +66,7 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         this.labelLoggedAs = new JLabel();
         this.labelPing = new JLabel();
 
-        this.buttonDisconnect = new JButton("Disconnect");
+        this.buttonDisconnect = new JButton($getTranslation(Lang.Frames.Main.BUTTON_DISCONNECT));
     }
 
     @Override
@@ -93,11 +92,11 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         JPanel tabPanel = new JPanel(new BorderLayout());
         tabPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
 
-        tabbedPane.addTab("Game Browser", new GameBrowserTabbedPanel());
-        tabbedPane.addTab("Host Game", new JPanel());
-        tabbedPane.addTab("Chat Rooms", new ChatRoomsTabbedPanel());
-        tabbedPane.addTab("Account", new AccountTabbedPanel());
-        tabbedPane.addTab("Settings", new SettingsTabbedPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_GAME_BROWSER_TITLE), new GameBrowserTabbedPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_HOST_GAME_TITLE), new JPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_CHAT_ROOMS_TITLE), new ChatRoomsTabbedPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_ACCOUNT_TITLE), new AccountTabbedPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_SETTINGS_TITLE), new SettingsTabbedPanel());
 
         tabPanel.add(tabbedPane, BorderLayout.CENTER);
         this.add(tabPanel, BorderLayout.CENTER);
@@ -109,7 +108,7 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
 
         footerPanel.add(buttonDisconnect);
         footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");
-        footerPanel.add(new JLabel("Version " + CommonConstants.CURRENT_CLIENT_VERSION + " (network ver. " + CommonConstants.CURRENT_NETWORK_PROTOCOL + ")"));
+        footerPanel.add(new JLabel($formatTranslation(Lang.Frames.Main.LABEL_VERSION_INFO, CommonConstants.CURRENT_CLIENT_VERSION, CommonConstants.CURRENT_NETWORK_PROTOCOL)));
         footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");
         footerPanel.add(labelLoggedAs);
         footerPanel.add(CinnamonRoll.verticalSeparator(), "growy");

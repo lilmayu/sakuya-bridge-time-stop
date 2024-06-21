@@ -6,7 +6,7 @@ import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
 import dev.mayuna.sakuyabridge.client.v2.frontend.interfaces.GraphicalUserInterface;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
-import dev.mayuna.sakuyabridge.client.v2.frontend.util.DesktopUtils;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.util.DesktopUtils;
 
 import java.awt.event.MouseEvent;
 import java.util.concurrent.CompletableFuture;

@@ -1,4 +1,4 @@
-package dev.mayuna.sakuyabridge.client.v2.frontend.util;
+package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.util;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;

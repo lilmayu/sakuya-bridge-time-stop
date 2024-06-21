@@ -116,21 +116,46 @@ public final class Lang {
             }
         }
 
-        public static final class ChatRoomsPanel {
-
-            public static final String BUTTON_SEND_MESSAGE = "frames.chat_rooms_panel.button.send_message";
-            public static final String LABEL_FAILED_TO_FETCH_CHAT_ROOMS = "frames.chat_rooms_panel.label.failed_to_fetch_chat_rooms";
-            public static final String TEXT_NO_CHAT_ROOMS_AVAILABLE = "frames.chat_rooms_panel.text.no_chat_rooms_available";
-            public static final String COLUMN_TIME = "frames.chat_rooms_panel.column.time";
-            public static final String COLUMN_USERNAME = "frames.chat_rooms_panel.column.username";
-            public static final String COLUMN_MESSAGE = "frames.chat_rooms_panel.column.message";
-            public static final String TEXT_FAILED_TO_SEND_MESSAGE = "frames.chat_rooms_panel.text.failed_to_send_message";
-        }
-
         public static final class Main {
 
             public static final String TEXT_TITLE_CONFIRM_CLOSE = "frames.main.text.title.confirm_close";
             public static final String TEXT_CONFIRM_CLOSE = "frames.main.text.confirm_close";
+            public static final String BUTTON_DISCONNECT = "frames.main.button.disconnect";
+            public static final String TAB_GAME_BROWSER_TITLE = "frames.main.tab.game_browser_title";
+            public static final String TAB_HOST_GAME_TITLE = "frames.main.tab.host_game_title";
+            public static final String TAB_CHAT_ROOMS_TITLE = "frames.main.tab.chat_rooms_title";
+            public static final String TAB_ACCOUNT_TITLE = "frames.main.tab.account_title";
+            public static final String TAB_SETTINGS_TITLE = "frames.main.tab.settings_title";
+            public static final String LABEL_VERSION_INFO = "frames.main.label.version_info";
+            public static final String LABEL_PING = "frames.main.label.ping";
+            public static final String LABEL_LOGGED_AS = "frames.main.label.logged_as";
+            public static final String TEXT_DO_YOU_WISH_TO_DISCONNECT = "frames.main.text.do_you_wish_to_disconnect";
+
+            public static final class Panels {
+
+                public static final class ChatRooms {
+
+                    public static final String BUTTON_SEND_MESSAGE = "frames.main.panel.chatrooms.button.send_message";
+                    public static final String LABEL_FAILED_TO_FETCH_CHAT_ROOMS = "frames.main.panel.chatrooms.label.failed_to_fetch_chat_rooms";
+                    public static final String TEXT_NO_CHAT_ROOMS_AVAILABLE = "frames.main.panel.chatrooms.text.no_chat_rooms_available";
+                    public static final String COLUMN_TIME = "frames.main.panel.chatrooms.column.time";
+                    public static final String COLUMN_USERNAME = "frames.main.panel.chatrooms.column.username";
+                    public static final String COLUMN_MESSAGE = "frames.main.panel.chatrooms.column.message";
+                    public static final String TEXT_FAILED_TO_SEND_MESSAGE = "frames.main.panel.chatrooms.text.failed_to_send_message";
+                }
+
+                public static final class Account {
+
+                    public static final String BUTTON_CHANGE_USERNAME = "frames.main.panel.account.button.change_username";
+                }
+
+                public static final class Settings {
+
+                    public static final String TOOLTIP_MAY_RESTART_SAKUYA_BRIDGE = "frames.main.panel.settings.tooltip.may_restart_sakuya_bridge";
+                    public static final String TAB_USER_INTERFACE_TITLE = "frames.main.panel.settings.tab.user_interface_title";
+                    public static final String LABEL_THEME = "frames.main.panel.settings.label.theme";
+                }
+            }
         }
     }
 }

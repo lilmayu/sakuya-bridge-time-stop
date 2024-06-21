@@ -29,13 +29,13 @@ public final class MainFrame extends MainFrameDesign {
             public void run() {
                 SwingUtilities.invokeLater(() -> {
                     long ping = SakuyaBridge.INSTANCE.getLastPingIn();
+                    String textPing = String.valueOf(ping);
 
                     if (ping == -1) {
-                        labelPing.setText("Ping >1s");
-                        return;
+                        textPing = "<1";
                     }
 
-                    labelPing.setText("Ping " + ping + "ms");
+                    labelPing.setText($formatTranslation(Lang.Frames.Main.LABEL_PING, textPing));
                 });
             }
         }, 0, CommonConstants.PING_INTERVAL);
@@ -45,7 +45,7 @@ public final class MainFrame extends MainFrameDesign {
      * Updates the username label with the current username.
      */
     private void updateUsernameLabel() {
-        labelLoggedAs.setText("Logged as " + SakuyaBridge.INSTANCE.getUser().getUsername());
+        labelLoggedAs.setText($formatTranslation(Lang.Frames.Main.LABEL_LOGGED_AS, SakuyaBridge.INSTANCE.getUser().getUsername()));
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class MainFrame extends MainFrameDesign {
 
     @Override
     protected void clickDisconnect(MouseEvent mouseEvent) {
-        var result = TranslatedInfoMessage.create("Do you wish to disconnect?").showQuestion(this, JOptionPane.YES_NO_OPTION);
+        var result = TranslatedInfoMessage.create($getTranslation(Lang.Frames.Main.TEXT_DO_YOU_WISH_TO_DISCONNECT)).showQuestion(this, JOptionPane.YES_NO_OPTION);
 
         if (result != JOptionPane.YES_OPTION) {
             return;
