@@ -6,6 +6,7 @@ import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
 import dev.mayuna.sakuyabridge.server.v2.ServerConstants;
 import dev.mayuna.sakuyabridge.server.v2.networking.EncryptedListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.SakuyaBridgeConnection;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.ResponseHelper;
 import dev.mayuna.timestop.networking.timestop.TimeStopMessage;
 import dev.mayuna.timestop.networking.timestop.TimeStopPackets;
 
@@ -14,11 +15,12 @@ import dev.mayuna.timestop.networking.timestop.TimeStopPackets;
  *
  * @param <TRequest> The type of the message
  */
-abstract class AuthenticationListener<TRequest extends TimeStopMessage, TResponse extends TimeStopPackets.BasePacket> extends EncryptedListener<TRequest> {
+abstract class AuthenticationListener<TRequest extends TimeStopPackets.BasePacket, TResponse extends TimeStopPackets.BasePacket> extends EncryptedListener<TRequest> implements ResponseHelper<TRequest, TResponse> {
 
     private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(AuthenticationListener.class);
 
     private final AuthenticationMethods authenticationMethod;
+    protected boolean registerListener = false;
 
     /**
      * Creates a new listener
@@ -45,9 +47,15 @@ abstract class AuthenticationListener<TRequest extends TimeStopMessage, TRespons
 
     @Override
     public void process(SakuyaBridgeConnection connection, TRequest request) {
+        if (registerListener && !SakuyaBridge.INSTANCE.getConfig().getServerInfo().isRegisterEnabled()) {
+            LOGGER.warn("[{}] Attempted to register, but registration is disabled", connection);
+            respondError(connection, request, ServerConstants.Responses.REGISTRATION_DISABLED);
+            return;
+        }
+
         if (!SakuyaBridge.INSTANCE.getConfig().getServerInfo().isAuthenticationMethodEnabled(authenticationMethod)) {
-            LOGGER.warn("[" + connection + "] Attempted to login with " + authenticationMethod + ", but the method is disabled");
-            connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.AUTH_METHOD_DISABLED).withResponseTo(request));
+            LOGGER.warn("[{}] Attempted to login with {}, but the method is disabled", connection, authenticationMethod);
+            respondError(connection, request, ServerConstants.Responses.AUTH_METHOD_DISABLED);
             return;
         }
 
@@ -61,11 +69,4 @@ abstract class AuthenticationListener<TRequest extends TimeStopMessage, TRespons
      * @param message    The message
      */
     public abstract void processAuthenticationMethodAllowed(SakuyaBridgeConnection connection, TRequest message);
-
-    /**
-     * Creates an empty authentication response for the current authentication method
-     *
-     * @return The response
-     */
-    protected abstract TResponse createEmptyAuthenticationResponse();
 }

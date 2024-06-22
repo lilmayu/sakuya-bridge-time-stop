@@ -66,7 +66,12 @@ public final class UdpClient extends UdpNetworkNode {
     }
 
     @Override
-    protected void onExceptionDuringTick(Throwable throwable) {
-        logger.error("Exception occurred during client tick", throwable);
+    protected void onExceptionDuringReceive(Throwable throwable) {
+        logger.error("Exception occurred during client receive", throwable);
+    }
+
+    @Override
+    protected void onExceptionDuringReceiveProcess(DatagramPacket datagramPacket, Throwable throwable) {
+        logger.error("Exception occurred during client receive process", throwable);
     }
 }

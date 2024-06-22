@@ -55,6 +55,7 @@ public final class GameManager {
      * @throws CouldNotCreateUdpServerBridgeException} Could not create UDP Server Bridge
      */
     public synchronized Game createGame(SakuyaBridgeConnection connection, GameInfo gameInfo) {
+        // todo: CHECKING CommonConstants.MAX_GAME_NAME_LENGTH in the listener
         Optional<Integer> optionalPort = getFirstAvailablePort();
 
         if (optionalPort.isEmpty()) {

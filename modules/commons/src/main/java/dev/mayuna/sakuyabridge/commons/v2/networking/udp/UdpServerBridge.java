@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 /**
  * UDP server bridge<br>
@@ -21,8 +22,6 @@ public final class UdpServerBridge extends UdpServer {
 
     private final @Getter UdpDestinationWhitelist clientWhitelist = new UdpDestinationWhitelist();
     private final @Getter UdpDestinationWhitelist hostWhitelist = new UdpDestinationWhitelist();
-
-    // TODO: Whitelisting clients, somehow
 
     private UdpExternalClient host;
 
@@ -125,10 +124,28 @@ public final class UdpServerBridge extends UdpServer {
     }
 
     @Override
-    protected void onExceptionDuringTick(Throwable throwable) {
-        // TODO: Remove client that caused the exception during tick
-        // TODO: If it's host -> stop the server
-        super.onExceptionDuringTick(throwable);
+    public void setOnExceptionDuringReceive(Consumer<Throwable> onExceptionDuringReceive) {
+        super.setOnExceptionDuringReceive(onExceptionDuringReceive);
+        // TODO: Test -> In what condition does this exception fire? Is it critical enough to stop the server?
+        //stop();
+    }
+
+    @Override
+    protected void onExceptionDuringReceiveProcess(DatagramPacket datagramPacket, Throwable throwable) {
+        // If the exception occurred while processing the packet, stop the server
+        synchronized (clients) {
+            var optionalExternalClient = clients.stream()
+                                                .filter(client -> client.isFrom(datagramPacket))
+                                                .findFirst();
+
+            if (optionalExternalClient.isEmpty()) {
+                LOGGER.warn("Client possibly disconnected (exception occurred): {}:{}", datagramPacket.getAddress(), datagramPacket.getPort(), throwable);
+                return;
+            }
+
+            LOGGER.warn("Exception occurred while receive processing for client {} - Disconnecting the connection...", optionalExternalClient.get(), throwable);
+            clients.remove(optionalExternalClient.get());
+        }
     }
 
     /**

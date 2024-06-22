@@ -15,7 +15,7 @@ import dev.mayuna.timestop.networking.timestop.TimeStopPackets;
  * @param <TRequest>  The request
  * @param <TResponse> The response
  */
-public abstract class ChatFeatureListener<TRequest extends TimeStopPackets.BasePacket, TResponse extends TimeStopPackets.BasePacket> extends AuthenticatedListener<TRequest> implements ResponseHelper<TRequest, TResponse> {
+abstract class ChatFeatureListener<TRequest extends TimeStopPackets.BasePacket, TResponse extends TimeStopPackets.BasePacket> extends AuthenticatedListener<TRequest> implements ResponseHelper<TRequest, TResponse> {
 
     private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(ChatFeatureListener.class);
 

@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Listener for {@link Packets.Requests.Chat.FetchChatRoom}
  */
-public class FetchChatRoomListener extends ChatFeatureListener<Packets.Requests.Chat.FetchChatRoom, Packets.Responses.Chat.FetchChatRoom> {
+public final class FetchChatRoomListener extends ChatFeatureListener<Packets.Requests.Chat.FetchChatRoom, Packets.Responses.Chat.FetchChatRoom> {
 
     private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(FetchChatRoomListener.class);
 

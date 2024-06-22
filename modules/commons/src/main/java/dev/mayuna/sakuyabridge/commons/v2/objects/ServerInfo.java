@@ -19,7 +19,7 @@ public final class ServerInfo {
     private String region = "Za Warudo";
     private String motd = "Welcome to Sakuya Bridge!";
     private List<AuthenticationMethods> authenticationMethods = new LinkedList<>();
-    private boolean registerEnabled = true; // TODO: Možnost vypnout register (logika)
+    private boolean registerEnabled = true;
 
     /**
      * Used for serialization

@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.commons.v2.networking.udp;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import lombok.Getter;
 
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -32,7 +33,12 @@ public abstract class UdpServer extends UdpNetworkNode {
     }
 
     @Override
-    protected void onExceptionDuringTick(Throwable throwable) {
+    protected void onExceptionDuringReceive(Throwable throwable) {
         LOGGER.error("Exception occurred during server tick", throwable);
+    }
+
+    @Override
+    protected void onExceptionDuringReceiveProcess(DatagramPacket datagramPacket, Throwable throwable) {
+        LOGGER.error("Exception occurred during server tick processing", throwable);
     }
 }

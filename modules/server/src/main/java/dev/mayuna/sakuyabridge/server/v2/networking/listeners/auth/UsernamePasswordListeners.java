@@ -33,25 +33,25 @@ public final class UsernamePasswordListeners {
         }
 
         @Override
-        public void processAuthenticationMethodAllowed(SakuyaBridgeConnection connection, Packets.Requests.Auth.UsernamePasswordLogin message) {
-            String username = message.getUsername();
-            char[] password = message.getPassword();
+        public void processAuthenticationMethodAllowed(SakuyaBridgeConnection connection, Packets.Requests.Auth.UsernamePasswordLogin request) {
+            String username = request.getUsername();
+            char[] password = request.getPassword();
 
-            LOGGER.mdebug("[" + connection + "] Requested login as {}", username);
+            LOGGER.mdebug("[{}] Requested login as {}", connection, username);
 
             Optional<UsernamePasswordAccount> authenticatedAccount;
 
             try {
                 authenticatedAccount = SakuyaBridge.INSTANCE.getAccountManagers().getUsernamePassword().authenticate(username, password);
             } catch (Exception e) {
-                LOGGER.error("[" + connection + "] Failed to authenticate as " + username + " due to an exception", e);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INTERNAL_SERVER_ERROR).withResponseTo(message));
+                LOGGER.error("[{}] Failed to authenticate as {} due to an exception", connection, username, e);
+                respondError(connection, request, ServerConstants.Responses.INTERNAL_SERVER_ERROR);
                 return;
             }
 
             if (authenticatedAccount.isEmpty()) {
-                LOGGER.warn("[" + connection + "] Failed to authenticate as {}", username);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INVALID_CREDENTIALS).withResponseTo(message));
+                LOGGER.warn("[{}] Failed to authenticate as {}", connection, username);
+                respondError(connection, request, ServerConstants.Responses.INVALID_CREDENTIALS);
                 return;
             }
 
@@ -60,11 +60,11 @@ public final class UsernamePasswordListeners {
 
             connection.setAccount(account);
             LOGGER.mdebug("[" + connection + "] Authenticated as {}", account);
-            connection.sendTCP(createEmptyAuthenticationResponse().withSessionToken(sessionToken).withResponseTo(message));
+            respond(connection, request, createResponse().withSessionToken(sessionToken));
         }
 
         @Override
-        protected Packets.Responses.Auth.UsernamePasswordLogin createEmptyAuthenticationResponse() {
+        public Packets.Responses.Auth.UsernamePasswordLogin createResponse() {
             return new Packets.Responses.Auth.UsernamePasswordLogin();
         }
     }
@@ -79,28 +79,29 @@ public final class UsernamePasswordListeners {
          */
         public RegisterRequestListener() {
             super(AuthenticationMethods.USERNAME_PASSWORD, Packets.Requests.Auth.UsernamePasswordRegister.class);
+            this.registerListener = true; // Checks if registration is enabled
         }
 
         @Override
-        public void processAuthenticationMethodAllowed(SakuyaBridgeConnection connection, Packets.Requests.Auth.UsernamePasswordRegister message) {
-            String username = message.getUsername();
-            char[] password = message.getPassword();
+        public void processAuthenticationMethodAllowed(SakuyaBridgeConnection connection, Packets.Requests.Auth.UsernamePasswordRegister request) {
+            String username = request.getUsername();
+            char[] password = request.getPassword();
 
-            LOGGER.mdebug("[" + connection + "] Requested registration as {}", username);
+            LOGGER.mdebug("[{}] Requested registration as {}", connection, username);
 
             Optional<UsernamePasswordAccount> optionalAccount;
 
             try {
                 optionalAccount = SakuyaBridge.INSTANCE.getAccountManagers().getUsernamePassword().createAccount(username, password);
             } catch (Exception e) {
-                LOGGER.error("[" + connection + "] Failed to create account as " + username + " due to an exception", e);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.INTERNAL_SERVER_ERROR).withResponseTo(message));
+                LOGGER.error("[{}] Failed to create account as {} due to an exception", connection, username, e);
+                respondError(connection, request, ServerConstants.Responses.INTERNAL_SERVER_ERROR);
                 return;
             }
 
             if (optionalAccount.isEmpty()) {
-                LOGGER.warn("[" + connection + "] Failed to create account as {}", username);
-                connection.sendTCP(createEmptyAuthenticationResponse().withError(ServerConstants.Responses.USERNAME_ALREADY_TAKEN).withResponseTo(message));
+                LOGGER.warn("[{}] Failed to create account as {}", connection, username);
+                respondError(connection, request, ServerConstants.Responses.USERNAME_ALREADY_TAKEN);
                 return;
             }
 
@@ -108,12 +109,12 @@ public final class UsernamePasswordListeners {
             var sessionToken = SakuyaBridge.INSTANCE.getSessionTokenManager().renewGetOrCreateSessionToken(account);
 
             connection.setAccount(optionalAccount.get());
-            LOGGER.mdebug("[" + connection + "] Created account as {}", username);
-            connection.sendTCP(createEmptyAuthenticationResponse().withSessionToken(sessionToken).withResponseTo(message));
+            LOGGER.mdebug("[{}] Created account as {}", connection, username);
+            respond(connection, request, createResponse().withSessionToken(sessionToken));
         }
 
         @Override
-        protected Packets.Responses.Auth.UsernamePasswordRegister createEmptyAuthenticationResponse() {
+        public Packets.Responses.Auth.UsernamePasswordRegister createResponse() {
             return new Packets.Responses.Auth.UsernamePasswordRegister();
         }
     }

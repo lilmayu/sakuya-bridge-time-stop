@@ -2,14 +2,15 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.auth.usernam
 
 import dev.mayuna.cinnamonroll.extension.frames.loading.LoadingDialogFrame;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.serverinfo.ServerInfoFrameDesign;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
+import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Username and password authentication method<br>
@@ -17,10 +18,24 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 public final class UsernamePasswordAuthFrame extends UsernamePasswordAuthFrameDesign {
 
+    private final ServerInfo serverInfo;
     private boolean loggedIn;
 
-    public UsernamePasswordAuthFrame(Component parentComponent) {
+    public UsernamePasswordAuthFrame(Component parentComponent, ServerInfo serverInfo) {
         super(parentComponent);
+        this.serverInfo = serverInfo;
+
+        loadData();
+    }
+
+    /**
+     * Loads data
+     */
+    private void loadData() {
+        // Disable register button if not enabled
+        if (!serverInfo.isRegisterEnabled()) {
+            buttonRegister.setEnabled(false);
+        }
     }
 
     @Override

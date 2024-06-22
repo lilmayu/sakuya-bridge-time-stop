@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger;
 import dev.mayuna.cinnamonroll.CinnamonRoll;
 import dev.mayuna.cinnamonroll.extension.messages.InfoMessage;
 import dev.mayuna.cinnamonroll.util.ClipboardUtils;
+import dev.mayuna.sakuyabridge.client.v2.ClientConstants;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.logger.info.LogInfoFrame;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.logging.LoggerFrameLogHandler;
@@ -33,7 +34,7 @@ public final class LoggerFrame extends LoggerFrameDesign {
      * Installs the keybind for the frame
      */
     public void installKeybind() {
-        CinnamonRoll.registerGlobalKeystroke("ctrl shift alt L", e -> flipFrameVisibility());
+        CinnamonRoll.registerGlobalKeystroke(ClientConstants.KEYBIND_LOGGER_FRAME, e -> flipFrameVisibility());
     }
 
     @Override

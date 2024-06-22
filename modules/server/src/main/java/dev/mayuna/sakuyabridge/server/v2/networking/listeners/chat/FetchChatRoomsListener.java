@@ -9,10 +9,16 @@ import dev.mayuna.sakuyabridge.server.v2.objects.chat.ServerChatRoomWrap;
 
 import java.util.List;
 
-public class FetchChatRoomsListener extends ChatFeatureListener<Packets.Requests.Chat.FetchChatRooms, Packets.Responses.Chat.FetchChatRooms> {
+/**
+ * Listener for {@link Packets.Requests.Chat.FetchChatRooms}
+ */
+public final class FetchChatRoomsListener extends ChatFeatureListener<Packets.Requests.Chat.FetchChatRooms, Packets.Responses.Chat.FetchChatRooms> {
 
     private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(FetchChatRoomsListener.class);
 
+    /**
+     * Creates new {@link Packets.Requests.Chat.FetchChatRooms} listener
+     */
     public FetchChatRoomsListener() {
         super(Packets.Requests.Chat.FetchChatRooms.class);
     }

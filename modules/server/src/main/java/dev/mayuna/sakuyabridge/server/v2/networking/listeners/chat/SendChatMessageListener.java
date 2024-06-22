@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * {@link Packets.Requests.Chat.SendChatMessage} listener
  */
-public class SendChatMessageListener extends ChatFeatureListener<Packets.Requests.Chat.SendChatMessage, Packets.Responses.Chat.SendChatMessage> {
+public final class SendChatMessageListener extends ChatFeatureListener<Packets.Requests.Chat.SendChatMessage, Packets.Responses.Chat.SendChatMessage> {
 
     private final static SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SendChatMessageListener.class);
 
@@ -53,7 +53,7 @@ public class SendChatMessageListener extends ChatFeatureListener<Packets.Request
         }
 
         chatManager.sendMessage(chatRoomWrap, chatManager.createChatMessage(user.getLoggedAccount(), request.getContent()));
-        respondSuccess(connection, request);
+        respondEmpty(connection, request);
     }
 
     @Override

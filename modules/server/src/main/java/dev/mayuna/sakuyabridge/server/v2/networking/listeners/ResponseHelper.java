@@ -25,7 +25,7 @@ public interface ResponseHelper<TRequest extends TimeStopPackets.BasePacket, TRe
      * @param request    The request
      * @param response   The response
      */
-    default void respond(SakuyaBridgeConnection connection, TRequest request, TResponse response) {
+    default void respond(SakuyaBridgeConnection connection, TRequest request, TimeStopPackets.BasePacket response) {
         connection.sendTCP(response.withResponseTo(request));
     }
 
@@ -37,7 +37,7 @@ public interface ResponseHelper<TRequest extends TimeStopPackets.BasePacket, TRe
      * @param error      The error
      */
     default void respondError(SakuyaBridgeConnection connection, TRequest request, String error) {
-        TResponse response = createResponse();
+        TimeStopPackets.BasePacket response = createResponse();
         response.withError(error);
         respond(connection, request, response);
     }
@@ -48,7 +48,7 @@ public interface ResponseHelper<TRequest extends TimeStopPackets.BasePacket, TRe
      * @param connection The connection
      * @param request    The request
      */
-    default void respondSuccess(SakuyaBridgeConnection connection, TRequest request) {
+    default void respondEmpty(SakuyaBridgeConnection connection, TRequest request) {
         respond(connection, request, createResponse());
     }
 }

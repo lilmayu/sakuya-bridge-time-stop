@@ -45,6 +45,7 @@ public final class SakuyaBridge {
 
         LOGGER.info("Loading config");
         config = Config.load();
+        showConfigValues();
 
         LOGGER.info("Initializing account managers");
         accountManagers = new AccountManagerBundle(config.getAccountManager());
@@ -72,6 +73,22 @@ public final class SakuyaBridge {
 
         LOGGER.info("Starting server");
         server.start();
+    }
+
+    /**
+     * Shows the config values in the log
+     */
+    private void showConfigValues() {
+        if (config.isPrintConfigAtStart()) {
+            LOGGER.mdebug("{}", config);
+        }
+
+        // Specific
+        if (config.getServerInfo().isRegisterEnabled()) {
+            LOGGER.info("Registration is enabled; users can create accounts.");
+        } else {
+            LOGGER.warn("Registration is disabled; users cannot create accounts.");
+        }
     }
 
     /**

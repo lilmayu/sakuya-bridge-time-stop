@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -23,7 +24,8 @@ public abstract class UdpNetworkNode {
 
     // External listeners
     private Consumer<DatagramPacket> onDatagramPacketReceived;
-    private Consumer<Throwable> onExceptionDuringTick;
+    private Consumer<Throwable> onExceptionDuringReceive;
+    private BiConsumer<DatagramPacket, Throwable> onExceptionDuringReceiveProcess;
     private Consumer<Throwable> onExceptionDuringSend;
     private Runnable onStarted;
     private Runnable onStopped;
@@ -31,7 +33,9 @@ public abstract class UdpNetworkNode {
     public UdpNetworkNode() {
         // Prepare the listeners
         setOnDatagramPacketReceived(null);
-        setOnExceptionDuringTick(null);
+        setOnExceptionDuringReceive(null);
+        setOnExceptionDuringReceiveProcess(null);
+        setOnExceptionDuringSend(null);
         setOnStarted(null);
         setOnStopped(null);
     }
@@ -101,22 +105,27 @@ public abstract class UdpNetworkNode {
 
         try {
             getDatagramSocket().receive(datagramPacket);
+        } catch (IOException exception) {
+            if (!isRunning()) {
+                // Socket is closed, no need to handle the exception, just return
+                return;
+            }
 
-            // Cut the excess bytes from the buffer
+            onExceptionDuringReceive(exception);
+            onExceptionDuringReceive.accept(exception);
+        }
+
+        // Cut the excess bytes from the buffer
+        try {
             byte[] data = new byte[datagramPacket.getLength()];
             System.arraycopy(datagramPacket.getData(), 0, data, 0, datagramPacket.getLength());
             datagramPacket.setData(data);
 
             onReceiveDatagramPacket(datagramPacket);
             onDatagramPacketReceived.accept(datagramPacket);
-        } catch (Throwable throwable) {
-            if (!isRunning()) {
-                // Socket is closed, no need to handle the exception, just return
-                return;
-            }
-
-            onExceptionDuringTick(throwable);
-            onExceptionDuringTick.accept(throwable);
+        } catch (Exception exception) {
+            onExceptionDuringReceiveProcess(datagramPacket, exception);
+            onExceptionDuringReceiveProcess.accept(datagramPacket, exception);
         }
     }
 
@@ -152,18 +161,14 @@ public abstract class UdpNetworkNode {
      *
      * @param throwable The exception that occurred
      */
-    protected abstract void onExceptionDuringTick(Throwable throwable);
+    protected abstract void onExceptionDuringReceive(Throwable throwable);
 
     /**
-     * Sets the on stopped listener (e.g. when the network node is stopped).
+     * Invoked when an exception occurs during the receive process.
      *
-     * @param onStopped On datagram packet received listener (null to clear)
+     * @param throwable The exception that occurred
      */
-    public void setOnStopped(Runnable onStopped) {
-        // Clear the listener if null
-        this.onStopped = Objects.requireNonNullElse(onStopped, () -> {
-        });
-    }
+    protected abstract void onExceptionDuringReceiveProcess(DatagramPacket datagramPacket, Throwable throwable);
 
     /**
      * Sets the on datagram packet received listener.
@@ -179,11 +184,44 @@ public abstract class UdpNetworkNode {
     /**
      * Sets the on exception during tick listener.
      *
-     * @param onExceptionDuringTick On exception during tick listener (null to clear)
+     * @param onExceptionDuringReceive On exception during tick listener (null to clear)
      */
-    public void setOnExceptionDuringTick(Consumer<Throwable> onExceptionDuringTick) {
+    public void setOnExceptionDuringReceive(Consumer<Throwable> onExceptionDuringReceive) {
         // Clear the listener if null
-        this.onExceptionDuringTick = Objects.requireNonNullElse(onExceptionDuringTick, throwable -> {
+        this.onExceptionDuringReceive = Objects.requireNonNullElse(onExceptionDuringReceive, throwable -> {
+        });
+    }
+
+    /**
+     * Sets the on exception during receive process listener.
+     *
+     * @param onExceptionDuringReceiveProcess On exception during receive process listener (null to clear)
+     */
+    public void setOnExceptionDuringReceiveProcess(BiConsumer<DatagramPacket, Throwable> onExceptionDuringReceiveProcess) {
+        // Clear the listener if null
+        this.onExceptionDuringReceiveProcess = Objects.requireNonNullElse(onExceptionDuringReceiveProcess, (datagramPacket, throwable) -> {
+        });
+    }
+
+    /**
+     * Sets the on exception during send listener.
+     *
+     * @param onExceptionDuringSend On exception during send listener (null to clear)
+     */
+    public void setOnExceptionDuringSend(Consumer<Throwable> onExceptionDuringSend) {
+        // Clear the listener if null
+        this.onExceptionDuringSend = Objects.requireNonNullElse(onExceptionDuringSend, throwable -> {
+        });
+    }
+
+    /**
+     * Sets the on stopped listener (e.g. when the network node is stopped).
+     *
+     * @param onStopped On datagram packet received listener (null to clear)
+     */
+    public void setOnStopped(Runnable onStopped) {
+        // Clear the listener if null
+        this.onStopped = Objects.requireNonNullElse(onStopped, () -> {
         });
     }
 

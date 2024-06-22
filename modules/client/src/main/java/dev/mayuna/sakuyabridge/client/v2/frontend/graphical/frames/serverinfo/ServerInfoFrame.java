@@ -74,7 +74,7 @@ public final class ServerInfoFrame extends ServerInfoFrameDesign {
 
     @Override
     protected void clickAuthWithUsernamePassword(MouseEvent mouseEvent) {
-        var authFrame = new UsernamePasswordAuthFrame(this);
+        var authFrame = new UsernamePasswordAuthFrame(this, serverInfo);
 
         authFrame.openFrameBlockParentAndThenAsync(this, () -> {
             if (authFrame.isLoggedIn()) {

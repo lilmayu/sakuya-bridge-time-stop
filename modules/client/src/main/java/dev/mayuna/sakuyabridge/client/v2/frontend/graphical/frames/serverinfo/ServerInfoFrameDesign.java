@@ -56,7 +56,6 @@ public abstract class ServerInfoFrameDesign extends BaseSakuyaBridgeFrameDesign 
 
     @Override
     protected void prepareComponents() {
-        // TODO: Implementovat previous session
         buttonContinueInPreviousSession = new JButton($getTranslation(Lang.Frames.ServerInfo.BUTTON_CONTINUE_IN_PREVIOUS_SESSION_NO_SESSION));
         buttonAuthWithDiscord = new JButton($getTranslation(Lang.Frames.ServerInfo.BUTTON_AUTH_DISCORD));
         buttonAuthWithUsernamePassword = new JButton($getTranslation(Lang.Frames.ServerInfo.BUTTON_AUTH_USERNAME_PASSWORD));
