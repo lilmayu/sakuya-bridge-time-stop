@@ -12,7 +12,7 @@ import java.awt.*;
 public final class ChatRoomTableRenderer extends DefaultTableCellRenderer {
 
     public static final Color COLOR_FOREGROUND_SYSTEM = new Color(255, 0, 0);
-    public static final Color COLOR_FOREGROUND_ADMIN = new Color(255, 255, 0);
+    public static final Color COLOR_FOREGROUND_LOCAL = new Color(255, 255, 0);
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -24,6 +24,9 @@ public final class ChatRoomTableRenderer extends DefaultTableCellRenderer {
             if (column == ChatRoomTableModel.USERNAME_COLUMN_INDEX) {
                 if (text.equals(CommonConstants.SYSTEM_USERNAME)) {
                     component.setForeground(COLOR_FOREGROUND_SYSTEM);
+                } else if (text.equals(CommonConstants.LOCAL_USERNAME)) {
+                    component.setForeground(COLOR_FOREGROUND_LOCAL);
+
                 } else {
                     component.setForeground(table.getForeground());
                 }

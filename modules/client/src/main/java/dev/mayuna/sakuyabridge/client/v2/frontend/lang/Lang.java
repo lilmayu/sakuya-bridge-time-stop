@@ -20,6 +20,11 @@ public final class Lang {
         public static final String COLUMN_UNKNOWN = "general.column.unknown";
     }
 
+    public static class Other {
+
+        public static final String TEXT_CHAT_KEEP_IT_CIVIL = "other.text.chat_keep_it_civil";
+    }
+
     public static final class Frames {
 
         public static final class Logger {

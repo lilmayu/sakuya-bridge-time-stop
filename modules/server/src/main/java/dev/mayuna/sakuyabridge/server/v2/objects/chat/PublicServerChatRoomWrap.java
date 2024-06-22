@@ -23,4 +23,9 @@ public final class PublicServerChatRoomWrap extends ServerChatRoomWrap {
     public boolean isUserWhitelisted(User user) {
         return true;
     }
+
+    @Override
+    public boolean shouldDelete(long limitMillis) {
+        return false;
+    }
 }

@@ -4,6 +4,8 @@ import dev.mayuna.sakuyabridge.client.v2.backend.enums.ConnectToServerResult;
 import dev.mayuna.sakuyabridge.client.v2.backend.enums.ExchangeVersionResult;
 import dev.mayuna.sakuyabridge.client.v2.backend.networking.Client;
 import dev.mayuna.sakuyabridge.client.v2.backend.networking.results.RequestResult;
+import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
+import dev.mayuna.sakuyabridge.client.v2.frontend.lang.LanguageManager;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.Packets;
@@ -164,8 +166,9 @@ public final class SakuyaBridge {
 
     /**
      * Handles a received chat message
+     *
      * @param chatRoomName The chat room name
-     * @param chatMessage The chat message
+     * @param chatMessage  The chat message
      */
     public void receiveMessage(String chatRoomName, ChatMessage chatMessage) {
         synchronized (activeChatRooms) {
@@ -610,6 +613,7 @@ public final class SakuyaBridge {
         var future = new CompletableFuture<RequestResult<List<ChatRoom>>>();
 
         /*
+        // Mock
         synchronized (activeChatRooms) {
             activeChatRooms.clear();
 
@@ -622,7 +626,8 @@ public final class SakuyaBridge {
             if (true) {
                 return future;
             }
-        }*/
+        }
+        */
 
         if (!handleAuthenticatedPreRequest(future)) {
             return future;
@@ -638,9 +643,15 @@ public final class SakuyaBridge {
                 return;
             }
 
+            var chatRooms = response.getChatRooms();
+
+            if (SakuyaBridge.INSTANCE.getConfig().getChatConfig().isKeepTheChatCivilWarning()) {
+                chatRooms.forEach(chatRoom -> chatRoom.addMessage(new ChatMessage(CommonConstants.LOCAL_ACCOUNT, LanguageManager.INSTANCE.getTranslation(Lang.Other.TEXT_CHAT_KEEP_IT_CIVIL))));
+            }
+
             synchronized (activeChatRooms) {
                 this.activeChatRooms.clear();
-                this.activeChatRooms.addAll(response.getChatRooms());
+                this.activeChatRooms.addAll(chatRooms);
             }
 
             LOGGER.info("Successfully fetched {} chat room(s)", activeChatRooms.size());
@@ -659,7 +670,8 @@ public final class SakuyaBridge {
      * @param chatRoom The chat room
      * @param content  The content
      *
-     * @return A future that completes when the chat message is sent (will not be ever completed exceptionally). The result of RequestResult is always <code>null</code>.
+     * @return A future that completes when the chat message is sent (will not be ever completed exceptionally). The result of RequestResult is always
+     * <code>null</code>.
      */
     public CompletableFuture<RequestResult<Void>> sendChatMessage(ChatRoom chatRoom, String content) {
         var future = new CompletableFuture<RequestResult<Void>>();

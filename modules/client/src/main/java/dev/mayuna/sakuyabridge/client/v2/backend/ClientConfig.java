@@ -8,6 +8,8 @@ import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
 import dev.mayuna.timestop.config.EncryptionConfig;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 public final class ClientConfig {
@@ -19,6 +21,7 @@ public final class ClientConfig {
 
     private EndpointConfig endpointConfig = new EndpointConfig();
     private EncryptionConfig encryptionConfig = new EncryptionConfig();
+    private ChatConfig chatConfig = new ChatConfig();
     private int connectionTimeoutMillis = 5000;
     private SessionToken previousSessionToken = null;
 
@@ -66,5 +69,12 @@ public final class ClientConfig {
      */
     public SessionToken getPreviousSessionTokenIfNotExpired() {
         return isPreviousSessionTokenExpired() ? null : previousSessionToken;
+    }
+
+    @Getter @Setter
+    public final static class ChatConfig {
+
+        private boolean keepTheChatCivilWarning = true;
+
     }
 }

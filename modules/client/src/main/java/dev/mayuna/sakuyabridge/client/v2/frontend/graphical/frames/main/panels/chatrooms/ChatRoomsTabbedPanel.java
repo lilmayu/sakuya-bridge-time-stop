@@ -172,6 +172,11 @@ public final class ChatRoomsTabbedPanel extends ChatRoomsTabbedPanelDesign {
      */
     @Override
     protected void clickSendChatMessage(MouseEvent mouseEvent) {
+        if (currentlyOpenedChatRoom == null) {
+            // TODO: Error - no chat room selected
+            return;
+        }
+
         String content = textFieldChatBox.getText().trim();
 
         if (content.isBlank()) {

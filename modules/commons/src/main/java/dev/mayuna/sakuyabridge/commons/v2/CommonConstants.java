@@ -21,7 +21,9 @@ public final class CommonConstants {
     public static final int MAX_GAME_NAME_LENGTH = 64;
 
     public static final String SYSTEM_USERNAME = "SYSTEM";
+    public static final String LOCAL_USERNAME = "LOCAL";
     public static final LoggedAccount SYSTEM_ACCOUNT = new LoggedAccount(SYSTEM_USERNAME, new UUID(0, 0), AccountType.ANONYMOUS);
+    public static final LoggedAccount LOCAL_ACCOUNT = new LoggedAccount(LOCAL_USERNAME, new UUID(0, 0), AccountType.ANONYMOUS);
     public static final int MAX_MESSAGE_HISTORY_COUNT = 100;
     public static final int MAX_MESSAGE_LENGTH = 300;
 

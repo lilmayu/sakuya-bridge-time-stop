@@ -15,6 +15,7 @@
     "general.text.exit": "Exit",
     "general.text.loading": "Loading...",
     "general.column.unknown": "Unknown column (bug)",
+    "other.text.chat_keep_it_civil": "Please, keep the chat civil.",
     "frames.logger.column.time": "Time",
     "frames.logger.column.level": "Level",
     "frames.logger.column.source": "Source",
