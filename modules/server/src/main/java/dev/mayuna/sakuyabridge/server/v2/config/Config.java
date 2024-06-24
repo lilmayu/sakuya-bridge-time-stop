@@ -3,6 +3,7 @@ package dev.mayuna.sakuyabridge.server.v2.config;
 import com.google.gson.Gson;
 import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
 import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
+import dev.mayuna.sakuyabridge.server.v2.SakuyaBridge;
 import dev.mayuna.timestop.config.EncryptionConfig;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public final class Config {
                 ", userManager=" + userManager +
                 ", gameManager=" + gameManager +
                 ", chatManager=" + chatManager +
+                ", printConfigAtStart=" + printConfigAtStart +
                 '}';
     }
 
@@ -139,6 +141,8 @@ public final class Config {
         private int startingPort = 28078;
         private int maxGames = 50;
         private int maxGamesPerUser = 1;
+        private String serverIp = "127.0.0.1";
+        // TODO: Smazání serveru po odpojení uživatele
 
         @Override
         public String toString() {
@@ -154,17 +158,24 @@ public final class Config {
     @Getter
     public static final class ChatManager {
 
-        private boolean enabled = true;
         private long deleteGameChatRoomsAfterMillis = 7_200_000; // 2 hours
         private long chatDelay = 1000; // 1 second
 
         @Override
         public String toString() {
             return "ChatManager{" +
-                    "enabled=" + enabled +
                     ", deleteGameChatRoomsAfterMillis=" + deleteGameChatRoomsAfterMillis +
                     ", chatDelay=" + chatDelay +
                     '}';
+        }
+
+        /**
+         * Determines if chat is enabled
+         *
+         * @return True if yes, false otherwise
+         */
+        public boolean isEnabled() {
+            return SakuyaBridge.INSTANCE.getConfig().getServerInfo().isChatEnabled();
         }
     }
 }

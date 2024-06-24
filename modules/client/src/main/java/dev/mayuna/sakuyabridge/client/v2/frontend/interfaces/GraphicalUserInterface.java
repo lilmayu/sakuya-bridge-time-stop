@@ -2,7 +2,6 @@ package dev.mayuna.sakuyabridge.client.v2.frontend.interfaces;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatInspector;
-import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import dev.mayuna.sakuyabridge.client.v2.backend.SakuyaBridge;
 import dev.mayuna.sakuyabridge.client.v2.frontend.FrontendConfig;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.TranslatedInfoMessage;
@@ -30,6 +29,7 @@ public final class GraphicalUserInterface implements UserInterface {
     public static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create("UI");
     public static final GraphicalUserInterface INSTANCE = new GraphicalUserInterface();
 
+    private MainFrame mainFrame;
     private FrontendConfig settings;
 
     private GraphicalUserInterface() {
@@ -105,7 +105,7 @@ public final class GraphicalUserInterface implements UserInterface {
      */
     public void openMainFrame() {
         SwingUtilities.invokeLater(() -> {
-            var mainFrame = new MainFrame();
+            mainFrame = new MainFrame();
             mainFrame.openFrame();
         });
     }

@@ -2,6 +2,7 @@ package dev.mayuna.sakuyabridge.server.v2.objects.games;
 
 import dev.mayuna.sakuyabridge.commons.v2.networking.udp.UdpServerBridge;
 import dev.mayuna.sakuyabridge.commons.v2.objects.games.GameInfo;
+import dev.mayuna.sakuyabridge.server.v2.objects.chat.ServerChatRoomWrap;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,8 @@ public final class Game {
     private @Setter String password;
 
     private @Setter UdpServerBridge udpServerBridge;
+    private @Setter ServerChatRoomWrap serverChatRoomWrap;
+    private @Setter String ip;
 
     /**
      * Creates a new instance of Game

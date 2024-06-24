@@ -7,7 +7,7 @@ import lombok.Setter;
 /**
  * Represents information about a game
  */
-@Getter
+@Getter @Setter
 public final class GameInfo {
 
     private String name;
@@ -15,31 +15,17 @@ public final class GameInfo {
     private Status status;
     private PlayerSide preferredPlayerSide;
     private Version version;
-    private @Setter User createdByUser;
-    private @Setter boolean isPasswordProtected;
-    private @Setter boolean isUdpHolePunchingEnabled;
+    private Technology technology;
+    private User createdByUser;
+    private boolean privateGame;
+    private boolean passwordProtected;
+    private boolean dynamicPingStrategyEnabled = true;
+    private boolean udpHolePunchingEnabled = true;
 
     /**
      * Used for serialization
      */
     public GameInfo() {
-    }
-
-    /**
-     * Creates a new GameInfo
-     *
-     * @param name                Game name
-     * @param region              Region where the game is hosted
-     * @param status              Game status
-     * @param preferredPlayerSide Preferred player side
-     * @param version             Game version
-     */
-    public GameInfo(String name, Region region, Status status, PlayerSide preferredPlayerSide, Version version) {
-        this.name = name;
-        this.region = region;
-        this.status = status;
-        this.preferredPlayerSide = preferredPlayerSide;
-        this.version = version;
     }
 
     /**
@@ -59,8 +45,8 @@ public final class GameInfo {
      * Represents the status of a game
      */
     public enum Status {
-        WAITING,
         STARTING,
+        WAITING,
         PLAYING;
     }
 
@@ -106,9 +92,11 @@ public final class GameInfo {
                 ", status=" + status +
                 ", preferredPlayerSide=" + preferredPlayerSide +
                 ", version=" + version +
+                ", technology=" + technology +
                 ", createdByUser=" + createdByUser +
-                ", isPasswordProtected=" + isPasswordProtected +
-                ", isUdpHolePunchingEnabled=" + isUdpHolePunchingEnabled +
+                ", privateGame=" + privateGame +
+                ", passwordProtected=" + passwordProtected +
+                ", udpHolePunchingEnabled=" + udpHolePunchingEnabled +
                 '}';
     }
 }

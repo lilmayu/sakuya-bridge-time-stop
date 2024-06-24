@@ -5,6 +5,7 @@ import dev.mayuna.sakuyabridge.client.v2.frontend.FrontendConfig;
 import dev.mayuna.sakuyabridge.commons.v2.config.ApplicationConfigLoader;
 import dev.mayuna.sakuyabridge.commons.v2.logging.SakuyaBridgeLogger;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
+import dev.mayuna.sakuyabridge.commons.v2.objects.games.GameInfo;
 import dev.mayuna.timestop.config.EncryptionConfig;
 import dev.mayuna.timestop.networking.base.EndpointConfig;
 import lombok.Data;
@@ -24,6 +25,7 @@ public final class ClientConfig {
     private ChatConfig chatConfig = new ChatConfig();
     private int connectionTimeoutMillis = 5000;
     private SessionToken previousSessionToken = null;
+    private GameInfo lastGameInfo = null;
 
     /**
      * Loads the settings from the file.

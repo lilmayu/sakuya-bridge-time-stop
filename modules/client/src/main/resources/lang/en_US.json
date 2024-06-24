@@ -87,6 +87,8 @@
     "frames.username_password_auth.text.register_failed": "Failed to register: {0}",
     "frames.username_password_auth.text.logging_in": "Logging in...",
     "frames.username_password_auth.text.registering": "Registering...",
+    "frames.main.panel.host_game.text.failed_to_create_game": "Failed to create game: {0}",
+    "frames.main.panel.host_game.text.game_stopped_host_inactive": "Game stopped because there was no active host for too long.",
     "frames.main.panel.chatrooms.button.send_message": "Send",
     "frames.main.panel.chatrooms.label.failed_to_fetch_chat_rooms": "Failed to fetch Chat Rooms.",
     "frames.main.panel.chatrooms.text.no_chat_rooms_available": "No Chat Rooms available.",

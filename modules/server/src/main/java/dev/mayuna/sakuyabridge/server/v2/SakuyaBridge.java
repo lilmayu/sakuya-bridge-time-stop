@@ -19,10 +19,8 @@ import lombok.Getter;
 @Getter
 public final class SakuyaBridge {
 
-    private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridge.class);
-
     public static final SakuyaBridge INSTANCE = new SakuyaBridge();
-
+    private static final SakuyaBridgeLogger LOGGER = SakuyaBridgeLogger.create(SakuyaBridge.class);
     private Config config;
     private Server server;
 
@@ -59,13 +57,13 @@ public final class SakuyaBridge {
         userManager = new UserManager(config.getUserManager());
         userManager.init();
 
-        LOGGER.info("Initializing game manager");
-        gameManager = new GameManager(config.getGameManager());
-        gameManager.init();
-
         LOGGER.info("Initializing chat manager");
         chatManager = new ChatManager(config.getChatManager());
         chatManager.init();
+
+        LOGGER.info("Initializing game manager");
+        gameManager = new GameManager(config.getGameManager(), chatManager);
+        gameManager.init();
 
         LOGGER.info("Creating server");
         Log.setLogger(new KryoLogger(Server.LOGGER));
@@ -73,6 +71,11 @@ public final class SakuyaBridge {
 
         LOGGER.info("Starting server");
         server.start();
+
+        LOGGER.info("Post-server startup actions...");
+        postServerStartup();
+
+        LOGGER.success("Sakuya Bridge started successfully");
     }
 
     /**
@@ -89,6 +92,13 @@ public final class SakuyaBridge {
         } else {
             LOGGER.warn("Registration is disabled; users cannot create accounts.");
         }
+    }
+
+    /**
+     * Post server startup actions
+     */
+    private void postServerStartup() {
+        gameManager.registerConnectionListener();
     }
 
     /**

@@ -18,7 +18,9 @@ public final class CommonConstants {
     public static final int MINIMUM_PASSWORD_LENGTH = 8;
     public static final int MAXIMUM_PASSWORD_LENGTH = 32;
     public static final int PING_INTERVAL = 5000;
+    public static final int MIN_GAME_NAME_LENGTH = 3;
     public static final int MAX_GAME_NAME_LENGTH = 64;
+    public static final int MAX_PASSWORD_LENGTH = 64;
 
     public static final String SYSTEM_USERNAME = "SYSTEM";
     public static final String LOCAL_USERNAME = "LOCAL";

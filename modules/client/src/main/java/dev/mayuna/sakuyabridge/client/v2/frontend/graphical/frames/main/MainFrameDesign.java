@@ -9,6 +9,7 @@ import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.components.BaseSakuy
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.account.AccountTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.chatrooms.ChatRoomsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.GameBrowserTabbedPanel;
+import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.hostgame.HostGameTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.graphical.frames.main.panels.settings.SettingsTabbedPanel;
 import dev.mayuna.sakuyabridge.client.v2.frontend.lang.Lang;
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
@@ -93,7 +94,7 @@ public abstract class MainFrameDesign extends BaseSakuyaBridgeFrameDesign {
         tabPanel.setBorder(new EmptyBorder(5, 10, 0, 10));
 
         tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_GAME_BROWSER_TITLE), new GameBrowserTabbedPanel());
-        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_HOST_GAME_TITLE), new JPanel());
+        tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_HOST_GAME_TITLE), new HostGameTabbedPanel());
         tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_CHAT_ROOMS_TITLE), new ChatRoomsTabbedPanel());
         tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_ACCOUNT_TITLE), new AccountTabbedPanel());
         tabbedPane.addTab($getTranslation(Lang.Frames.Main.TAB_SETTINGS_TITLE), new SettingsTabbedPanel());

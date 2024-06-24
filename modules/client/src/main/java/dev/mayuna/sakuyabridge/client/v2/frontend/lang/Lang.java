@@ -138,6 +138,12 @@ public final class Lang {
 
             public static final class Panels {
 
+                public static final class HostGame {
+
+                    public static final String TEXT_FAILED_TO_CREATE_GAME = "frames.main.panel.host_game.text.failed_to_create_game";
+                    public static final String TEXT_GAME_STOPPED_HOST_INACTIVE = "frames.main.panel.host_game.text.game_stopped_host_inactive";
+                }
+
                 public static final class ChatRooms {
 
                     public static final String BUTTON_SEND_MESSAGE = "frames.main.panel.chatrooms.button.send_message";

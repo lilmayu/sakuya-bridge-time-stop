@@ -14,6 +14,7 @@ import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
 import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatMessage;
 import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatRoom;
+import dev.mayuna.sakuyabridge.commons.v2.objects.games.GameInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.extension.CryptoKeyExchange;
 import lombok.Getter;
@@ -144,7 +145,7 @@ public final class SakuyaBridge {
     public void reset() {
         LOGGER.info("Resetting SakuyaBridge");
 
-        serverInfo = null;
+        serverInfo = new ServerInfo();
         serverVersion = -1;
         networkProtocol = -1;
         currentSessionToken = null;
@@ -627,7 +628,7 @@ public final class SakuyaBridge {
                 return future;
             }
         }
-        */
+         */
 
         if (!handleAuthenticatedPreRequest(future)) {
             return future;
@@ -694,6 +695,46 @@ public final class SakuyaBridge {
             future.complete(RequestResult.success(null));
         }, () -> {
             LOGGER.error("Failed to send chat message: Timeout");
+            future.complete(RequestResult.timeout());
+        });
+
+        return future;
+    }
+
+    /**
+     * Creates a game
+     *
+     * @param gameInfo Game info
+     * @param password Password
+     *
+     * @return A future that completes when the game is created (will not be ever completed exceptionally)
+     */
+    public CompletableFuture<RequestResult<Packets.Responses.Game.CreateGame>> createGame(GameInfo gameInfo, String password) {
+        var future = new CompletableFuture<RequestResult<Packets.Responses.Game.CreateGame>>();
+
+        if (!handleAuthenticatedPreRequest(future)) {
+            return future;
+        }
+
+        LOGGER.info("Creating game: '{}'", gameInfo.getTechnology());
+
+        // Send the create game request
+        client.sendTCPWithResponse(new Packets.Requests.Game.CreateGame(gameInfo, password), Packets.Responses.Game.CreateGame.class, response -> {
+            if (response.hasError()) {
+                LOGGER.error("Failed to create game: {}", response.getErrorMessage());
+                future.complete(RequestResult.failure(response.getErrorMessage()));
+                return;
+            }
+
+            LOGGER.info("Successfully created game '{}' on IP '{}' and port '{}' with Chat Room '{}'",
+                        gameInfo.getName(),
+                        response.getIp(),
+                        response.getPort(),
+                        response.getChatRoom() != null ? response.getChatRoom().getName() : "N/A (Chatting disabled)"
+            );
+            future.complete(RequestResult.success(response));
+        }, () -> {
+            LOGGER.error("Failed to create game: Timeout");
             future.complete(RequestResult.timeout());
         });
 

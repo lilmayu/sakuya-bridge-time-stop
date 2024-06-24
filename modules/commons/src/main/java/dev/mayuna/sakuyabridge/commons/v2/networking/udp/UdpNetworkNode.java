@@ -19,6 +19,8 @@ public abstract class UdpNetworkNode {
 
     public static final int DEFAULT_PACKET_BUFFER_SIZE = 128;
 
+    private boolean stopping;
+
     protected DatagramSocket datagramSocket;
     protected Thread tickThread;
 
@@ -53,14 +55,14 @@ public abstract class UdpNetworkNode {
      * @throws SocketException If an error occurs while preparing the socket.
      */
     public void start() throws SocketException {
-        if (isRunning()) {
+        if (isDatagramSocketBound()) {
             return;
         }
 
         datagramSocket = prepareSocket();
 
         tickThread = new Thread(() -> {
-            while (isRunning()) {
+            while (isDatagramSocketBound()) {
                 tick();
             }
         });
@@ -75,7 +77,9 @@ public abstract class UdpNetworkNode {
      * Stops the network node.
      */
     public void stop() {
-        if (isRunning()) {
+        stopping = true;
+
+        if (isDatagramSocketBound()) {
             getDatagramSocket().close();
         }
 
@@ -91,7 +95,7 @@ public abstract class UdpNetworkNode {
      *
      * @return If the network node is running.
      */
-    public boolean isRunning() {
+    public boolean isDatagramSocketBound() {
         var datagramSocket = getDatagramSocket();
 
         return datagramSocket != null && datagramSocket.isBound();
@@ -106,7 +110,7 @@ public abstract class UdpNetworkNode {
         try {
             getDatagramSocket().receive(datagramPacket);
         } catch (IOException exception) {
-            if (!isRunning()) {
+            if (stopping) {
                 // Socket is closed, no need to handle the exception, just return
                 return;
             }
@@ -140,7 +144,7 @@ public abstract class UdpNetworkNode {
         try {
             getDatagramSocket().send(datagramPacket);
         } catch (IOException throwable) {
-            if (!isRunning()) {
+            if (stopping) {
                 // Socket is closed, no need to handle the exception, just return
                 return;
             }

@@ -14,12 +14,33 @@ public class LoadingDialogForm extends LoadingDialogFormDesign {
 
     // Static methods for specific loading dialogs
 
+    // TODO: Translations
+
+    /**
+     * Creates a new loading dialog with the text "Connecting..."
+     *
+     * @return The loading dialog
+     */
     public static LoadingDialogForm createConnecting() {
         return new LoadingDialogForm("Connecting...");
     }
 
+    /**
+     * Creates a new loading dialog with the text "Fetching login methods..."
+     *
+     * @return The loading dialog
+     */
     public static LoadingDialogForm createFetchingLoginMethods() {
         return new LoadingDialogForm("Fetching login methods...");
+    }
+
+    /**
+     * Creates a new loading dialog with the text "Creating game..."
+     *
+     * @return The loading dialog
+     */
+    public static LoadingDialogForm createCreatingGame() {
+        return new LoadingDialogForm("Creating game...");
     }
 
     // ===========================================

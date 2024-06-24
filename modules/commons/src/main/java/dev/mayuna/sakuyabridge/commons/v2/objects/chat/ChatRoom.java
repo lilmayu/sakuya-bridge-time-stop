@@ -2,9 +2,13 @@ package dev.mayuna.sakuyabridge.commons.v2.objects.chat;
 
 import dev.mayuna.sakuyabridge.commons.v2.CommonConstants;
 import dev.mayuna.sakuyabridge.commons.v2.networking.tcp.ExtraRegisterArray;
+import dev.mayuna.sakuyabridge.commons.v2.objects.accounts.LoggedAccount;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a chat room with a name and message list
@@ -55,6 +59,16 @@ public class ChatRoom {
 
             chatMessages.add(chatMessage);
         }
+    }
+
+    /**
+     * Creates a new message and adds it to the ChatRoom
+     *
+     * @param sender  Sender
+     * @param content Message content
+     */
+    public void createMessage(LoggedAccount sender, String content) {
+        addMessage(new ChatMessage(sender, content));
     }
 
     /**

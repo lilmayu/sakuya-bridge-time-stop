@@ -15,6 +15,7 @@ import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.FetchChatRoom
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.FetchChatRoomsListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.LeaveChatRoomListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.chat.SendChatMessageListener;
+import dev.mayuna.sakuyabridge.server.v2.networking.listeners.game.CreateGameListener;
 import dev.mayuna.sakuyabridge.server.v2.networking.listeners.user.FetchCurrentUserListener;
 import dev.mayuna.timestop.managers.EncryptionManager;
 import dev.mayuna.timestop.networking.base.TimeStopServer;
@@ -139,6 +140,9 @@ public final class Server extends TimeStopServer {
         listenerManager.registerListener(new SendChatMessageListener());
         listenerManager.registerListener(new FetchChatRoomListener());
         listenerManager.registerListener(new FetchChatRoomsListener());
+
+        // Game
+        listenerManager.registerListener(new CreateGameListener());
     }
 
     @Override

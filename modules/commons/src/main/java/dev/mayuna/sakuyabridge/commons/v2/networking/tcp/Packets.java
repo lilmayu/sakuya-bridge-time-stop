@@ -4,6 +4,7 @@ import dev.mayuna.sakuyabridge.commons.v2.objects.ServerInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.auth.SessionToken;
 import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatMessage;
 import dev.mayuna.sakuyabridge.commons.v2.objects.chat.ChatRoom;
+import dev.mayuna.sakuyabridge.commons.v2.objects.games.GameInfo;
 import dev.mayuna.sakuyabridge.commons.v2.objects.users.User;
 import dev.mayuna.timestop.networking.timestop.TimeStopPackets;
 import lombok.Getter;
@@ -99,6 +100,18 @@ public final class Packets {
             }
         }
 
+        /**
+         * Requests to fetch current user data
+         */
+        public static final class FetchCurrentUser extends SakuyaBridgePacket {
+
+            /**
+             * Used for serialization
+             */
+            public FetchCurrentUser() {
+            }
+        }
+
         // <editor-fold desc="Authentication Packets">
 
         /**
@@ -157,18 +170,6 @@ public final class Packets {
         }
 
         // </editor-fold>
-
-        /**
-         * Requests to fetch current user data
-         */
-        public static final class FetchCurrentUser extends SakuyaBridgePacket {
-
-            /**
-             * Used for serialization
-             */
-            public FetchCurrentUser() {
-            }
-        }
 
         // <editor-fold desc="Chatting feature">
 
@@ -263,6 +264,43 @@ public final class Packets {
         }
 
         // </editor-fold>
+
+        // <editor-fold desc="Game">
+
+        /**
+         * Game requests
+         */
+        public static final class Game {
+
+            /**
+             * Requests to create a new game
+             */
+            @Getter
+            public static final class CreateGame extends SakuyaBridgePacket {
+
+                private GameInfo gameInfo;
+                private String password;
+
+                /**
+                 * Used for serialization
+                 */
+                public CreateGame() {
+                }
+
+                /**
+                 * Creates a new {@link CreateGame} request with specified {@link GameInfo}
+                 *
+                 * @param gameInfo Game info
+                 */
+                public CreateGame(GameInfo gameInfo, String password) {
+                    this.gameInfo = gameInfo;
+                    this.password = password;
+                }
+            }
+
+        }
+
+        // </editor-fold>
     }
 
     // ============= Responses ============= //
@@ -336,6 +374,30 @@ public final class Packets {
             public VersionExchange(int serverVersion, int networkProtocol) {
                 this.serverVersion = serverVersion;
                 this.networkProtocol = networkProtocol;
+            }
+        }
+
+        /**
+         * Response to fetch current user data
+         */
+        @Getter
+        public static final class FetchCurrentUser extends SakuyaBridgePacket {
+
+            private User user;
+
+            /**
+             * Used for serialization
+             */
+            public FetchCurrentUser() {
+            }
+
+            /**
+             * Creates a new fetch user response
+             *
+             * @param user The user
+             */
+            public FetchCurrentUser(User user) {
+                this.user = user;
             }
         }
 
@@ -419,30 +481,6 @@ public final class Packets {
         }
 
         // </editor-fold>
-
-        /**
-         * Response to fetch current user data
-         */
-        @Getter
-        public static final class FetchCurrentUser extends SakuyaBridgePacket {
-
-            private User user;
-
-            /**
-             * Used for serialization
-             */
-            public FetchCurrentUser() {
-            }
-
-            /**
-             * Creates a new fetch user response
-             *
-             * @param user The user
-             */
-            public FetchCurrentUser(User user) {
-                this.user = user;
-            }
-        }
 
         // <editor-fold desc="Chatting feature">
 
@@ -540,6 +578,48 @@ public final class Packets {
 
         // </editor-fold>
 
+        // <editor-fold desc="Game">
+
+        /**
+         * Game responses
+         */
+        public static final class Game {
+
+            /**
+             * Response to {@link Requests.Game.CreateGame}
+             */
+            @Getter
+            public static final class CreateGame extends SakuyaBridgePacket {
+
+                private GameInfo gameInfo;
+                private ChatRoom chatRoom;
+                private String ip;
+                private int port;
+
+                /**
+                 * Used for serialization
+                 */
+                public CreateGame() {
+                }
+
+                /**
+                 * Creates a new {@link CreateGame} response with specified {@link GameInfo} and {@link ChatRoom}
+                 *
+                 * @param gameInfo Game info
+                 * @param chatRoom Chat room
+                 * @param ip       IP
+                 * @param port     Port
+                 */
+                public CreateGame(GameInfo gameInfo, ChatRoom chatRoom, String ip, int port) {
+                    this.gameInfo = gameInfo;
+                    this.chatRoom = chatRoom;
+                    this.ip = ip;
+                    this.port = port;
+                }
+            }
+        }
+
+        // </editor-fold>
     }
 
     // ============= Notifications ============= //
@@ -582,6 +662,38 @@ public final class Packets {
                 public ChatMessageSent(String chatRoomName, ChatMessage chatMessage) {
                     this.chatRoomName = chatRoomName;
                     this.chatMessage = chatMessage;
+                }
+            }
+        }
+
+        /**
+         * Game notifications
+         */
+        public static final class Game {
+
+            /**
+             * Request made by server to inform client about game being stopped
+             */
+            @Getter
+            public static final class GameStopped extends SakuyaBridgePacket {
+
+                private Reason reason;
+                private GameInfo gameInfo;
+
+                public GameStopped() {
+                }
+
+                public GameStopped(Reason reason, GameInfo gameInfo) {
+                    this.reason = reason;
+                    this.gameInfo = gameInfo;
+                }
+
+                /**
+                 * Game stop reason
+                 */
+                public enum Reason {
+                    HOST_INACTIVITY,
+                    GRACEFUL_SHUTDOWN
                 }
             }
         }

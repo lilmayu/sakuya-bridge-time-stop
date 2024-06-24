@@ -24,4 +24,8 @@ public abstract class ServerSideException extends RuntimeException {
      */
     public abstract String getErrorName();
 
+    @Override
+    public String getMessage() {
+        return getErrorName();
+    }
 }

@@ -20,6 +20,7 @@ public final class ServerInfo {
     private String motd = "Welcome to Sakuya Bridge!";
     private List<AuthenticationMethods> authenticationMethods = new LinkedList<>();
     private boolean registerEnabled = true;
+    private boolean chatEnabled = true;
 
     /**
      * Used for serialization

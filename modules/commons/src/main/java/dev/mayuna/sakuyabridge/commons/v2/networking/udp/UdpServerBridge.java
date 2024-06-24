@@ -16,6 +16,7 @@ import java.util.function.Consumer;
  */
 public final class UdpServerBridge extends UdpServer {
 
+    private final long start = System.currentTimeMillis();
     private final long inactiveAfterMillis;
     private final List<UdpExternalClient> clients = new LinkedList<>();
     private final Timer inactiveClientTimer = new Timer();
@@ -45,6 +46,21 @@ public final class UdpServerBridge extends UdpServer {
             @Override
             public void run() {
                 synchronized (clients) {
+                    if (host == null) {
+                        if (System.currentTimeMillis() - start >= inactiveAfterMillis) {
+                            LOGGER.info("No host connected for {}ms - Stopping server", inactiveAfterMillis);
+                            stop();
+                        }
+
+                        return;
+                    }
+
+                    if (host.isInactive(inactiveAfterMillis)) {
+                        LOGGER.info("Host disconnected (inactive): {}", host);
+                        stop();
+                        return;
+                    }
+
                     clients.removeIf(client -> {
                         if (client.isInactive(inactiveAfterMillis)) {
                             LOGGER.info("Client disconnected (inactive): {}", client);
@@ -60,6 +76,11 @@ public final class UdpServerBridge extends UdpServer {
 
     @Override
     protected void onReceiveDatagramPacket(DatagramPacket receivedDatagram) {
+        // Invalid DatagramPacket or server is not running anymore
+        if (receivedDatagram.getPort() == 0 || !this.isDatagramSocketBound()) {
+            return;
+        }
+
         // First packet is always from the host, dummy packet
         if (host == null) {
             host = new UdpExternalClient(UdpDestination.fromDatagramPacket(receivedDatagram));
