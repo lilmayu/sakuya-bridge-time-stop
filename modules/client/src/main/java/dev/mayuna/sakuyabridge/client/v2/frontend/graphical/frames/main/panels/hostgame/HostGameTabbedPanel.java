@@ -50,7 +50,7 @@ public final class HostGameTabbedPanel extends HostGameTabbedPanelDesign {
         // TODO: Enum translation
         chatLog.createMessage(CommonConstants.LOCAL_ACCOUNT, "Starting " + createGame.getGameInfo().getTechnology().name());
 
-        changeToGameCreated(chatLog, canSendMessage);
+        changeToGameCreated(createGame, chatLog, canSendMessage);
         registerGameStoppedListener();
     }
 

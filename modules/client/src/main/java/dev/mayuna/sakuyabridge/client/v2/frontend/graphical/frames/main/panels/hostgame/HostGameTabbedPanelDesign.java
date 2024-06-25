@@ -14,6 +14,7 @@ import java.awt.*;
 public abstract class HostGameTabbedPanelDesign extends SakuyaBridgeTabbedPanelDesign {
 
     protected GameCreatorPanel panelGameCreator;
+    protected GameStatusPanel panelGameStatus;
     protected JLabel labelNoGameCreated;
     protected ChatRoomPanel panelChatRoom;
 
@@ -27,7 +28,7 @@ public abstract class HostGameTabbedPanelDesign extends SakuyaBridgeTabbedPanelD
      * @param chatRoom Chat room
      * @param canSendMessage True if messages can be sent
      */
-    protected void changeToGameCreated(ChatRoom chatRoom, boolean canSendMessage) {
+    protected void changeToGameCreated(Packets.Responses.Game.CreateGame createGamePacket, ChatRoom chatRoom, boolean canSendMessage) {
         panelGameCreator.setVisible(false);
         labelNoGameCreated.setVisible(false);
 
@@ -35,6 +36,10 @@ public abstract class HostGameTabbedPanelDesign extends SakuyaBridgeTabbedPanelD
         panelChatRoom.setCanSendMessage(canSendMessage);
         this.add(panelChatRoom, BorderLayout.CENTER);
         panelChatRoom.onOpen();
+
+        panelGameStatus = new GameStatusPanel(createGamePacket);
+        this.add(panelGameStatus, BorderLayout.WEST);
+        panelGameStatus.onOpen();
     }
 
     /**
@@ -68,6 +73,7 @@ public abstract class HostGameTabbedPanelDesign extends SakuyaBridgeTabbedPanelD
     @Override
     protected void populatePanel() {
         this.add(panelGameCreator, BorderLayout.WEST);
+        //this.add(new GameStatusPanel(new Packets.Responses.Game.CreateGame(SakuyaBridge.INSTANCE.getConfig().getLastGameInfo(), new ChatRoom(), "127.0.0.1", 27083)), BorderLayout.WEST);
         this.add(labelNoGameCreated, BorderLayout.CENTER);
     }
 }

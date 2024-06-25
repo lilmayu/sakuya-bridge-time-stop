@@ -31,6 +31,9 @@ public abstract class GameCreatorPanelDesign extends SakuyaBridgeTabbedPanelDesi
 
     protected JButton buttonCreateGame;
 
+    /**
+     * Constructor
+     */
     public GameCreatorPanelDesign() {
         super(MigLayoutUtils.create("[grow]"));
         this.setBorder(BorderFactory.createCompoundBorder(
