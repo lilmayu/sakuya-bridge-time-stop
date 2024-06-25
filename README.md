@@ -2,7 +2,10 @@
 
 A fancy bridge to cross between the realm of local networks and the Internet.
 
+> [!IMPORTANT]
 > This is a rewrite of original Sakuya Bridge. The communication model between the server and the client is in TCP.
+>
+> All the work is now currently in the v2 branch.
 
 ## What is this?
 
